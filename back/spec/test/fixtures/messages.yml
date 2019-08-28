@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  from: MyText
+  to: MyText
+  sent: 2019-08-27 16:16:29
+  msg: MyText
+
+two:
+  from: MyText
+  to: MyText
+  sent: 2019-08-27 16:16:29
+  msg: MyText
