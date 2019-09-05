@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const msgModel = new Schema({
   from: {type: String},
   to: {type: String},
   msg: {type: String},
 })
-export default mongoose.model('msg', msgModel)
+module.exports = mongoose.model('Msg', msgModel)
