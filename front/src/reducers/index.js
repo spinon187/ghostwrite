@@ -13,21 +13,31 @@ import {
 const initialState = {
   error: null,
   regging: false,
-  regged: false,
+  regged: null,
   sending: false,
   retrieving: false,
   msgs: {},
   uid: null
 };
 
-const addMsgs = (state, msgs) => {
+const addMsgs = (state, msgs, direction) => {
   let temp = state.msgs;
-  msgs.forEach(msg => {
+  if(direction === 'in'){
+    msgs.forEach(msg => {
       temp[msg.from] = {
         ...temp[msg.from],
         msg
       }
-  });
+    })
+  }
+  else{
+    msgs.forEach(msg => {
+      temp[msg.to] = {
+        ...temp[msg.to],
+        msg
+      }
+    })
+  }
   return temp;
 }
 
@@ -42,7 +52,7 @@ export const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         regging: false,
-        regged: true,
+        regged: action.payload.reg,
         uid: action.payload.uid
       }
     case REG_FAIL:
@@ -60,7 +70,8 @@ export const rootReducer = (state = initialState, action) => {
     case SENT:
       return {
         ...state,
-        sending: false
+        sending: false,
+        msgs: addMsgs(state, action.payload, 'out')
       }
     case SEND_FAIL:
       return {
@@ -77,7 +88,7 @@ export const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         retrieving: false,
-        msgs: addMsgs(state, action.payload)
+        msgs: addMsgs(state, action.payload, 'in')
       }
     case RET_FAIL:
       return {
@@ -89,3 +100,5 @@ export const rootReducer = (state = initialState, action) => {
       return state;
   }
 }
+
+export default rootReducer;

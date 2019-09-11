@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const baseURL = process.env.BE_URL;
+require('dotenv').config();
+const baseURL = process.env.BE_URL || 'http://localhost:7777';
 
 export const REGGING = 'REGGING';
 export const REGGED = 'REGGED';
@@ -22,7 +22,7 @@ export const register = uid => dispatch => {
 export const sendMsg = msg => dispatch => {
   dispatch({type: SENDING});
   axios.post(`${baseURL}/send`, msg)
-    .then(res => dispatch({type: SENT, payload: res.data}))
+    .then(res => dispatch({type: SENT, payload: msg}))
     .catch(err => dispatch({type: SEND_FAIL, payload: err}))
 }
 
