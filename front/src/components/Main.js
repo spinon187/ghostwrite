@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register} from '../actions/index';
+import {register, check, sendMsg, getMsg} from '../actions/index';
 import Reg from './Reg';
 
 class Main extends Component {
@@ -9,6 +9,7 @@ class Main extends Component {
     this.state = {
       uid: props.uid,
       regged: props.regged,
+      active: null
     }
   }
 
@@ -24,10 +25,35 @@ class Main extends Component {
     if(this.state.regged !== true){
       let id = Math.floor(Math.random() * 8999999999 + 1000000000).toString();
       this.props.register({uid: id});
-      setTimeout(() => delay(), 1500)
-      setTimeout(() => this.register(), 3000)
+      setTimeout(() => delay(), 2400)
+      setTimeout(() => this.register(), 2500)
     }
   }
+
+  check = () => {
+    this.props.check(this.props.uid)
+  }
+
+  sortMsgs = () => {
+    
+  }
+  sendMsg = msg => {
+    this.props.sendMsg(msg)
+  }
+
+  getMsg = from => {
+    this.props.getMsg(this.props.uid, from)
+  }
+
+  componentDidMount(){
+    this.check();
+    this.setState({
+      ...this.state,
+      active: this.props.awaiting ? this.props.awaiting[0] : null
+    })
+  }
+
+  
 
   render(){
     return (
@@ -46,8 +72,9 @@ const mapStateToProps = state => {
     sending: state.sending,
     retrieving: state.retrieving,
     msgs: state.msgs,
-    uid: state.uid
+    uid: state.uid,
+    waiting: state.waiting
   }
 }
 
-export default connect(mapStateToProps, {register})(Main);
+export default connect(mapStateToProps, {register, check, sendMsg, getMsg})(Main);

@@ -11,12 +11,22 @@ export const SEND_FAIL = 'SEND_FAIL';
 export const RETRIEVING = 'RETRIEVING';
 export const RETRIEVED = 'RETRIEVED';
 export const RET_FAIL = 'RET_FAIL';
+export const CHECKING = 'CHECKING';
+export const CHECKED = 'CHECKED';
+export const CHECK_FAIL = 'CHECK_FAIL';
 
 export const register = uid => dispatch => {
   dispatch({type: REGGING});
   axios.post(`${baseURL}/api/uid`, uid)
     .then(res => dispatch({type: REGGED, payload: res.data}))
     .catch(err => dispatch({type: REG_FAIL, payload: err}))
+}
+
+export const check = uid => dispatch => {
+  dispatch({type: CHECKING});
+  axios.get(`${baseURL}/api/${uid}`)
+    .then(res => dispatch({type: CHECKED, payload: res.data}))
+    .catch(err => dispatch({type: CHECK_FAIL, payload: err}))
 }
 
 export const sendMsg = msg => dispatch => {

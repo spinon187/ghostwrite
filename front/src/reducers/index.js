@@ -7,7 +7,10 @@ import {
   SEND_FAIL,
   RETRIEVING,
   RETRIEVED,
-  RET_FAIL
+  RET_FAIL,
+  CHECKING,
+  CHECKED,
+  CHECK_FAIL
 } from '../actions/index';
 
 const initialState = {
@@ -16,6 +19,7 @@ const initialState = {
   regged: null,
   sending: false,
   retrieving: false,
+  waiting: {},
   msgs: {},
   uid: null
 };
@@ -38,6 +42,12 @@ const addMsgs = (state, msgs, direction) => {
       }
     })
   }
+  return temp;
+}
+
+const waitlist = (state, counts) => {
+  let temp = state.waiting;
+  counts.map((key, count) => temp[key] = temp[key] ? temp[key] + count : count);
   return temp;
 }
 
@@ -94,6 +104,25 @@ export const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         retrieving: false,
+        error: action.payload
+      }
+    case CHECKING:
+      return {
+        ...state,
+        checking: true,
+      }
+    case CHECKED:
+      return {
+        ...state,
+        checking: false,
+        checked: true,
+        waiting: waitlist(state, action.payload)
+      }
+    case CHECK_FAIL:
+      return {
+        ...state,
+        checking: false,
+        checked: false,
         error: action.payload
       }
     default:
