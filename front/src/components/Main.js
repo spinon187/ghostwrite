@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, check, sendMsg, getMsg} from '../actions/index';
+import {register, check, sendMsg, getMsg, targetNuke, nukeAll} from '../actions/index';
 import Reg from './Reg';
 
 class Main extends Component {
   constructor(props){
     super(props);
     this.state = {
-      uid: props.uid,
-      regged: props.regged,
-      active: null
+      uid: null,
+      regged: null,
+      waiting: null,
+      active: null,
+      history: []
     }
   }
 
@@ -34,23 +36,60 @@ class Main extends Component {
     this.props.check(this.props.uid)
   }
 
-  sortMsgs = () => {
-    
-  }
+  sortMsgs = partner => {
+    let temp = this.props.msgs[partner], disp = [];
+    let order = temp.keys().sort((a, b) => a-b);
+    for(let i in order){
+      disp.push([temp[i].from, temp[i].msg, temp[i].created]);
+    }
+    this.setState({
+      ...this.state,
+      history: disp
+    })
+  };
+
   sendMsg = msg => {
     this.props.sendMsg(msg)
+    this.setState({
+      ...this.state,
+      history: [...this.history, [msg.from, msg.msg, msg.created]]
+    })
   }
 
   getMsg = from => {
-    this.props.getMsg(this.props.uid, from)
+    this.props.getMsg(this.props.uid, from);
+    this.sortMsgs(from);
   }
 
-  componentDidMount(){
+  nukeAll = () => {
+    let targs = this.props.msgs.keys(), uid = this.props.uid;
+    this.props.nukeAll(uid, targs);
+    this.setState({
+      uid: null,
+      regged: null,
+      active: null,
+      history: [],
+      waiting: null
+    })
+  }
+
+  updateActive = (x=0) => {
     this.check();
     this.setState({
       ...this.state,
-      active: this.props.awaiting ? this.props.awaiting[0] : null
+      waiting: this.props.waiting,
+      active: this.props.waiting ? this.props.waiting[x] : null,
     })
+  }
+
+  targetNuke = (to, from) => {
+    this.props.targetNuke(to, from);
+    this.updateActive();
+
+  }
+
+  componentDidMount(){
+    this.updateActive();
   }
 
   
@@ -77,4 +116,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {register, check, sendMsg, getMsg})(Main);
+export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll})(Main);
