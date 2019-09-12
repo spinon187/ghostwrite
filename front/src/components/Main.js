@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, check, sendMsg, getMsg, targetNuke, nukeAll} from '../actions/index';
+import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait} from '../actions/index';
 import Reg from './Reg';
+import Messages from './Messages';
 
 class Main extends Component {
   constructor(props){
     super(props);
     this.state = {
-      uid: null,
-      regged: null,
-      waiting: null,
+      uid: this.props.uid,
+      regged: this.props.regged,
+      waiting: [],
       active: null,
       history: []
     }
@@ -33,19 +34,27 @@ class Main extends Component {
   }
 
   check = () => {
-    this.props.check(this.props.uid)
+    return this.props.uid ? this.props.check(this.props.uid) : null
+  }
+
+  buildWaitList = () => {
+    let temp = this.props.waiting, list = [];
+    Object.keys(temp).forEach(key => list.push([key, this.props.waiting[key]])
+    )
+    console.log(list);
+    this.setState(() => {return {waiting: list}})
   }
 
   sortMsgs = partner => {
-    let temp = this.props.msgs[partner], disp = [];
-    let order = temp.keys().sort((a, b) => a-b);
-    for(let i in order){
-      disp.push([temp[i].from, temp[i].msg, temp[i].created]);
+    console.log(partner);
+    if(this.props.msgs[partner]){    
+      let temp = this.props.msgs[partner], disp = [];
+      let order = Object.keys(temp).sort((a, b) => a-b);
+      for(let i in order){
+        disp.push([temp[order[i]].from, temp[order[i]].msg, temp[order[i]].created]);
+      }
+      this.setState(() => {return {history: disp}})
     }
-    this.setState({
-      ...this.state,
-      history: disp
-    })
   };
 
   sendMsg = msg => {
@@ -56,9 +65,8 @@ class Main extends Component {
     })
   }
 
-  getMsg = from => {
-    this.props.getMsg(this.props.uid, from);
-    this.sortMsgs(from);
+  getMsg = () => {
+    this.props.getMsg(this.props.uid);
   }
 
   nukeAll = () => {
@@ -73,19 +81,30 @@ class Main extends Component {
     })
   }
 
-  updateActive = (x=0) => {
+  bundle = () => {
     this.check();
-    this.setState({
-      ...this.state,
-      waiting: this.props.waiting,
-      active: this.props.waiting ? this.props.waiting[x] : null,
-    })
+    this.getMsg();
+  }
+
+  updateActive = (x=0) => {
+    this.bundle();
+    const delayBWL = () => this.buildWaitList();
+    const delaySet = () => {
+      let temp = this.state.waiting.length > 0 ? this.state.waiting[x][0] : null;
+      this.setState(() => {
+        return {active: temp}
+      },
+  )
+    }
+    const delaySort = () => this.sortMsgs(this.state.active);
+    setTimeout(() => delayBWL(), 2000);
+    setTimeout(() => delaySet(), 2200);
+    setTimeout(() => delaySort(), 2300);
   }
 
   targetNuke = (to, from) => {
     this.props.targetNuke(to, from);
     this.updateActive();
-
   }
 
   componentDidMount(){
@@ -97,7 +116,16 @@ class Main extends Component {
   render(){
     return (
       <div>
-        <Reg uid={this.state.uid} regged={this.state.regged} register={this.register}/>
+        <Reg 
+          uid={this.state.uid} 
+          regged={this.state.regged} 
+          register={this.register}
+        />
+        <Messages
+          uid={this.state.uid}
+          active={this.state.active}
+          history={this.state.history}
+        />
       </div>
     )
   }
@@ -116,4 +144,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll})(Main);
+export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait})(Main);

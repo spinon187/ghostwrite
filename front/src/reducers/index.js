@@ -1,21 +1,6 @@
 import {
-  REGGING,
-  REGGED,
-  REG_FAIL,
-  SENDING,
-  SENT,
-  SEND_FAIL,
-  RETRIEVING,
-  RETRIEVED,
-  RET_FAIL,
-  CHECKING,
-  CHECKED,
-  CHECK_FAIL,
-  FULL_NUKED,
-  FULL_NUKING,
-  TAR_NUKING,
-  TAR_NUKED,
-  NUKE_FAIL
+  REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
+CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR
 } from '../actions/index';
 
 const initialState = {
@@ -32,14 +17,21 @@ const initialState = {
 
 const addMsgs = (state, msgs, direction) => {
   let temp = state.msgs;
+  console.log(msgs.length);
   if(direction === 'in'){
     msgs.forEach(msg => {
+      if(!temp[msg.from]){
+        temp[msg.from] = {};
+      }
       temp[msg.from][msg.created] = msg
     })
   }
   else{
     msgs.forEach(msg => {
-      temp[msg.to][msg.created] = msg 
+      if(!temp[msg.to]){
+        temp[msg.to] = {};
+      }
+      temp[msg.to][msg.created] = msg
     })
   }
   return temp;
@@ -47,8 +39,12 @@ const addMsgs = (state, msgs, direction) => {
 
 const waitlist = (state, counts) => {
   let temp = state.waiting;
-  counts.map((key, count) => temp[key] = temp[key] ? temp[key] + count : count);
-  return temp;
+  if(Object.keys(counts).length > 0){
+    Object.keys(counts).forEach(key =>
+      temp[key] = temp[key] ? temp[key] + counts[key] : counts[key]
+    )
+  }  
+return temp;
 }
 
 const targetNuke = (state, target) => {
@@ -56,7 +52,13 @@ const targetNuke = (state, target) => {
   delete temp1[target];
   delete temp2[target];
   return {msgs: temp1, waiting: temp2}
-} 
+}
+
+const clearWait = (state, partner) => {
+  let temp = state.waiting;
+  temp[partner] = 0;
+  return temp
+}
 
 export const rootReducer = (state = initialState, action) => {
   switch(action.type) {
@@ -159,6 +161,11 @@ export const rootReducer = (state = initialState, action) => {
         ...state,
         nuking: false,
         error: action.payload
+      }
+    case CLEAR:
+      return {
+        ...state,
+        waiting: clearWait(state, action.payload)
       }
     default:
       return state;
