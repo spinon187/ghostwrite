@@ -28,12 +28,10 @@ const addMsgs = (state, msgs, direction) => {
     })
   }
   else{
-    msgs.forEach(msg => {
-      if(!temp[msg.to]){
-        temp[msg.to] = {};
+      if(!temp[msgs.to]){
+        temp[msgs.to] = {};
       }
-      temp[msg.to][msg.created] = msg
-    })
+      temp[msgs.to][msgs.created] = msgs
   }
   return temp;
 }

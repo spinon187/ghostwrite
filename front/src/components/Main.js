@@ -4,6 +4,7 @@ import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait} from '
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
+import NewMessage from './NewMessage';
 
 class Main extends Component {
   constructor(props){
@@ -12,8 +13,8 @@ class Main extends Component {
       uid: this.props.uid,
       regged: this.props.regged,
       waiting: [],
-      active: null,
-      history: []
+      active: 'sender',
+      history: [],
     }
   }
 
@@ -44,10 +45,6 @@ class Main extends Component {
     Object.keys(temp).forEach(key => {
       return key === targ ? list.push([key, 0]) : list.push([key, this.props.waiting[key]])
     })
-    if(targ == null){
-      list[0][1] = 0;
-      this.props.clearWait(list[0][0])
-    }
     this.setState(() => {return {waiting: list}})
   }
 
@@ -56,7 +53,9 @@ class Main extends Component {
       let temp = this.props.msgs[partner], disp = [];
       let order = Object.keys(temp).sort((a, b) => a-b);
       for(let i in order){
-        disp.push([temp[order[i]].from, temp[order[i]].msg, temp[order[i]].created]);
+        let date = new Date(temp[order[i]].created)
+        let dispDate = `${date.getDay()} ${date.getMonth()}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
+        disp.push([temp[order[i]].from, temp[order[i]].msg, dispDate]);
       }
       this.setState(() => {return {history: disp}})
     }
@@ -66,7 +65,11 @@ class Main extends Component {
     this.props.sendMsg(msg)
     this.setState({
       ...this.state,
-      history: [...this.history, [msg.from, msg.msg, msg.created]]
+      active: msg.to
+    }, () => {
+      this.initBundle(msg.to);
+      const delaySort = () => this.sortMsgs(this.state.active);
+      setTimeout(() => delaySort(), 1900)
     })
   }
 
@@ -80,16 +83,22 @@ class Main extends Component {
     this.setState({
       uid: null,
       regged: null,
-      active: null,
+      active: 'sender',
       history: [],
-      waiting: null
+      waiting: null,
+      toSend: {}
     })
   }
 
-  updateActive = (x=0, targ=null) => {
+  initBundle = (targ) => {
     this.check();
     this.getMsg();
     const delayBWL = () => this.buildWaitList(targ);
+    setTimeout(() => delayBWL(), 1500);
+  }
+
+  updateActive = (x=0, targ=null) => {
+    this.initBundle(targ)
     const delaySet = () => {
       let temp = this.state.waiting.length > 0 ? this.state.waiting[x][0] : null;
       this.setState(() => {
@@ -97,9 +106,8 @@ class Main extends Component {
       })
     }
     const delaySort = () => this.sortMsgs(this.state.active);
-    setTimeout(() => delayBWL(), 2000);
-    setTimeout(() => delaySet(), 2200);
-    setTimeout(() => delaySort(), 2300);
+    setTimeout(() => delaySet(), 1800);
+    setTimeout(() => delaySort(), 1900);
   }
 
   targetNuke = (to, from) => {
@@ -108,12 +116,25 @@ class Main extends Component {
   }
 
   componentDidMount(){
-    this.updateActive();
+    this.initBundle();
   }
 
-  
-
   render(){
+
+    let conditional = this.state.active === 'sender'
+      ?<NewMessage 
+        uid={this.state.uid}
+        active={this.state.active}
+        which={this.state.active}
+        sendMsg={this.sendMsg}
+      />
+      :<Messages
+        uid={this.state.uid}
+        active={this.state.active}
+        history={this.state.history}
+        sendMsg={this.sendMsg}
+      />
+
     return (
       <div>
         <Reg 
@@ -125,11 +146,7 @@ class Main extends Component {
           waiting={this.state.waiting}
           setActive={this.updateActive}
         />
-        <Messages
-          uid={this.state.uid}
-          active={this.state.active}
-          history={this.state.history}
-        />
+        {conditional}
       </div>
     )
   }
