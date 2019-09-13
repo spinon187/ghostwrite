@@ -12,12 +12,13 @@ const initialState = {
   waiting: {},
   msgs: {},
   nuking: false,
+  checking: false,
+  checked: false,
   uid: null
 };
 
 const addMsgs = (state, msgs, direction) => {
   let temp = state.msgs;
-  console.log(msgs.length);
   if(direction === 'in'){
     msgs.forEach(msg => {
       if(!temp[msg.from]){

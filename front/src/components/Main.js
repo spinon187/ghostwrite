@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
+import WaitList from './WaitList';
 
 class Main extends Component {
   constructor(props){
@@ -37,16 +38,20 @@ class Main extends Component {
     return this.props.uid ? this.props.check(this.props.uid) : null
   }
 
-  buildWaitList = () => {
+  buildWaitList = (targ=null) => {
     let temp = this.props.waiting, list = [];
-    Object.keys(temp).forEach(key => list.push([key, this.props.waiting[key]])
-    )
-    console.log(list);
+    if(targ !== null) this.props.clearWait(targ);
+    Object.keys(temp).forEach(key => {
+      return key === targ ? list.push([key, 0]) : list.push([key, this.props.waiting[key]])
+    })
+    if(targ == null){
+      list[0][1] = 0;
+      this.props.clearWait(list[0][0])
+    }
     this.setState(() => {return {waiting: list}})
   }
 
   sortMsgs = partner => {
-    console.log(partner);
     if(this.props.msgs[partner]){    
       let temp = this.props.msgs[partner], disp = [];
       let order = Object.keys(temp).sort((a, b) => a-b);
@@ -66,7 +71,7 @@ class Main extends Component {
   }
 
   getMsg = () => {
-    this.props.getMsg(this.props.uid);
+    return this.props.uid ? this.props.getMsg(this.props.uid) : null
   }
 
   nukeAll = () => {
@@ -81,20 +86,15 @@ class Main extends Component {
     })
   }
 
-  bundle = () => {
+  updateActive = (x=0, targ=null) => {
     this.check();
     this.getMsg();
-  }
-
-  updateActive = (x=0) => {
-    this.bundle();
-    const delayBWL = () => this.buildWaitList();
+    const delayBWL = () => this.buildWaitList(targ);
     const delaySet = () => {
       let temp = this.state.waiting.length > 0 ? this.state.waiting[x][0] : null;
       this.setState(() => {
-        return {active: temp}
-      },
-  )
+        if(temp) return {active: temp}
+      })
     }
     const delaySort = () => this.sortMsgs(this.state.active);
     setTimeout(() => delayBWL(), 2000);
@@ -120,6 +120,10 @@ class Main extends Component {
           uid={this.state.uid} 
           regged={this.state.regged} 
           register={this.register}
+        />
+        <WaitList 
+          waiting={this.state.waiting}
+          setActive={this.updateActive}
         />
         <Messages
           uid={this.state.uid}
