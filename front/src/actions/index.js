@@ -41,7 +41,9 @@ export const register = uid => dispatch => {
 
     nukeAll = (uid, targs) => dispatch => {
       dispatch({type: FULL_NUKING});
-      axios.delete(`${baseURL}/api/uid`, {uid: uid, targs: targs})
+      let obj = {uid: uid, targs: targs};
+      console.log(obj);
+      axios.delete(`${baseURL}/api/uid`, {data: obj})
         .then(res => dispatch({type: FULL_NUKED, payload: res.data}))
         .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
     },

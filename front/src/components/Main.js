@@ -41,10 +41,12 @@ class Main extends Component {
 
   buildWaitList = (targ=null) => {
     let temp = this.props.waiting, list = [];
-    if(targ !== null) this.props.clearWait(targ);
-    Object.keys(temp).forEach(key => {
-      return key === targ ? list.push([key, 0]) : list.push([key, this.props.waiting[key]])
-    })
+    if(targ !== null) {
+      this.props.clearWait(targ);
+      Object.keys(temp).forEach(key => {
+        return key === targ ? list.push([key, 0]) : list.push([key, this.props.waiting[key]])
+      }
+    )}
     this.setState(() => {return {waiting: list}})
   }
 
@@ -78,16 +80,11 @@ class Main extends Component {
   }
 
   nukeAll = () => {
-    let targs = this.props.msgs.keys(), uid = this.props.uid;
+    let targs = Object.keys(this.props.msgs), uid = this.props.uid;
+    console.log(targs)
     this.props.nukeAll(uid, targs);
-    this.setState({
-      uid: null,
-      regged: null,
-      active: 'sender',
-      history: [],
-      waiting: null,
-      toSend: {}
-    })
+    localStorage.clear();
+    window.location.reload();
   }
 
   initBundle = (targ) => {
@@ -147,6 +144,7 @@ class Main extends Component {
           uid={this.state.uid} 
           regged={this.state.regged} 
           register={this.register}
+          nukeAll={this.nukeAll}
         />
         <WaitList 
           waiting={this.state.waiting}

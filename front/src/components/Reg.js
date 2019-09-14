@@ -5,14 +5,15 @@ const Reg = props => {
     ? <button onClick={props.register}>get a number</button>
     : <h2>your user id is {props.uid}</h2>
 
-  const nuke = () => {
+  const reset = () => {
     localStorage.clear();
     window.location.reload();
   }
   return(
     <>
       {regButton}
-      <button onClick={nuke}>nuke</button>
+      <button onClick={reset}>reset</button>
+      <button onClick={props.nukeAll}>nuke</button>
     </>
   )
 }
