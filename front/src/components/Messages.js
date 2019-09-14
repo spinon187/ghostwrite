@@ -22,6 +22,7 @@ const Messages = props => {
 
   return (
     <>
+      <h1>{props.active}</h1><button onClick={() => props.targetNuke(props.active)}>nuke convo</button>
       {history}
       <NewMessage uid={props.uid} active={props.active} which={props.active} sendMsg={props.sendMsg}/>
     </>

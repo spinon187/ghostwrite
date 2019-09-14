@@ -2,7 +2,7 @@ import axios from 'axios';
 require('dotenv').config();
 const baseURL = process.env.BE_URL || 'http://localhost:7777';
 
-export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENDING = 'SENDING', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RETRIEVING = 'RETRIEVING', RETRIEVED = 'RETRIEVED', RET_FAIL = 'RET_FAIL', CHECKING = 'CHECKING', CHECKED = 'CHECKED', CHECK_FAIL = 'CHECK_FAIL', FULL_NUKED = 'FULL_NUKED', FULL_NUKING = 'FULL_NUKING', TAR_NUKING = 'TAR_NUKING', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', CLEAR = 'CLEAR';
+export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENDING = 'SENDING', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RETRIEVING = 'RETRIEVING', RETRIEVED = 'RETRIEVED', RET_FAIL = 'RET_FAIL', CHECKING = 'CHECKING', CHECKED = 'CHECKED', CHECK_FAIL = 'CHECK_FAIL', FULL_NUKED = 'FULL_NUKED', FULL_NUKING = 'FULL_NUKING', TAR_NUKING = 'TAR_NUKING', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', CLEAR = 'CLEAR', SELF_NUKE = 'SELF_NUKE';
 
 export const register = uid => dispatch => {
       dispatch({type: REGGING});
@@ -48,4 +48,8 @@ export const register = uid => dispatch => {
 
     clearWait = partner => dispatch => {
       dispatch({type: CLEAR, payload: partner});
+    },
+
+    selfNuke = targ => dispatch => {
+      dispatch({type: SELF_NUKE, payload: targ})
     }

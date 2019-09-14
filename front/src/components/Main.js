@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait} from '../actions/index';
+import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
@@ -110,9 +110,14 @@ class Main extends Component {
     setTimeout(() => delaySort(), 1900);
   }
 
-  targetNuke = (to, from) => {
-    this.props.targetNuke(to, from);
-    this.updateActive();
+  targetNuke = target => {
+    this.props.targetNuke(target, this.props.uid);
+    this.setState({active: 'sender'}, () => this.initBundle());
+  }
+
+  selfNuke = target => {
+    this.props.selfNuke(target);
+    this.setState({active: 'sender'}, () => this.initBundle());
   }
 
   componentDidMount(){
@@ -133,6 +138,7 @@ class Main extends Component {
         active={this.state.active}
         history={this.state.history}
         sendMsg={this.sendMsg}
+        targetNuke={this.targetNuke}
       />
 
     return (
@@ -165,4 +171,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait})(Main);
+export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke})(Main);

@@ -1,6 +1,6 @@
 import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
-CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR
+CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE
 } from '../actions/index';
 
 const initialState = {
@@ -14,13 +14,16 @@ const initialState = {
   nuking: false,
   checking: false,
   checked: false,
-  uid: null
+  uid: null,
 };
 
 const addMsgs = (state, msgs, direction) => {
-  let temp = state.msgs;
+  let ret = state, temp = state.msgs, toNuke = [];
   if(direction === 'in'){
     msgs.forEach(msg => {
+      if(msg.nuke === true){
+        toNuke.push(msg.from);
+      }
       if(!temp[msg.from]){
         temp[msg.from] = {};
       }
@@ -33,7 +36,13 @@ const addMsgs = (state, msgs, direction) => {
       }
       temp[msgs.to][msgs.created] = msgs
   }
-  return temp;
+  if(toNuke.length > 0){
+    toNuke.forEach(target => {
+      delete temp[target];
+      delete ret.waiting[target];
+    })
+  }
+  return {...ret, msgs: temp, retrieving: false};
 }
 
 const waitlist = (state, counts) => {
@@ -86,11 +95,7 @@ export const rootReducer = (state = initialState, action) => {
         sending: true,
       }
     case SENT:
-      return {
-        ...state,
-        sending: false,
-        msgs: addMsgs(state, action.payload, 'out')
-      }
+      return addMsgs(state, action.payload, 'out')
     case SEND_FAIL:
       return {
         ...state,
@@ -103,11 +108,7 @@ export const rootReducer = (state = initialState, action) => {
         retrieving: true
       }
     case RETRIEVED:
-      return {
-        ...state,
-        retrieving: false,
-        msgs: addMsgs(state, action.payload, 'in')
-      }
+      return addMsgs(state, action.payload, 'in')
     case RET_FAIL:
       return {
         ...state,
@@ -165,6 +166,14 @@ export const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         waiting: clearWait(state, action.payload)
+      }
+    case SELF_NUKE:
+      const {msgsS, waitingS} = targetNuke(state, action.payload);
+      return {
+        ...state,
+        msgs: msgsS,
+        waiting: waitingS,
+        nuking: false
       }
     default:
       return state;
