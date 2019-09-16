@@ -13,7 +13,7 @@ export const register = uid => dispatch => {
 
     check = uid => dispatch => {
       dispatch({type: CHECKING});
-      axios.get(`${baseURL}/api/${uid}/check`)
+      axios.get(`${baseURL}/api/check`, {uid: uid})
         .then(res => dispatch({type: CHECKED, payload: res.data}))
         .catch(err => dispatch({type: CHECK_FAIL, payload: err}))
     },
@@ -27,14 +27,14 @@ export const register = uid => dispatch => {
 
     getMsg = (to) => dispatch => {
       dispatch({type: RETRIEVING});
-      axios.get(`${baseURL}/api/${to}`)
+      axios.get(`${baseURL}/api/msgs`, {to: to})
         .then(res => dispatch({type: RETRIEVED, payload: res.data}))
         .catch(err => dispatch({type: RET_FAIL, payload: err}))
     },
 
     targetNuke = (to, from) => dispatch => {
       dispatch({type: TAR_NUKING});
-      axios.delete(`${baseURL}/api/${to}/${from}`)
+      axios.delete(`${baseURL}/api/delete`, {to: to, from: from})
         .then(res => dispatch({type: TAR_NUKED, payload: res.data.targeted}))
         .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
     },
