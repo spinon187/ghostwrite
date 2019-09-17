@@ -13,7 +13,7 @@ export const register = uid => dispatch => {
 
     check = uid => dispatch => {
       dispatch({type: CHECKING});
-      axios.get(`${baseURL}/api/check`, {uid: uid})
+      axios.post(`${baseURL}/api/check`, uid)
         .then(res => dispatch({type: CHECKED, payload: res.data}))
         .catch(err => dispatch({type: CHECK_FAIL, payload: err}))
     },
@@ -27,7 +27,7 @@ export const register = uid => dispatch => {
 
     getMsg = (to) => dispatch => {
       dispatch({type: RETRIEVING});
-      axios.get(`${baseURL}/api/msgs`, {to: to})
+      axios.post(`${baseURL}/api/msgs`, to)
         .then(res => dispatch({type: RETRIEVED, payload: res.data}))
         .catch(err => dispatch({type: RET_FAIL, payload: err}))
     },

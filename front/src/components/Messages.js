@@ -1,6 +1,7 @@
 import React from 'react';
 import NewMessage from './NewMessage';
 
+
 const Messages = props => {
   const history = props.active 
     ? props.history.map((msg, index) =>{

@@ -5,6 +5,8 @@ import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
 import NewMessage from './NewMessage';
+import {Navbar} from 'react-materialize';
+
 
 class Main extends Component {
   constructor(props){
@@ -36,17 +38,15 @@ class Main extends Component {
   }
 
   check = () => {
-    return this.props.uid ? this.props.check(this.props.uid) : null
+    return this.props.uid ? this.props.check({to: this.props.uid}) : null
   }
 
   buildWaitList = (targ=null) => {
     let temp = this.props.waiting, list = [];
-    if(targ !== null) {
-      this.props.clearWait(targ);
-      Object.keys(temp).forEach(key => {
-        return key === targ ? list.push([key, 0]) : list.push([key, this.props.waiting[key]])
-      }
-    )}
+    if(targ) this.props.clearWait(targ);
+    Object.keys(temp).forEach(key => {
+      return key === targ ? list.push([key, 0]) : list.push([key, this.props.waiting[key]])
+    })
     this.setState(() => {return {waiting: list}})
   }
 
@@ -76,7 +76,7 @@ class Main extends Component {
   }
 
   getMsg = () => {
-    return this.props.uid ? this.props.getMsg(this.props.uid) : null
+    return this.props.uid ? this.props.getMsg({to: this.props.uid}) : null
   }
 
   nukeAll = () => {
@@ -139,19 +139,22 @@ class Main extends Component {
       />
 
     return (
-      <div>
-        <Reg 
-          uid={this.state.uid} 
-          regged={this.state.regged} 
-          register={this.register}
-          nukeAll={this.nukeAll}
-        />
-        <WaitList 
-          waiting={this.state.waiting}
-          setActive={this.updateActive}
-        />
-        {conditional}
-      </div>
+      <>
+        <Navbar centerLogo alignLinks='left'>SPECTRE</Navbar>
+        <div>
+          <Reg 
+            uid={this.state.uid} 
+            regged={this.state.regged} 
+            register={this.register}
+            nukeAll={this.nukeAll}
+          />
+          <WaitList 
+            waiting={this.state.waiting}
+            setActive={this.updateActive}
+          />
+          {conditional}
+        </div>
+      </>
     )
   }
 }
