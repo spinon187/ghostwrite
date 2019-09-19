@@ -1,22 +1,27 @@
 import React from 'react';
-import {Badge, SideNav, SideNavItem} from 'react-materialize';
+// import {Badge, SideNav, SideNavItem} from 'react-materialize';
+
 
 const WaitList = props => {
 
   const temp = props.waiting;
   const noZero = count => {
-    return count > 0 ? <Badge className="red" newIcon>{count}</Badge> : null
+    return count > 0 ? <div className='new-count'>{count}</div> : <div></div>
+  }
+
+  const highlight = x => {
+    return x === props.active ? 'waitlist-item active' : 'waitlist-item'
   }
 
   const list = temp.map((waiter, index) => {
-    return <SideNavItem onClick={() => props.setActive(index, waiter[0])} key={index}><ul>{waiter[0]}{noZero(waiter[1])}</ul></SideNavItem>
+    return <div className={highlight(waiter[0])} onClick={() => props.setActive(index, waiter[0])} key={index}><p>{waiter[0]}</p>{noZero(waiter[1])}</div>
   })
 
   return (
-    <><SideNav fixed={true}>
+    <div className='waitlist'>
+      <h2>Messages</h2>
       {list}
-      </SideNav>
-    </>
+    </div>
   )
 }
 

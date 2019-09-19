@@ -5,7 +5,168 @@ import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
 import NewMessage from './NewMessage';
-import {Navbar} from 'react-materialize';
+// import {Navbar} from 'react-materialize';
+import styled from 'styled-components';
+
+//palette: #D1D1D1 #DBDBDB #85C7F2 #636363 #4C4C4C
+
+const MBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  .material-icons {
+    color: red;
+    padding-right: 1rem;
+    padding-left: 2rem;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+  header {
+    h1 {
+      color: #85C7F2;
+      font-size: 3.5rem;
+      font-family: 'Righteous', cursive;
+    }
+  }
+  p, h1, h2, h3, h4, ul {
+    color: #DBDBDB;
+    font-size: 1.2rem;
+  }
+  .m-body{
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    // border: 1px solid red;
+    width: 100%;
+    height: 100%;
+    .reg {
+      h2: {
+        color: #D1D1D1
+      }
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      // padding-left: 19%;
+    }
+    .body-columns {
+      display: flex;
+      height: 90%;
+      width: 100%;
+      // border: 1px solid red;
+      justify-content: space-between;
+
+    }
+    .msg-column {
+      width: 65%;
+      display: flex;
+      flex-direction: column;
+      form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+    }
+
+    .waitlist{
+      display: flex;
+      flex-direction: column;
+      width: 35%;
+      height: 100%;
+      overflow-y: hidden;
+      background-color: #636363;
+      h2 {
+        color: #DBDBDB;
+        padding: .5rem;
+      }
+      .waitlist-item {
+        background-color: #D1D1D1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        // width: 100%;
+        // border: 1px solid red;
+        padding: .2rem .4rem;
+        border-bottom: 2px solid #636363;
+        
+        p {color: #4C4C4C; font-size: 1rem;}
+        &:hover{
+          cursor: pointer;
+        }
+        .new-count{
+          background-color: red;
+          color: white;
+          // height: 1rem;
+          width: 1rem;
+          border-radius: 5px;
+          font-size: .8rem;
+        }
+      }
+      .active {
+        background-color: #85C7F2;
+        color: #DBDBDB;
+      }
+    }
+    .msg-history{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background-color: #636363;
+      h1 {
+        color: #DBDBDB;
+        padding: .5rem;
+      }
+      .msg-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        // padding-left: 35%;
+      }
+      .msg-scroll{
+        border-left: 2px solid #636363;
+        display: flex;
+        flex-direction: column-reverse;
+        // align-items: center;
+        overflow-y: scroll;
+        height: 80%;
+        .msg {
+          display: flex;
+          flex-direction: column;
+          width: 80%;
+          border: 1px solid #4C4C4C;
+          background-color: #85C7F2;
+          padding: .1rem .3rem;
+          border-radius: 5px;
+          margin: .2rem 0;
+          .send-date {
+            font-size: .8rem;
+          }
+          h3, p {
+            padding-top: .5rem;
+          }
+          h3 {
+            color: #4C4C4C;
+            font-weight: bold;
+          }
+          p {
+            color: #636363;
+          }
+        }
+        .sent{
+          align-items: flex-end;
+          align-self: flex-end;
+        }
+        .received{
+          align-items: flex-start;
+          align-self: flex-start;
+        }
+      }
+    }
+  }
+`
 
 
 class Main extends Component {
@@ -56,8 +217,8 @@ class Main extends Component {
       let order = Object.keys(temp).sort((a, b) => a-b);
       for(let i in order){
         let date = new Date(temp[order[i]].created)
-        let dispDate = `${date.getDay()} ${date.getMonth()}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
-        disp.push([temp[order[i]].from, temp[order[i]].msg, dispDate]);
+        let dispDate = `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
+        disp.unshift([temp[order[i]].from, temp[order[i]].msg, dispDate]);
       }
       this.setState(() => {return {history: disp}})
     }
@@ -139,22 +300,27 @@ class Main extends Component {
       />
 
     return (
-      <>
-        <Navbar centerLogo alignLinks='left'>SPECTRE</Navbar>
-        <div>
+      <MBox>
+        <header><h1>SPECTRE</h1></header>
+        <div className='m-body'>
           <Reg 
             uid={this.state.uid} 
             regged={this.state.regged} 
             register={this.register}
             nukeAll={this.nukeAll}
           />
-          <WaitList 
-            waiting={this.state.waiting}
-            setActive={this.updateActive}
-          />
-          {conditional}
+          <div className='body-columns'>
+            <WaitList 
+              waiting={this.state.waiting}
+              setActive={this.updateActive}
+              active={this.state.active}
+            />
+          <div className='msg-column'>
+            {conditional}
+          </div>
+          </div>
         </div>
-      </>
+      </MBox>
     )
   }
 }
