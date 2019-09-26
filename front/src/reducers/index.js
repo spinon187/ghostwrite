@@ -3,6 +3,8 @@ import {
 CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE
 } from '../actions/index';
 
+import Lockbox from '../components/Lockbox';
+
 const initialState = {
   error: null,
   regging: false,

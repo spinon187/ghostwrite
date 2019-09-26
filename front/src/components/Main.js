@@ -47,6 +47,8 @@ class Main extends Component {
     return this.props.uid ? this.props.check({to: this.props.uid}) : null
   }
 
+
+
   buildWaitList = (targ=null) => {
     let temp = this.props.waiting, list = [];
     if(targ) this.props.clearWait(targ);
