@@ -9,12 +9,18 @@ const Reg = props => {
     localStorage.clear();
     window.location.reload();
   }
+
+  const which = () => {
+    return props.waiting
+    ? props.nukeAll()
+    : reset()
+  }
   return(
     <div className='reg'>
       {regButton}
       {/* <button onClick={reset}>reset</button>
       <button onClick={props.nukeAll}>nuke</button> */}
-      <i className="material-icons" onClick={props.nukeAll}>block</i>
+      <i className="material-icons" onClick={which}>block</i>
 
     </div>
   )
