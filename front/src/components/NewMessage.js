@@ -1,4 +1,5 @@
 import React from 'react';
+// import {encr} from './Lockbox';
 
 class NewMessage extends React.Component {
   constructor(props){
