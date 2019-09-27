@@ -17,7 +17,7 @@ class NewMessage extends React.Component {
 
   componentDidMount(){
     this.setState({
-      to: this.props.which === 'sender' ? '' : this.props.active
+      to: this.props.active
     })
   }
   
@@ -28,11 +28,11 @@ class NewMessage extends React.Component {
   }
 
   render(){
-    let conditional = this.props.which === 'sender' ? <input type='text' name='to' value={this.state.to} placeholder='enter recipient' onChange={this.formTyping}/> : null;
+    // let conditional = this.props.which === 'sender' ? <input type='text' name='to' value={this.state.to} placeholder='enter recipient' onChange={this.formTyping}/> : null;
     return(
       <>
         <form onSubmit={e => this.sendMsg(e)}>
-          {conditional}
+          {/* {conditional} */}
           <textarea
             onChange={this.formTyping}
             placeholder='enter new message'
