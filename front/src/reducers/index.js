@@ -1,9 +1,9 @@
 import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
-CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE
+CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL
 } from '../actions/index';
 
-import Lockbox from '../components/Lockbox';
+// import {} from '../components/Lockbox';
 
 const initialState = {
   error: null,
@@ -13,11 +13,15 @@ const initialState = {
   retrieving: false,
   waiting: {},
   msgs: {},
+  keyring: {},
+  keying: false,
   nuking: false,
   checking: false,
   checked: false,
   uid: null,
 };
+
+
 
 const addMsgs = (state, msgs, direction) => {
   let ret = state, temp = state.msgs, toNuke = [];
@@ -176,6 +180,25 @@ export const rootReducer = (state = initialState, action) => {
         msgs: msgsS,
         waiting: waitingS,
         nuking: false
+      }
+    case KEYED:
+      let tag = action.payload[0], tempring = state.keyring;
+      tempring[tag] = action.payload[1];
+      return {
+        ...state,
+        keying: false,
+        keyring: tempring
+      }
+    case KEYING:
+      return {
+        ...state,
+        keying: true
+      }
+    case KEY_FAIL:
+      return {
+        ...state,
+        keying: false,
+        error: action.payload
       }
     default:
       return state;
