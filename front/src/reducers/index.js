@@ -2,7 +2,7 @@ import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
 CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL
 } from '../actions/index';
-import {keyPair, secretize, decr} from '../components/Lockbox';
+import {keyPair, secretize, encr, decr} from '../components/Lockbox';
 
 const initialState = {
   error: null,
@@ -25,17 +25,24 @@ const initialState = {
 
 
 const addMsgs = (state, msgs, direction) => {
-  let ret = state, temp = state.msgs, toNuke = [], keyring = state.keyring;
+  let ret = state, temp = state.msgs, toNuke = [], keyring = state.keyring, priv = state.privKey, waiting = state.waiting;
   if(direction === 'in'){
     msgs.forEach(msg => {
-      let key = keyring[msg.from][0], decrypted = decr(msg, key);
-      if(msg.nuke === true){
-        toNuke.push(msg.from);
+      if(msg.accept === true){
+        let shared = secretize(msg.msg, priv), obj = encr(msg, shared), tag = obj.from, self = obj.to;
+        keyring[tag] = [shared, msg.from, self];
+        waiting = {...waiting, tag: 1}
       }
-      if(!temp[msg.from]){
-        temp[msg.from] = {};
+      else{
+        let key = keyring[msg.from][0], decrypted = decr(msg, key);
+        if(decrypted.nuke === true){
+          toNuke.push(decrypted.from);
+        }
+        if(!temp[decrypted.from]){
+          temp[decrypted.from] = {};
+        }
+        temp[decrypted.from][decrypted.created] = decrypted
       }
-      temp[msg.from][decrypted.created] = decrypted
     })
   }
   else{
@@ -51,30 +58,31 @@ const addMsgs = (state, msgs, direction) => {
       delete ret.waiting[target];
     })
   }
-  return {...ret, msgs: temp, retrieving: false};
+  return {...ret, msgs: temp, retrieving: false, keyring: keyring};
 }
 
 const waitlist = (state, counts) => {
-  let temp = state.waiting;
+  let temp = state.waiting, keyring = state.keyring;
   if(Object.keys(counts).length > 0){
-    Object.keys(counts).forEach(key =>
-      temp[key] = temp[key] ? temp[key] + counts[key] : counts[key]
-    )
+    Object.keys(counts).forEach(id =>{
+      if(keyring[id]) id = keyring[1]; 
+      temp[id] = temp[id] ? temp[id] + counts[id] : counts[id]
+    })
   }  
-return temp;
+  return temp;
 }
 
 const targetNuke = (state, target) => {
   let temp1 = state.msgs, temp2 = state.waiting;
   delete temp1[target];
   delete temp2[target];
-  return {msgs: temp1, waiting: temp2}
+  return {msgs: temp1, waiting: temp2};
 }
 
 const clearWait = (state, partner) => {
   let temp = state.waiting;
   temp[partner] = 0;
-  return temp
+  return temp;
 }
 
 export const rootReducer = (state = initialState, action) => {

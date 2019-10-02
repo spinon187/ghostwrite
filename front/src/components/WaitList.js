@@ -13,7 +13,10 @@ const WaitList = props => {
     return x === props.active ? 'waitlist-item active' : 'waitlist-item'
   }
 
-  const list = temp.map((waiter, index) => {
+  const list = 
+    !temp
+    ? null
+    : temp.map((waiter, index) => {
     return <div className={highlight(waiter[0])} onClick={() => props.setActive(index, waiter[0])} key={index}><p>{waiter[0]}</p>{noZero(waiter[1])}</div>
   })
 

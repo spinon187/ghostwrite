@@ -63,9 +63,9 @@ export const
     dispatch({type: KEYING});
     secretize(pub, priv)
       .then(key => encr(partner, key)
-        .then(encID => 
+        .then(encPartner => 
           encr(encr(self, key))
-            .then(encSelf => dispatch({type: KEYED, payload: [encID, key, partner, encSelf]})))
+            .then(encSelf => dispatch({type: KEYED, payload: [encPartner, key, partner, encSelf]})))
             .catch(err => dispatch({type: KEY_FAIL, payload: 'error encrypting own ID'}))
         .catch(err => dispatch({type: KEY_FAIL, payload: 'error encrypting partner ID'}))
       )

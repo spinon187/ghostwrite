@@ -22,9 +22,18 @@ export const encr = (o, k) => {
 
 export const decr = (o, k) => {
   const obj = {}
-  Object.keys(o).forEach(x => obj[x] = Crypto.AES.decrypt(o[x], k).toString(CryptoJS.enc.Utf8));
+  Object.keys(o).forEach(x => obj[x] = CryptoJS.AES.decrypt(o[x], k).toString(CryptoJS.enc.Utf8));
   return obj;
 }
+
+// export const encr = (o, k) => {
+//   o = JSON.stringify(o);
+//   return CryptoJS.AES.encrypt(o, k).toString();
+// }
+
+// export const decr = (o, k) => {
+//   return Crypto.AES.decrypt(o, k).toString(CryptoJS.enc.Utf8);
+// }
 
 // export default Lockbox;
 
@@ -49,13 +58,12 @@ export const secretize = (pubKey, privKey) => {
   return new BigNumber('0x'+pubKey).pow(priv, [lan]).toString(16)
 }
 
-// export const testit = () => {
-//   let pair1 = keyPair();
-//   console.log('pair1:'+pair1)
-//   let pair2 = keyPair();
-//   console.log('pair2:'+pair2)
-//   let test1 = secretize(pair1[1],pair2[0]);
-//   let test2 = secretize(pair2[1],pair1[0]);
-//   console.log('test1:' + test1);
-//   console.log('test2:' + test2);
-// }
+export const testit = () => {
+  // console.log(decr({to: "U2FsdGVkX1+eiKqeMrDopIBuHe6OYieyBLsaSPzub+A="}, "7eac0aede627a7055c93f1f6e9327ef26ba9ff3e3e74f7af5ecf6844128161eb8a6e22fa7842a2fd3cc3de344c561971dce33621e45524f9291032a9bd337fcfbdd243479991e6b3940dcd0be807d7bc674db69ede2ebd6b9db1446bbca1baeb92b8b29895d8efd432e8465d2712fecf33a0e169780704b2ef96465bbe79f92577bb5a7f092cab9d5f14bc9cabf769821d17a59300cf2d990ff7da479171988d35d7387b9389e807873f003ea2e3d7125f6a7a52cfb30955c343a8cb6aef8c785ce2ca3e2bab652a9286d90cb9e2c71dff1f59c28e9d2faad2209254ff61e0bf495c03b008ad439e3e996966dc11e8e323c1251bb66cfa5f3aec1849930f961b"))
+  const key = "7eac0aede627a7055c93f1f6e9327ef26ba9ff3e3e74f7af5ecf6844128161eb8a6e22fa7842a2fd3cc3de344c561971dce33621e45524f9291032a9bd337fcfbdd243479991e6b3940dcd0be807d7bc674db69ede2ebd6b9db1446bbca1baeb92b8b29895d8efd432e8465d2712fecf33a0e169780704b2ef96465bbe79f92577bb5a7f092cab9d5f14bc9cabf769821d17a59300cf2d990ff7da479171988d35d7387b9389e807873f003ea2e3d7125f6a7a52cfb30955c343a8cb6aef8c785ce2ca3e2bab652a9286d90cb9e2c71dff1f59c28e9d2faad2209254ff61e0bf495c03b008ad439e3e996966dc11e8e323c1251bb66cfa5f3aec1849930f961b"
+  const one = encr({to: "7975724538"},key)
+  const two = encr({to: "7975724538"},key);
+  const three = encr({to: "7975724538"},key);
+  console.log(one, two, three)
+  console.log(decr(one, key), decr(two, key), decr(three, key))
+}

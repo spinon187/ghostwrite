@@ -23,12 +23,17 @@ class ConnectSelect extends React.Component {
 
   render(){
 
-    const waitingConnections = this.props.wc.map(request => {
-      return <div className='request'>
-        <p>{request[0]}</p>
-        <i className="material-icons approve" onClick={() => this.props.acceptReq(request[1], request[0])}>check_circle_outline</i>
-        <i className="material-icons cancel">block</i>
+    const waitingConnections = 
+      !this.props.wc
+      ? null
+      : this.props.wc.map(request => {
+      return (
+        <div className='request'>
+          <p>{request[0]}</p>
+          <i className="material-icons approve" onClick={() => this.props.acceptReq(request[1], request[0])}>check_circle_outline</i>
+          <i className="material-icons cancel">block</i>
         </div>
+      )
     })
 
     return (

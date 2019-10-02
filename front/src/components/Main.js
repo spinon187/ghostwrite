@@ -4,10 +4,11 @@ import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNu
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
-import NewMessage from './NewMessage';
 // import {Navbar} from 'react-materialize';
 import styled from 'styled-components';
+import ConnectSelect from './ConnectSelect';
 // import {encr, decr} from './Lockbox';
+import {testit} from './Lockbox';
 
 
 //palette: #D1D1D1 #DBDBDB #85C7F2 #636363 #4C4C4C
@@ -44,16 +45,24 @@ class Main extends Component {
   }
 
   check = () => {
-    return this.props.uid ? this.props.check({to: this.props.uid}) : null
+    let arr = [this.props.uid];
+    let noMut = this.props.keyring;
+    if(noMut) Object.keys(noMut).forEach(id => arr.push(id[3]))
+    return this.props.uid ? this.props.check(arr) : null
   }
 
 
 
   buildWaitList = (targ=null) => {
-    let temp = this.props.waiting, list = [];
+    let temp = this.props.waiting, list = [[],[]];
     if(targ) this.props.clearWait(targ);
     if(temp) Object.keys(temp).forEach(key => {
-      return key === targ ? list.push([key, 0]) : list.push([key, this.props.waiting[key]])
+      if(key.length === 10){
+        list[0].push(key)
+      }
+      else{
+        return key === targ ? list[1].push([key, 0]) : list[1].push([key, this.props.waiting[key]])
+      }
     })
     this.setState(() => {return {waiting: list}})
   }
@@ -135,19 +144,20 @@ class Main extends Component {
 
   componentDidMount(){
     this.initBundle();
+    testit();
   }
 
   render(){
 
     let conditional = this.state.active === 'sender'
-      ?<NewMessage 
-        uid={this.state.uid}
-        active={this.state.active}
-        which={this.state.active}
-        sendMsg={this.sendMsg}
+      ?<ConnectSelect
+        uid={this.props.uid}
+        pubKey={this.props.pubKey}
+        wc={this.state.waiting[0]}
       />
       :<Messages
-        uid={this.state.uid}
+        uid={this.props.uid}
+        encSelf={this.props.keyring[this.state.active][3]}
         active={this.state.active}
         dispID={this.props.keyring[this.state.active][1]}
         history={this.state.history}
@@ -168,7 +178,7 @@ class Main extends Component {
           />
           <div className='body-columns'>
             <WaitList 
-              waiting={this.state.waiting}
+              waiting={this.state.waiting[1]}
               setActive={this.updateActive}
               active={this.state.active}
             />
