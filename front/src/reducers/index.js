@@ -2,8 +2,7 @@ import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
 CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL
 } from '../actions/index';
-
-// import {} from '../components/Lockbox';
+import {keyPair, secretize, decr} from '../components/Lockbox';
 
 const initialState = {
   error: null,
@@ -15,6 +14,8 @@ const initialState = {
   msgs: {},
   keyring: {},
   keying: false,
+  pubKey: null,
+  privKey: null,
   nuking: false,
   checking: false,
   checked: false,
@@ -24,23 +25,25 @@ const initialState = {
 
 
 const addMsgs = (state, msgs, direction) => {
-  let ret = state, temp = state.msgs, toNuke = [];
+  let ret = state, temp = state.msgs, toNuke = [], keyring = state.keyring;
   if(direction === 'in'){
     msgs.forEach(msg => {
+      let key = keyring[msg.from][0], decrypted = decr(msg, key);
       if(msg.nuke === true){
         toNuke.push(msg.from);
       }
       if(!temp[msg.from]){
         temp[msg.from] = {};
       }
-      temp[msg.from][msg.created] = msg
+      temp[msg.from][decrypted.created] = decrypted
     })
   }
   else{
-      if(!temp[msgs.to]){
-        temp[msgs.to] = {};
-      }
-      temp[msgs.to][msgs.created] = msgs
+    let key = keyring[msgs.to][0], decrypted = decr(msgs, key);
+    if(!temp[msgs.to]){
+      temp[msgs.to] = {};
+    }
+    temp[msgs.to][decrypted.created] = decrypted
   }
   if(toNuke.length > 0){
     toNuke.forEach(target => {
@@ -82,11 +85,14 @@ export const rootReducer = (state = initialState, action) => {
         regging: true
       }
     case REGGED:
+      const keys = keyPair();
       return {
         ...state,
         regging: false,
         regged: action.payload.reg,
-        uid: action.payload.uid
+        uid: action.payload.uid,
+        privKey: keys[0],
+        pubKey: keys[1]
       }
     case REG_FAIL:
       return {
@@ -183,7 +189,7 @@ export const rootReducer = (state = initialState, action) => {
       }
     case KEYED:
       let tag = action.payload[0], tempring = state.keyring;
-      tempring[tag] = action.payload[1];
+      tempring[tag] = [action.payload[1], action.payload[2], action.payload[3]];
       return {
         ...state,
         keying: false,

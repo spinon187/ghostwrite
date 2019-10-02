@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {secretize} from '../components/Lockbox';
+import {secretize, encr} from '../components/Lockbox';
 
 const baseURL = process.env.BE_URL || 'http://localhost:7777';
 
@@ -59,9 +59,15 @@ export const
     dispatch({type: SELF_NUKE, payload: targ})
   },
 
-  makeKey = (pub, priv, partner) => dispatch => {
+  makeKey = (pub, priv, partner, self) => dispatch => {
     dispatch({type: KEYING});
-    let key = secretize(pub, priv)
-      .then(keyed => dispatch({type: KEYED, payload: [partner, key]}))
+    secretize(pub, priv)
+      .then(key => encr(partner, key)
+        .then(encID => 
+          encr(encr(self, key))
+            .then(encSelf => dispatch({type: KEYED, payload: [encID, key, partner, encSelf]})))
+            .catch(err => dispatch({type: KEY_FAIL, payload: 'error encrypting own ID'}))
+        .catch(err => dispatch({type: KEY_FAIL, payload: 'error encrypting partner ID'}))
+      )
       .catch(err => dispatch({type: KEY_FAIL, payload: 'error generating shared key'}))
   }

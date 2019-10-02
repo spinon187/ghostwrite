@@ -1,13 +1,13 @@
 import React from 'react';
-// import {encr} from './Lockbox';
+import {encr} from './Lockbox';
 
 class NewMessage extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      to: '',
+      to: this.props.active,
       from: this.props.uid,
-      msg: ''
+      msg: '',
     }
   }
 
@@ -24,16 +24,14 @@ class NewMessage extends React.Component {
   
   sendMsg = e => {
     e.preventDefault()
-    this.props.sendMsg({...this.state, created: Date.now()});
+    this.props.sendMsg(encr({...this.state, created: Date.now()}, this.props.key));
     this.setState({msg: ''})
   }
 
   render(){
-    // let conditional = this.props.which === 'sender' ? <input type='text' name='to' value={this.state.to} placeholder='enter recipient' onChange={this.formTyping}/> : null;
     return(
       <>
         <form onSubmit={e => this.sendMsg(e)}>
-          {/* {conditional} */}
           <textarea
             onChange={this.formTyping}
             placeholder='enter new message'

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke} from '../actions/index';
+import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
@@ -72,7 +72,7 @@ class Main extends Component {
   };
 
   sendMsg = msg => {
-    this.props.sendMsg(msg)
+    this.props.sendMsg(msg);
     this.setState({
       ...this.state,
       active: msg.to
@@ -84,7 +84,10 @@ class Main extends Component {
   }
 
   getMsg = () => {
-    return this.props.uid ? this.props.getMsg({to: this.props.uid}) : null
+    let arr = [this.props.uid];
+    let noMut = this.props.keyring;
+    if(noMut) Object.keys(noMut).forEach(id => arr.push(id[3]))
+    return this.props.uid ? this.props.getMsg(arr) : null
   }
 
   nukeAll = () => {
@@ -125,6 +128,11 @@ class Main extends Component {
     this.setState({active: 'sender'}, () => this.initBundle());
   }
 
+  acceptReq = (pub, partner) => {
+    this.props.makeKey(pub, this.props.privKey, partner, this.props.uid)
+      .then(keyed => this.sendMsg({to: partner, from: this.props.uid, msg: this.props.pubKey, accept: true}))
+  }
+
   componentDidMount(){
     this.initBundle();
   }
@@ -141,10 +149,11 @@ class Main extends Component {
       :<Messages
         uid={this.state.uid}
         active={this.state.active}
+        dispID={this.props.keyring[this.state.active][1]}
         history={this.state.history}
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}
-        encr={this.encr}
+        key={this.props.keyring[this.state.active][0]}
       />
 
     return (
@@ -170,6 +179,22 @@ class Main extends Component {
         </div>
       </MBox>
     )
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    error: state.error,
+    regging: state.regging,
+    regged: state.regged,
+    sending: state.sending,
+    retrieving: state.retrieving,
+    msgs: state.msgs,
+    uid: state.uid,
+    waiting: state.waiting,
+    keyring: state.keyring,
+    pubKey: state.pubKey,
+    privKey: state.privKey
   }
 }
 
@@ -336,17 +361,4 @@ const MBox = styled.div`
   }
 `
 
-const mapStateToProps = state => {
-  return {
-    error: state.error,
-    regging: state.regging,
-    regged: state.regged,
-    sending: state.sending,
-    retrieving: state.retrieving,
-    msgs: state.msgs,
-    uid: state.uid,
-    waiting: state.waiting
-  }
-}
-
-export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke})(Main);
+export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey})(Main);
