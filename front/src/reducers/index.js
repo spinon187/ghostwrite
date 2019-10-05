@@ -1,13 +1,14 @@
 import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
-CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL
+CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL,CONNECTING,CONNECTED,CONNECT_FAIL,CONNECT_SENDING,CONNECT_SENT,CS_FAIL
 } from '../actions/index';
-import {keyPair, secretize, encr, decr} from '../components/Lockbox';
+import {keyPair, secretize, encr, decr, generateAliases} from '../components/Lockbox';
 
 const initialState = {
   error: null,
   regging: false,
   regged: null,
+  auth: null,
   sending: false,
   retrieving: false,
   waiting: {},
@@ -20,29 +21,52 @@ const initialState = {
   checking: false,
   checked: false,
   uid: null,
+  connecting: false,
+  connections: {}
 };
 
 
 
+const connections = (state, connections) => {
+  let temp = state, keyring = state.keyring, priv = state.privKey, cons = state.connections, waiting = state.waiting; 
+  connections.forEach(con => {
+    const shared = secretize(con.key, priv);
+    if(con.accept === true){
+      const aliases = decr(con.aliases, shared);
+      keyring[aliases[0]] = [shared, con.from, aliases[1]];
+      waiting[aliases[0]] = [con.from, 0];
+    }
+    else if(con.request === true){
+      const aliases = generateAliases(shared), decoded = decr(aliases, shared)
+      cons[con.from] = {from: con.from, key: shared, aliases: aliases, me: decoded[0], them: decoded[1]}
+    }
+  })
+  return {...temp, keyring: keyring, connections: cons, connecting: false, waiting: waiting}
+}
+
+const clearConnect = (state, partner) => {
+  let temp = state.connections, keyring = state.keyring, obj = temp[partner], waiting = state.waiting;
+  if(obj){
+    keyring[obj.aliases[1]] = [obj.key, obj.from, obj.aliases[0]];
+    waiting[obj.aliases[1]] = [obj.from, 0];
+    delete temp[partner]
+  };
+
+  return {...state, sending: false, connecting: false, keyring: keyring, connections: temp, waiting: waiting}
+}
+
 const addMsgs = (state, msgs, direction) => {
-  let ret = state, temp = state.msgs, toNuke = [], keyring = state.keyring, priv = state.privKey, waiting = state.waiting;
+  let ret = state, temp = state.msgs, toNuke = [], keyring = state.keyring;
   if(direction === 'in'){
     msgs.forEach(msg => {
-      if(msg.accept === true){
-        let shared = secretize(msg.msg, priv), obj = encr(msg, shared), tag = obj.from, self = obj.to;
-        keyring[tag] = [shared, msg.from, self];
-        waiting = {...waiting, tag: 1}
+      let key = keyring[msg.from][0], decrypted = decr(msg, key);
+      if(decrypted.nuke === true){
+        toNuke.push(decrypted.from);
       }
-      else{
-        let key = keyring[msg.from][0], decrypted = decr(msg, key);
-        if(decrypted.nuke === true){
-          toNuke.push(decrypted.from);
-        }
-        if(!temp[decrypted.from]){
-          temp[decrypted.from] = {};
-        }
-        temp[decrypted.from][decrypted.created] = decrypted
+      if(!temp[decrypted.from]){
+        temp[decrypted.from] = {};
       }
+      temp[decrypted.from][decrypted.created] = decrypted
     })
   }
   else{
@@ -62,13 +86,12 @@ const addMsgs = (state, msgs, direction) => {
 }
 
 const waitlist = (state, counts) => {
-  let temp = state.waiting, keyring = state.keyring;
+  let temp = state.waiting;
   if(Object.keys(counts).length > 0){
     Object.keys(counts).forEach(id =>{
-      if(keyring[id]) id = keyring[1]; 
-      temp[id] = temp[id] ? temp[id] + counts[id] : counts[id]
+      temp[id][1] = temp[id][1] ? temp[id][1] + counts[id] : counts[id][1]
     })
-  }  
+  }
   return temp;
 }
 
@@ -85,6 +108,7 @@ const clearWait = (state, partner) => {
   return temp;
 }
 
+
 export const rootReducer = (state = initialState, action) => {
   switch(action.type) {
     case REGGING:
@@ -99,6 +123,7 @@ export const rootReducer = (state = initialState, action) => {
         regging: false,
         regged: action.payload.reg,
         uid: action.payload.uid,
+        auth: action.payload.serverToken,
         privKey: keys[0],
         pubKey: keys[1]
       }
@@ -212,6 +237,34 @@ export const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         keying: false,
+        error: action.payload
+      }
+    case CONNECTING:
+      return {
+        ...state,
+        connecting: true
+      }
+    case CONNECTED:
+      return connections(state, action.payload)
+    case CONNECT_FAIL:
+      return {
+        ...state,
+        connecting: false,
+        error: action.payload
+      }
+    case CONNECT_SENDING:
+      return {
+        ...state,
+        connecting: true,
+        sending: true
+      }
+    case CONNECT_SENT:
+      return clearConnect(state, action.payload)
+    case CS_FAIL:
+      return {
+        ...state,
+        connecting: false,
+        sending: false,
         error: action.payload
       }
     default:

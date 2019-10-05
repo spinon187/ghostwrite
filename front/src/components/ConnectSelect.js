@@ -13,28 +13,37 @@ class ConnectSelect extends React.Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  sendMsg = e => {
-    e.preventDefault()
-    this.props.sendMsg({...this.state,from: this.props.uid, msg: this.props.pubKey, created: Date.now(), request: true});
-    this.setState({to: ''})
+  // sendMsg = e => {
+  //   e.preventDefault()
+  //   this.props.sendMsg({...this.state,from: this.props.uid, msg: this.props.pubKey, created: Date.now(), request: true});
+  //   this.setState({to: ''})
+  // }
+
+  acceptReq = (e, pO) => { //pO = partnerObject
+    e.preventDefault();
+    this.props.acceptReq({
+      to: pO.from,
+      from: this.props.uid,
+      key: this.props.pubKey,
+      aliases: pO.aliases,
+      accept: true
+    })
   }
-
-
 
   render(){
 
     const waitingConnections = 
-      !this.props.wc
-      ? null
-      : this.props.wc.map(request => {
-      return (
-        <div className='request'>
-          <p>{request[0]}</p>
-          <i className="material-icons approve" onClick={() => this.props.acceptReq(request[1], request[0])}>check_circle_outline</i>
-          <i className="material-icons cancel">block</i>
-        </div>
-      )
-    })
+      Object.keys(this.props.wc)
+      ? Object.keys(this.props.wc).map(request => {
+        return (
+          <div className='request' key='request'>
+            <h2>{request}</h2>
+            <i className="material-icons approve" onClick={e => this.acceptReq(e, this.props.wc[request])}>check_circle_outline</i>
+            <i className="material-icons cancel">block</i>
+          </div>
+        )
+      })
+      : <div><h2>no connects</h2></div>
 
     return (
       <>
@@ -52,7 +61,7 @@ class ConnectSelect extends React.Component {
           <button type='submit'>send message</button>
         </form>
         <div><h2>Connection requests:</h2></div>
-        <div>{waitingConnections}</div>
+        {waitingConnections}
       </>
     )
   }
