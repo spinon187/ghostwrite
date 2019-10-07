@@ -1,6 +1,6 @@
 import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
-CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL,CONNECTING,CONNECTED,CONNECT_FAIL,CONNECT_SENDING,CONNECT_SENT,CS_FAIL
+CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL,CONNECTING,CONNECTED,CONNECT_FAIL,CONNECT_SENDING,CONNECT_SENT,CS_FAIL,DECLINE
 } from '../actions/index';
 import {keyPair, secretize, encr, decr, generateAliases} from '../components/Lockbox';
 
@@ -44,7 +44,7 @@ const connections = (state, connections) => {
   return {...temp, keyring: keyring, connections: cons, connecting: false, waiting: waiting}
 }
 
-const clearConnect = (state, partner) => {
+const acceptConnect = (state, partner) => {
   let temp = state.connections, keyring = state.keyring, obj = temp[partner], waiting = state.waiting;
   if(obj){
     keyring[obj.aliases[1]] = [obj.key, obj.from, obj.aliases[0]];
@@ -53,6 +53,12 @@ const clearConnect = (state, partner) => {
   };
 
   return {...state, sending: false, connecting: false, keyring: keyring, connections: temp, waiting: waiting}
+}
+
+const clearConnect = (state, partner) => {
+  let temp = state.connections;
+  if(temp[partner]) delete temp[partner];
+  return temp
 }
 
 const addMsgs = (state, msgs, direction) => {
@@ -259,13 +265,18 @@ export const rootReducer = (state = initialState, action) => {
         sending: true
       }
     case CONNECT_SENT:
-      return clearConnect(state, action.payload)
+      return acceptConnect(state, action.payload)
     case CS_FAIL:
       return {
         ...state,
         connecting: false,
         sending: false,
         error: action.payload
+      }
+    case DECLINE:
+      return {
+        ...state,
+        connections: clearConnect(state, action.payload)
       }
     default:
       return state;

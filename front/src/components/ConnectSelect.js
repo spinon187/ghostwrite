@@ -30,16 +30,21 @@ class ConnectSelect extends React.Component {
     })
   }
 
+  declineReq = (e, p) => {
+    e.preventDefault();
+    this.props.declineReq(p.from)
+  }
+
   render(){
 
     const waitingConnections = 
       Object.keys(this.props.wc)
       ? Object.keys(this.props.wc).map(request => {
         return (
-          <div className='request' key='request'>
-            <h2>{request}</h2>
+          <div className='request' key={request}>
             <i className="material-icons approve" onClick={e => this.acceptReq(e, this.props.wc[request])}>check_circle_outline</i>
-            <i className="material-icons cancel">block</i>
+            <h2>{request}</h2>
+            <i className="material-icons cancel" onClick={e => this.declineReq(e, this.props.wc[request])}>block</i>
           </div>
         )
       })
@@ -58,9 +63,9 @@ class ConnectSelect extends React.Component {
             rows='1'
             pattern='.{10,10}'
           ></textarea>
-          <button type='submit'>send message</button>
+          <button type='submit'>send request</button>
         </form>
-        <div><h2>Connection requests:</h2></div>
+        <div><h2>Contact requests:</h2></div>
         {waitingConnections}
       </>
     )

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection} from '../actions/index';
+import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
@@ -22,7 +22,7 @@ class Main extends Component {
       uid: this.props.uid,
       regged: this.props.regged,
       waiting: [],
-      active: 'sender',
+      active: null,
       history: [],
     }
   }
@@ -55,7 +55,7 @@ class Main extends Component {
     let temp = this.props.waiting, list = [];
     if(targ) this.props.clearWait(targ);
     if(temp) Object.keys(temp).forEach(key => {
-        return key === targ ? list.push([temp[key][0], 0]) : list.push([temp[key][0], temp[key][1]])
+        list.push([key, this.props.keyring[key][1], temp[key]])
     })
     this.setState(() => {return {waiting: list}})
   }
@@ -86,8 +86,7 @@ class Main extends Component {
   }
 
   getMsg = () => {
-    let arr = [];
-    let noMut = this.props.keyring;
+    let arr = [], noMut = this.props.keyring;
     if(noMut) Object.keys(noMut).forEach(id => arr.push(id[3]));
     if(arr) arr.forEach(id => this.props.getMsg({to: id}, this.props.auth));
   }
@@ -97,8 +96,8 @@ class Main extends Component {
   }
 
   nukeAll = () => {
-    let targs = Object.keys(this.props.msgs), uid = this.props.uid;
-    console.log(targs)
+    let targs = Object.keys(this.props.keyring), uid = this.props.uid;
+    // console.log(targs)
     this.props.nukeAll(uid, targs, this.props.auth);
     localStorage.clear();
     window.location.reload();
@@ -114,27 +113,27 @@ class Main extends Component {
     }
   }
 
-  updateActive = (x=0, targ=null) => {
+  updateActive = (targ=null) => {
     this.initBundle(targ)
     const delaySet = () => {
-      let temp = this.state.waiting.length > 0 ? this.state.waiting[x][0] : null;
+      // let temp = this.state.waiting.length > 0 ? this.state.waiting[x] : null;
       this.setState(() => {
-        if(temp) return {active: temp}
+        return {active: targ}
       })
     }
     const delaySort = () => this.sortMsgs(this.state.active);
-    setTimeout(() => delaySet(), 1800);
-    setTimeout(() => delaySort(), 1900);
+    setTimeout(() => delaySet(), 200);
+    setTimeout(() => delaySort(), 1100);
   }
 
   targetNuke = target => {
-    this.props.targetNuke(target, this.props.uid, this.props.auth);
-    this.setState({active: 'sender'}, () => this.initBundle());
+    this.props.targetNuke(target, this.props.keyring[target][3], this.props.auth);
+    this.setState({active: null}, () => this.initBundle());
   }
 
   selfNuke = target => {
     this.props.selfNuke(target);
-    this.setState({active: 'sender'}, () => this.initBundle());
+    this.setState({active: null}, () => this.initBundle());
   }
 
   acceptReq = contents => {
@@ -142,34 +141,41 @@ class Main extends Component {
     this.initBundle();
   }
 
+  declineReq = p => {
+    this.props.declineConnection(p);
+    this.initBundle();
+  }
+
   componentDidMount(){
     this.initBundle();
-    testit();
+    setInterval(() => this.initBundle(), 10000);
+    // testit();
   }
 
   render(){
 
-    let conditional = this.state.active === 'sender'
+    let conditional = this.state.active === null
       ?<ConnectSelect
         uid={this.props.uid}
         pubKey={this.props.pubKey}
         wc={this.props.connections}
         acceptReq={this.acceptReq}
+        declineReq={this.declineReq}
       />
       :<Messages
         uid={this.props.uid}
-        encSelf={this.props.keyring[this.state.active][2]}
+        partner={this.props.keyring[this.state.active]}
         active={this.state.active}
-        dispID={this.props.keyring[this.state.active][1]}
+        // dispID={this.props.keyring[this.state.active][1]}
         history={this.state.history}
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}
-        key={this.props.keyring[this.state.active][0]}
+        // key={this.props.keyring[this.state.active][0]}
       />
 
     return (
       <MBox>
-        <header><h1>SPECTRE</h1></header>
+        <header><h1>GHOSTWRITE</h1></header>
         <div className='m-body'>
           <Reg 
             uid={this.state.uid} 
@@ -182,6 +188,7 @@ class Main extends Component {
               waiting={this.state.waiting}
               setActive={this.updateActive}
               active={this.state.active}
+              cscount={Object.keys(this.props.connections).length}
             />
           <div className='msg-column'>
             {conditional}
@@ -260,6 +267,15 @@ const MBox = styled.div`
       // border: 1px solid red;
       justify-content: space-between;
 
+    }
+
+    .request {
+      display: flex;
+      padding: 1rem;
+      justify-content: space-around;
+        .approve {
+          color: lime;
+        }
     }
     .msg-column {
       width: 65%;
@@ -374,4 +390,4 @@ const MBox = styled.div`
   }
 `
 
-export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection})(Main);
+export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection})(Main);

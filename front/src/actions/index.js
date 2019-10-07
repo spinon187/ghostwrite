@@ -1,10 +1,10 @@
 import axios from 'axios';
 import {secretize, encr} from '../components/Lockbox';
 
-const baseURL = process.env.BE_URL || 'http://localhost:7777';
+const baseURL = 'https://specback.herokuapp.com' || 'http://localhost:7777';
 
 
-export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENDING = 'SENDING', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RETRIEVING = 'RETRIEVING', RETRIEVED = 'RETRIEVED', RET_FAIL = 'RET_FAIL', CHECKING = 'CHECKING', CHECKED = 'CHECKED', CHECK_FAIL = 'CHECK_FAIL', FULL_NUKED = 'FULL_NUKED', FULL_NUKING = 'FULL_NUKING', TAR_NUKING = 'TAR_NUKING', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', CLEAR = 'CLEAR', SELF_NUKE = 'SELF_NUKE', KEYING = 'KEYING', KEYED = 'KEYED', KEY_FAIL = 'KEY_FAIL', CONNECTING = 'CONNECTING', CONNECTED = 'CONNECTED', CONNECT_FAIL = 'CONNECT_FAIL', CONNECT_SENDING = 'CONNECT_SENDING', CONNECT_SENT = 'CONNECT_SENT', CS_FAIL = 'CS_FAIL';
+export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENDING = 'SENDING', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RETRIEVING = 'RETRIEVING', RETRIEVED = 'RETRIEVED', RET_FAIL = 'RET_FAIL', CHECKING = 'CHECKING', CHECKED = 'CHECKED', CHECK_FAIL = 'CHECK_FAIL', FULL_NUKED = 'FULL_NUKED', FULL_NUKING = 'FULL_NUKING', TAR_NUKING = 'TAR_NUKING', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', CLEAR = 'CLEAR', SELF_NUKE = 'SELF_NUKE', KEYING = 'KEYING', KEYED = 'KEYED', KEY_FAIL = 'KEY_FAIL', CONNECTING = 'CONNECTING', CONNECTED = 'CONNECTED', CONNECT_FAIL = 'CONNECT_FAIL', CONNECT_SENDING = 'CONNECT_SENDING', CONNECT_SENT = 'CONNECT_SENT', CS_FAIL = 'CS_FAIL', DECLINE = 'DECLINE';
 
 const header = token => {
   return {headers: {Authorization: token}}
@@ -37,6 +37,10 @@ export const
     axios.post(`${baseURL}/api/reqs`, msg, header(token))
       .then(res => dispatch({type: CONNECT_SENT, payload: msg.to}))
       .catch(err => dispatch({type: CS_FAIL, payload: err}))
+  },
+
+  declineConnection = partner => dispatch => {
+    dispatch({type: DECLINE, payload: partner})
   },
 
   sendMsg = (msg, token) => dispatch => {

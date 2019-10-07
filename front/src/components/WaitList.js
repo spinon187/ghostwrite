@@ -17,11 +17,17 @@ const WaitList = props => {
     !temp
     ? null
     : temp.map((waiter, index) => {
-    return <div className={highlight(waiter[0])} onClick={() => props.setActive(index, waiter[0])} key={index}><p>{waiter[0]}</p>{noZero(waiter[1])}</div>
+    return <div className={highlight(waiter[0])} onClick={() => props.setActive(waiter[0])} key={index}><p>{waiter[1]}</p>{noZero(waiter[2])}</div>
   })
+
+  const toggler =
+    props.cscount
+    ? <><p>New Contacts:</p>{noZero(props.cscount)}</>
+    : <><p>Contact Someone</p></>
 
   return (
     <div className='waitlist'>
+      <div className='waitlist-item' onClick={() => props.setActive(null)}>{toggler}</div>
       <h2>Messages</h2>
       {list}
     </div>
