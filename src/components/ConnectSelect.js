@@ -35,6 +35,11 @@ class ConnectSelect extends React.Component {
     this.props.declineReq(p.from)
   }
 
+  sendReq = e => {
+    e.preventDefault();
+    this.props.sendReq({to: this.state.to, from: this.props.uid, request: true, key: this.props.pubKey})
+  }
+
   render(){
 
     const waitingConnections = 
@@ -53,7 +58,7 @@ class ConnectSelect extends React.Component {
     return (
       <>
         <div><h2>Who would you like to connect with?</h2></div>
-        <form onSubmit={e => this.sendMsg(e)}>
+        <form>
           <textarea
             onChange={this.formTyping}
             placeholder="Enter your partner's 10-digit ID"
@@ -63,7 +68,7 @@ class ConnectSelect extends React.Component {
             rows='1'
             pattern='.{10,10}'
           ></textarea>
-          <button type='submit'>send request</button>
+          <button type='button' onClick={e => this.sendReq(e)}>send request</button>
         </form>
         <div><h2>Contact requests:</h2></div>
         {waitingConnections}

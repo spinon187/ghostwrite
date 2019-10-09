@@ -136,6 +136,10 @@ class Main extends Component {
     this.setState({active: null}, () => this.initBundle());
   }
 
+  sendReq = to => {
+    this.props.sendConnection(to, this.props.token);
+  }
+
   acceptReq = contents => {
     this.props.sendConnection(contents, this.props.token);
     this.initBundle();
@@ -161,6 +165,7 @@ class Main extends Component {
         wc={this.props.connections}
         acceptReq={this.acceptReq}
         declineReq={this.declineReq}
+        sendReq={this.sendReq}
       />
       :<Messages
         uid={this.props.uid}
