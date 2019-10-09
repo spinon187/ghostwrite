@@ -144,6 +144,7 @@ class Main extends Component {
     this.initBundle();
   }
 
+
   componentDidMount(){
     this.initBundle();
     setInterval(() => this.initBundle(), 10000);
@@ -214,7 +215,8 @@ const mapStateToProps = state => {
     pubKey: state.pubKey,
     privKey: state.privKey,
     auth: state.auth,
-    connections: state.connections
+    connections: state.connections,
+    toKey: state.toKey
   }
 }
 
