@@ -5,8 +5,6 @@ class NewMessage extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      to: this.props.active,
-      from: this.props.uid,
       msg: '',
     }
   }
@@ -24,7 +22,7 @@ class NewMessage extends React.Component {
   
   sendMsg = e => {
     e.preventDefault()
-    this.props.sendMsg(encr({...this.state, created: Date.now()}, this.props.sk));
+    this.props.sendMsg({to: this.props.partner, from: this.props.encSelf, msg: encr(this.state.msg, this.props.sk), created: Date.now()});
     this.setState({msg: ''})
   }
 

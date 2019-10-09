@@ -170,13 +170,14 @@ class Main extends Component {
       />
       :<Messages
         uid={this.props.uid}
-        partner={this.props.keyring[this.state.active]}
+        partner={this.state.active}
         active={this.state.active}
-        // dispID={this.props.keyring[this.state.active][1]}
+        dispID={this.props.keyring[this.state.active][1]}
+        encSelf={this.props.keyring[this.state.active[2]]}
         history={this.state.history}
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}
-        // key={this.props.keyring[this.state.active][0]}
+        sk={this.props.keyring[this.state.active][0]}
       />
 
     return (
