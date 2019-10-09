@@ -24,7 +24,7 @@ class NewMessage extends React.Component {
   
   sendMsg = e => {
     e.preventDefault()
-    this.props.sendMsg(encr({...this.state, created: Date.now()}, this.props.key));
+    this.props.sendMsg(encr({...this.state, created: Date.now()}, this.props.sk));
     this.setState({msg: ''})
   }
 
