@@ -65,22 +65,22 @@ const addMsgs = (state, msgs, direction) => {
   let ret = state, temp = state.msgs, toNuke = [], keyring = state.keyring;
   if(direction === 'in'){
     msgs.forEach(msg => {
-      let key = keyring[msg.from][0], decrypted = decr(msg, key);
-      if(decrypted.nuke === true){
-        toNuke.push(decrypted.from);
+      let key = keyring[msg.from][0], decrypted = decr(msg.msg, key);
+      if(msg.nuke === true){
+        toNuke.push(msg.from);
       }
-      if(!temp[decrypted.from]){
-        temp[decrypted.from] = {};
+      if(!temp[msg.from]){
+        temp[msg.from] = {};
       }
-      temp[decrypted.from][decrypted.created] = decrypted
+      temp[msg.from][msg.created] = decrypted
     })
   }
   else{
-    let key = keyring[msgs.to][0], decrypted = decr(msgs, key);
+    let key = keyring[msgs.to][0], decrypted = decr(msgs.msg, key);
     if(!temp[msgs.to]){
       temp[msgs.to] = {};
     }
-    temp[msgs.to][decrypted.created] = decrypted
+    temp[msgs.to][msgs.created] = decrypted
   }
   if(toNuke.length > 0){
     toNuke.forEach(target => {
