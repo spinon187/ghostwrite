@@ -26,7 +26,7 @@ const Messages = props => {
         <i className="material-icons" onClick={() => props.targetNuke(props.active)}>block</i>
       </div>
       <div className='msg-scroll'>{history}</div>
-      <NewMessage uid={props.partner[2]} active={props.active} sendMsg={props.sendMsg} sk={props.partner[0]}/>
+      <NewMessage encSelf={props.encSelf} partner={props.partner} sendMsg={props.sendMsg} sk={props.sk}/>
     </div>
   )
 }
