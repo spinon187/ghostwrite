@@ -14,11 +14,11 @@ class NewMessage extends React.Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  componentDidMount(){
-    this.setState({
-      to: this.props.active
-    })
-  }
+  // componentDidMount(){
+  //   this.setState({
+  //     to: this.props.active
+  //   })
+  // }
   
   sendMsg = e => {
     e.preventDefault()

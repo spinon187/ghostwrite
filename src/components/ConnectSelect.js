@@ -1,4 +1,5 @@
 import React from 'react';
+import {encr} from './Lockbox';
 
 class ConnectSelect extends React.Component {
   constructor(props){
@@ -25,7 +26,7 @@ class ConnectSelect extends React.Component {
       to: pO.from,
       from: this.props.uid,
       key: this.props.pubKey,
-      aliases: pO.aliases,
+      aliases: [encr(pO.aliases[0], this.props.pubKey), encr(pO.aliases[1], this.props.pubKey)],
       accept: true
     })
   }

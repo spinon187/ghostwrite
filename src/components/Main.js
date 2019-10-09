@@ -74,15 +74,8 @@ class Main extends Component {
   };
 
   sendMsg = msg => {
+    console.log(msg);
     this.props.sendMsg(msg, this.props.auth);
-    this.setState({
-      ...this.state,
-      active: msg.to
-    }, () => {
-      this.initBundle(msg.to);
-      const delaySort = () => this.sortMsgs(this.state.active);
-      setTimeout(() => delaySort(), 1900)
-    })
   }
 
   getMsg = () => {
@@ -154,7 +147,7 @@ class Main extends Component {
   componentDidMount(){
     this.initBundle();
     setInterval(() => this.initBundle(), 10000);
-    // testit();
+    testit();
   }
 
   render(){
@@ -173,7 +166,7 @@ class Main extends Component {
         partner={this.state.active}
         active={this.state.active}
         dispID={this.props.keyring[this.state.active][1]}
-        encSelf={this.props.keyring[this.state.active[2]]}
+        encSelf={this.props.keyring[this.state.active][2]}
         history={this.state.history}
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}

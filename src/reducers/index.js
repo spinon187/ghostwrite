@@ -2,7 +2,7 @@ import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
 CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL,CONNECTING,CONNECTED,CONNECT_FAIL,CONNECT_SENDING,CONNECT_SENT,CS_FAIL,DECLINE
 } from '../actions/index';
-import {keyPair, secretize, encr, decr, generateAliases} from '../components/Lockbox';
+import {keyPair, secretize, decr, generateAliases} from '../components/Lockbox';
 
 const initialState = {
   error: null,
@@ -32,13 +32,13 @@ const connections = (state, connections) => {
   connections.forEach(con => {
     const shared = secretize(con.key, priv);
     if(con.accept === true){
-      const aliases = decr(con.aliases, shared);
-      keyring[aliases[0]] = [shared, con.from, aliases[1]];
-      waiting[aliases[0]] = [con.from, 0];
+      const you = decr(con.aliases[0], shared), me = decr(con.aliases[1], shared);
+      keyring[you] = [shared, con.from, me];
+      waiting[you] = [con.from, 0];
     }
     else if(con.request === true){
-      const aliases = generateAliases(shared), decoded = decr(aliases, shared)
-      cons[con.from] = {from: con.from, key: shared, aliases: aliases, me: decoded[0], them: decoded[1]}
+      const aliases = generateAliases(shared), you = aliases[1], me = aliases[0];
+      cons[con.from] = {from: con.from, key: shared, aliases: aliases, me: me, you: you}
     }
   })
   return {...temp, keyring: keyring, connections: cons, connecting: false, waiting: waiting}
