@@ -30,16 +30,25 @@ const initialState = {
 const connections = (state, connections) => {
   let temp = state, keyring = state.keyring, priv = state.privKey, cons = state.connections, waiting = state.waiting; 
   connections.forEach(con => {
-    const shared = secretize(con.key, priv);
-    if(con.accept === true){
-      const you = decr(con.aliases[0], shared), me = decr(con.aliases[1], shared);
-      keyring[you] = [shared, con.from, me];
-      waiting[you] = [con.from, 0];
-    }
-    else if(con.request === true){
-      const aliases = generateAliases(shared), you = aliases[1], me = aliases[0];
-      cons[con.from] = {from: con.from, key: shared, aliases: aliases, me: me, you: you}
-    }
+    secretize(con.key, priv).then(shared => {
+      console.log(shared);
+      if(con.accept === true){
+        decr(con.aliases[0], shared).then(you => {
+          console.log(you)
+          decr(con.aliases[1], shared).then(me => {
+            console.log(me)
+            keyring[you] = [shared, con.from, me];
+            waiting[you] = [con.from, 0];
+          })
+        })
+      }
+      else if(con.request === true){
+        generateAliases(shared).then(aliases => {
+          const you = aliases[1], me = aliases[0];
+          cons[con.from] = {from: con.from, key: shared, aliases: aliases, me: me, you: you}
+        })
+      }
+    })
   })
   return {...temp, keyring: keyring, connections: cons, connecting: false, waiting: waiting}
 }
