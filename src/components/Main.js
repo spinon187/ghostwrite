@@ -137,11 +137,12 @@ class Main extends Component {
   }
 
   sendReq = to => {
-    this.props.sendConnection(to, this.props.token);
+    console.log(to);
+    this.props.sendConnection(to, this.props.auth);
   }
 
   acceptReq = contents => {
-    this.props.sendConnection(contents, this.props.token);
+    this.props.sendConnection(contents, this.props.auth);
     this.initBundle();
   }
 

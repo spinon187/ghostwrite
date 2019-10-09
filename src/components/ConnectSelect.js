@@ -37,7 +37,9 @@ class ConnectSelect extends React.Component {
 
   sendReq = e => {
     e.preventDefault();
-    this.props.sendReq({to: this.state.to, from: this.props.uid, request: true, key: this.props.pubKey})
+    let msg = {to: this.state.to, from: this.props.uid, request: true, key: this.props.pubKey}
+    console.log(msg)
+    this.props.sendReq(msg)
   }
 
   render(){
