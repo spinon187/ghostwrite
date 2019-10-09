@@ -216,7 +216,6 @@ const mapStateToProps = state => {
     privKey: state.privKey,
     auth: state.auth,
     connections: state.connections,
-    toKey: state.toKey
   }
 }
 
