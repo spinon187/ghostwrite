@@ -39,15 +39,13 @@ const connections = (state, connections) => {
       const x = slowdown(shared, con.aliases)
       keyring[x.you] = [shared, con.from, x.me];
       waiting[x.you] = [con.from, 0];
-      return {...temp, keyring: keyring, connections: cons, connecting: false, waiting: waiting}
     }
     else if(con.request === true){
       const aliases = generateAliases(shared), you = aliases[1], me = aliases[0];
       cons[con.from] = {from: con.from, key: shared, aliases: aliases, me: me, you: you}
-      return {...temp, keyring: keyring, connections: cons, connecting: false, waiting: waiting}
     }
   })
-
+  return {...temp, keyring: keyring, connections: cons, connecting: false, waiting: waiting}
 }
 
 const acceptConnect = (state, partner) => {
