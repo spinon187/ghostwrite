@@ -24,7 +24,7 @@ export const encr = (o, k) => {
   // }
 }
 
-export const decr = async (o, k) => {
+export const decr = (o, k) => {
   // if(typeof o === 'object'){
   //   const obj = {};
   //   Object.keys(o).forEach(x => obj[x] = CryptoJS.AES.decrypt(o[x], k).toString(CryptoJS.enc.Utf8));
@@ -70,7 +70,7 @@ export const secretize = (pubKey, privKey) => {
   return new BigNumber('0x'+pubKey).pow(priv, [lan]).toString(16)
 }
 
-export const generateAliases = async () => {
+export const generateAliases = () => {
   let one = randomHexHack() + randomHexHack(), two = randomHexHack() + randomHexHack();
   // console.log(one, two)
   return [one, two];
