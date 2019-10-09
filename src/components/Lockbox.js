@@ -24,7 +24,7 @@ export const encr = (o, k) => {
   // }
 }
 
-export const decr = (o, k) => {
+export const decr = async (o, k) => {
   // if(typeof o === 'object'){
   //   const obj = {};
   //   Object.keys(o).forEach(x => obj[x] = CryptoJS.AES.decrypt(o[x], k).toString(CryptoJS.enc.Utf8));
@@ -65,7 +65,7 @@ export const keyPair = () => {
   return [privKey.toString(16), pubKey.toString(16)];
 }
 
-export const secretize = async (pubKey, privKey) => {
+export const secretize = (pubKey, privKey) => {
   let priv = new BigNumber('0x'+privKey).toString();
   return new BigNumber('0x'+pubKey).pow(priv, [lan]).toString(16)
 }
