@@ -47,7 +47,7 @@ class Main extends Component {
   check = () => {
     let arr = [];
     let noMut = this.props.keyring;
-    if(noMut) Object.keys(noMut).forEach(id => arr.push(id[3]));
+    if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][3]));
     if(arr)arr.forEach(id => this.props.check({to: id}, this.props.auth))
   }
 
@@ -61,13 +61,13 @@ class Main extends Component {
   }
 
   sortMsgs = partner => {
-    if(this.props.msgs[partner]){    
+    if(this.props.keyring[partner]){    
       let temp = this.props.msgs[partner], disp = [];
       let order = Object.keys(temp).sort((a, b) => a-b);
       for(let i in order){
-        let date = new Date(temp[order[i]].created)
+        let date = new Date(order[i])
         let dispDate = `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
-        disp.unshift([temp[order[i]].from, temp[order[i]].msg, dispDate]);
+        disp.unshift([this.props.keyring[partner][1], temp[order[i]], dispDate]);
       }
       this.setState(() => {return {history: disp}})
     }
@@ -80,8 +80,9 @@ class Main extends Component {
 
   getMsg = () => {
     let arr = [], noMut = this.props.keyring;
-    if(noMut) Object.keys(noMut).forEach(id => arr.push(id[3]));
+    if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][2]));
     if(arr) arr.forEach(id => this.props.getMsg({to: id}, this.props.auth));
+    console.log(arr)
   }
 
   getConnections = () => {
