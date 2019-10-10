@@ -20,7 +20,7 @@ export const encr = (o, k) => {
   //   Object.keys(o).forEach(x => obj[x] = CryptoJS.AES.encrypt(JSON.stringify(o[x]), k).toString());
   //   return obj
   // } else {
-    return CryptoJS.AES.encrypt(o, k);
+    return CryptoJS.AES.encrypt(o, k).toString();
   // }
 }
 
