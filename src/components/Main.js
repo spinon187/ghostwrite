@@ -63,13 +63,14 @@ class Main extends Component {
   sortMsgs = partner => {
     if(this.props.keyring[partner]){    
       let temp = this.props.msgs[partner], disp = [];
-      let order = Object.keys(temp).sort((a, b) => a-b);
-      for(let i in order){
-        let date = new Date(order[i])
-        let dispDate = `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
-        disp.unshift([this.props.keyring[partner][1], temp[order[i]], dispDate]);
-      }
-      this.setState(() => {return {history: disp}})
+      if(temp){
+        let order = Object.keys(temp).sort((a, b) => a-b);
+        for(let i in order){
+          let date = new Date(order[i])
+          let dispDate = `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
+          disp.unshift([this.props.keyring[partner][1], temp[order[i]], dispDate]);
+        }
+        this.setState(() => {return {history: disp}})}
     }
   };
 
