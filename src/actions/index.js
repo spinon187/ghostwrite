@@ -34,6 +34,7 @@ export const
 
   sendConnection = (msg, token) => dispatch => {
     dispatch({type: CONNECT_SENDING})
+    console.log(msg);
     axios.post(`${baseURL}/api/reqs`, msg, header(token))
       .then(res => dispatch({type: CONNECT_SENT, payload: msg.to}))
       .catch(err => dispatch({type: CS_FAIL, payload: err}))
