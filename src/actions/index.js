@@ -1,10 +1,10 @@
 import axios from 'axios';
-import {secretize, encr} from '../components/Lockbox';
+import {decr} from '../components/Lockbox';
 
 const baseURL = 'https://specback.herokuapp.com';
 
 
-export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENDING = 'SENDING', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RETRIEVING = 'RETRIEVING', RETRIEVED = 'RETRIEVED', RET_FAIL = 'RET_FAIL', CHECKING = 'CHECKING', CHECKED = 'CHECKED', CHECK_FAIL = 'CHECK_FAIL', FULL_NUKED = 'FULL_NUKED', FULL_NUKING = 'FULL_NUKING', TAR_NUKING = 'TAR_NUKING', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', CLEAR = 'CLEAR', SELF_NUKE = 'SELF_NUKE', KEYING = 'KEYING', KEYED = 'KEYED', KEY_FAIL = 'KEY_FAIL', CONNECTING = 'CONNECTING', CONNECTED = 'CONNECTED', CONNECT_FAIL = 'CONNECT_FAIL', CONNECT_SENDING = 'CONNECT_SENDING', CONNECT_SENT = 'CONNECT_SENT', CS_FAIL = 'CS_FAIL', DECLINE = 'DECLINE';
+export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENDING = 'SENDING', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RETRIEVING = 'RETRIEVING', RETRIEVED = 'RETRIEVED', RET_FAIL = 'RET_FAIL', CHECKING = 'CHECKING', CHECKED = 'CHECKED', CHECK_FAIL = 'CHECK_FAIL', FULL_NUKED = 'FULL_NUKED', FULL_NUKING = 'FULL_NUKING', TAR_NUKING = 'TAR_NUKING', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', CLEAR = 'CLEAR', SELF_NUKE = 'SELF_NUKE', KEYING = 'KEYING', KEY_FAIL = 'KEY_FAIL', CONNECTING = 'CONNECTING', CONNECTED = 'CONNECTED', CONNECT_FAIL = 'CONNECT_FAIL', CONNECT_SENDING = 'CONNECT_SENDING', CONNECT_SENT = 'CONNECT_SENT', CS_FAIL = 'CS_FAIL', DECLINE = 'DECLINE';
 
 const header = token => {
   return {headers: {Authorization: token}}
@@ -81,15 +81,10 @@ export const
     dispatch({type: SELF_NUKE, payload: targ})
   },
 
-  makeKey = (pub, priv, partner, self) => dispatch => {
-    dispatch({type: KEYING});
-    secretize(pub, priv)
-      .then(key => encr(partner, key)
-        .then(encPartner => 
-          encr(encr(self, key))
-            .then(encSelf => dispatch({type: KEYED, payload: [encPartner, key, partner, encSelf]})))
-            .catch(err => dispatch({type: KEY_FAIL, payload: 'error encrypting own ID'}))
-        .catch(err => dispatch({type: KEY_FAIL, payload: 'error encrypting partner ID'}))
-      )
-      .catch(err => dispatch({type: KEY_FAIL, payload: 'error generating shared key'}))
+  makeKey = () => dispatch => {
+    dispatch({type: KEYING})
+    // let arr2 = [];
+    // arr.forEach(tk => {
+    //   const toPush = [decr(tk.aliases[0],tk.key), tk.key, tk.from, decr(tk.aliases[1], tk.sk)]
+    // })
   }

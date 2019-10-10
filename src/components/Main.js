@@ -85,7 +85,10 @@ class Main extends Component {
   }
 
   getConnections = () => {
-    this.props.getConnections({to: this.props.uid}, this.props.auth)
+    this.props.getConnections({to: this.props.uid}, this.props.auth);
+    // if(this.props.toKey){
+    //   this.props.makeKey();
+    // }
   }
 
   nukeAll = () => {
@@ -161,6 +164,7 @@ class Main extends Component {
         acceptReq={this.acceptReq}
         declineReq={this.declineReq}
         sendReq={this.sendReq}
+        privKey={this.props.privKey}
       />
       :<Messages
         uid={this.props.uid}
@@ -216,6 +220,7 @@ const mapStateToProps = state => {
     privKey: state.privKey,
     auth: state.auth,
     connections: state.connections,
+    toKey: state.toKey
   }
 }
 

@@ -26,9 +26,6 @@ const initialState = {
 };
 
 
-const slowdown = (key, aliases) => {
-  return {you: decr(aliases[0], key), me: decr(aliases[0], key)}
-}
 
 const connections = (state, connections) => {
   let temp = state, keyring = state.keyring, priv = state.privKey, cons = state.connections, waiting = state.waiting; 
@@ -36,9 +33,10 @@ const connections = (state, connections) => {
     const shared = secretize(con.key, priv);
     console.log(shared)
     if(con.accept === true){
-      const x = slowdown(shared, con.aliases)
-      keyring[x.you] = [shared, con.from, x.me];
-      waiting[x.you] = [con.from, 0];
+      const you = decr(con.aliases[0], shared), me = decr(con.aliases[1], shared);
+      console.log(you, me)
+      keyring[you] = [shared, con.from, me];
+      waiting[you] = [con.from, 0];
     }
     else if(con.request === true){
       const aliases = generateAliases(shared), you = aliases[1], me = aliases[0];

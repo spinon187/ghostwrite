@@ -20,7 +20,7 @@ export const encr = (o, k) => {
   //   Object.keys(o).forEach(x => obj[x] = CryptoJS.AES.encrypt(JSON.stringify(o[x]), k).toString());
   //   return obj
   // } else {
-    return CryptoJS.AES.encrypt(o, k).toString();
+    return CryptoJS.AES.encrypt(o, k);
   // }
 }
 
@@ -30,6 +30,7 @@ export const decr = (o, k) => {
   //   Object.keys(o).forEach(x => obj[x] = CryptoJS.AES.decrypt(o[x], k).toString(CryptoJS.enc.Utf8));
   //   return obj
   // } else {
+    
     return CryptoJS.AES.decrypt(o, k).toString(CryptoJS.enc.Utf8);
   // }
 }

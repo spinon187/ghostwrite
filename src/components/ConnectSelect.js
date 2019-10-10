@@ -1,5 +1,5 @@
 import React from 'react';
-import {encr} from './Lockbox';
+import {encr, secretize} from './Lockbox';
 
 class ConnectSelect extends React.Component {
   constructor(props){
@@ -22,11 +22,12 @@ class ConnectSelect extends React.Component {
 
   acceptReq = (e, pO) => { //pO = partnerObject
     e.preventDefault();
+    const key = secretize(pO.key, this.props.privKey)
     this.props.acceptReq({
       to: pO.from,
       from: this.props.uid,
       key: this.props.pubKey,
-      aliases: [encr(pO.aliases[0], this.props.pubKey), encr(pO.aliases[1], this.props.pubKey)],
+      aliases: [encr(pO.aliases[0], key), encr(pO.aliases[1], key)],
       accept: true
     })
   }
