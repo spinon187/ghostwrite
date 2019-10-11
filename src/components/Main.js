@@ -83,7 +83,6 @@ class Main extends Component {
     let arr = [], noMut = this.props.keyring;
     if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][2]));
     if(arr) arr.forEach(id => this.props.getMsg({to: id}, this.props.auth));
-    console.log(arr)
   }
 
   getConnections = () => {
@@ -136,7 +135,6 @@ class Main extends Component {
   }
 
   sendReq = to => {
-    console.log(to);
     this.props.sendConnection(to, this.props.auth);
   }
 

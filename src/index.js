@@ -5,12 +5,18 @@ import App from './App';
 import {Provider} from 'react-redux';
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import logger from 'redux-logger';
+import {createLogger} from 'redux-logger';
 import rootReducer from './reducers/index';
 import {loadState, saveState} from './LocalStorage';
 require('dotenv').config();
 
 const persistedStore = loadState();
+
+const ignore = new Set(['CHECKING','CHECKED','CONNECTING','CONNECTED','RETRIEVING','RETRIEVED'])
+
+const logger = createLogger({
+  predicate: (getState, action) => !ignore.has(action.type)
+})
 
 const store = createStore(
   rootReducer,

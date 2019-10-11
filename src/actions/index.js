@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {decr} from '../components/Lockbox';
 
-const baseURL = 'https://specback.herokuapp.com';
+// const baseURL = 'https://specback.herokuapp.com';
+const baseURL = 'http://localhost:7777'
 
 
 export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENDING = 'SENDING', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RETRIEVING = 'RETRIEVING', RETRIEVED = 'RETRIEVED', RET_FAIL = 'RET_FAIL', CHECKING = 'CHECKING', CHECKED = 'CHECKED', CHECK_FAIL = 'CHECK_FAIL', FULL_NUKED = 'FULL_NUKED', FULL_NUKING = 'FULL_NUKING', TAR_NUKING = 'TAR_NUKING', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', CLEAR = 'CLEAR', SELF_NUKE = 'SELF_NUKE', KEYED = 'KEYED', KEYING = 'KEYING', KEY_FAIL = 'KEY_FAIL', CONNECTING = 'CONNECTING', CONNECTED = 'CONNECTED', CONNECT_FAIL = 'CONNECT_FAIL', CONNECT_SENDING = 'CONNECT_SENDING', CONNECT_SENT = 'CONNECT_SENT', CS_FAIL = 'CS_FAIL', DECLINE = 'DECLINE';
@@ -34,7 +35,6 @@ export const
 
   sendConnection = (msg, token) => dispatch => {
     dispatch({type: CONNECT_SENDING})
-    console.log(msg);
     axios.post(`${baseURL}/api/reqs`, msg, header(token))
       .then(res => dispatch({type: CONNECT_SENT, payload: msg.to}))
       .catch(err => dispatch({type: CS_FAIL, payload: err}))
@@ -60,16 +60,14 @@ export const
 
   targetNuke = (to, from, token) => dispatch => {
     dispatch({type: TAR_NUKING});
-    axios.delete(`${baseURL}/api/delete`, {to: to, from: from}, header(token))
+    axios.post(`${baseURL}/api/delete`, {to: to, from: from}, header(token))
       .then(res => dispatch({type: TAR_NUKED, payload: res.data.targeted}))
       .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
   },
 
   nukeAll = (uid, targs, token) => dispatch => {
     dispatch({type: FULL_NUKING});
-    let obj = {uid: uid, targs: targs};
-    console.log(obj);
-    axios.delete(`${baseURL}/api/uid`, {data: obj}, header(token))
+    axios.post(`${baseURL}/api/nuke`, {uid: uid, targs: targs}, header(token))
       .then(res => dispatch({type: FULL_NUKED, payload: res.data}))
       .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
   },
