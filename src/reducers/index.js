@@ -74,15 +74,15 @@ const addMsgs = (state, msgs, direction) => {
       if(!temp[msg.from]){
         temp[msg.from] = {};
       }
-      temp[msg.from][msg.created] = decrypted
+      temp[msg.from][msg.created] = {msg: decrypted, me: false}
     })
   }
-  else{
+  else{;
     let key = keyring[msgs.to][0], decrypted = decr(msgs.msg, key);
     if(!temp[msgs.to]){
       temp[msgs.to] = {};
     }
-    temp[msgs.to][msgs.created] = decrypted
+    temp[msgs.to][msgs.created] = {msg: decrypted, me: true}
   }
   if(toNuke.length > 0){
     toNuke.forEach(target => {
@@ -97,7 +97,8 @@ const waitlist = (state, counts) => {
   let temp = state.waiting;
   if(Object.keys(counts).length > 0){
     Object.keys(counts).forEach(id =>{
-      temp[id][1] = temp[id][1] ? temp[id][1] + counts[id] : counts[id][1]
+      console.log(id, temp[id])
+      temp[id] = temp[id] !== 0 ? temp[id] + counts[id] : counts[id]
     })
   }
   return temp;

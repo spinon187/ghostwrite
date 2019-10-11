@@ -5,16 +5,14 @@ import NewMessage from './NewMessage';
 const Messages = props => {
   const history = props.active 
     ? props.history.map((msg, index) =>{
-      return (msg[0] === props.uid)
+      return (msg.me)
       ? <div className='msg sent' key={index}>
-          <h3>From me</h3>
-          <p>{msg[1]}</p>
-          <p className='send-date'>{msg[2]}</p>
+          <p>{msg.msg}</p>
+          <p className='send-date'>{msg.date}</p>
         </div>
       : <div className='msg received' key={index}>
-          <h3>From {msg[0]}</h3>
-          <p>{msg[1]}</p>
-          <p className='send-date'>{msg[2]}</p>
+          <p>{msg.msg}</p>
+          <p className='send-date'>{msg.date}</p>
         </div>
     })
     : <div>messages go here</div>

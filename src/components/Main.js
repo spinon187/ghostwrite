@@ -47,7 +47,7 @@ class Main extends Component {
   check = () => {
     let arr = [];
     let noMut = this.props.keyring;
-    if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][3]));
+    if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][2]));
     if(arr)arr.forEach(id => this.props.check({to: id}, this.props.auth))
   }
 
@@ -60,15 +60,15 @@ class Main extends Component {
     this.setState(() => {return {waiting: list}})
   }
 
-  sortMsgs = partner => {
-    if(this.props.keyring[partner]){    
+  sortMsgs = (partner=null) => {
+    if(partner && this.props.keyring[partner]){    
       let temp = this.props.msgs[partner], disp = [];
       if(temp){
         let order = Object.keys(temp).sort((a, b) => a-b);
         for(let i in order){
-          let date = new Date(order[i])
+          let date = temp[order[i]].me ? new Date(Number(order[i])) : new Date(order[i])
           let dispDate = `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
-          disp.unshift([this.props.keyring[partner][1], temp[order[i]], dispDate]);
+          disp.unshift({partner: this.props.keyring[partner][1], msg: temp[order[i]].msg, me: temp[order[i]].me, date: dispDate});
         }
         this.setState(() => {return {history: disp}})}
     }
@@ -108,6 +108,7 @@ class Main extends Component {
       this.getMsg();
       const delayBWL = () => this.buildWaitList(targ);
       setTimeout(() => delayBWL(), 1500);
+      this.sortMsgs(this.state.active);
     }
   }
 
@@ -125,7 +126,7 @@ class Main extends Component {
   }
 
   targetNuke = target => {
-    this.props.targetNuke(target, this.props.keyring[target][3], this.props.auth);
+    this.props.targetNuke(target, this.props.keyring[target][2], this.props.auth);
     this.setState({active: null}, () => this.initBundle());
   }
 
@@ -152,7 +153,7 @@ class Main extends Component {
 
   componentDidMount(){
     this.initBundle();
-    setInterval(() => this.initBundle(), 10000);
+    setInterval(() => this.initBundle(), this.state.active ? 2000 : 10000);
     testit();
   }
 
