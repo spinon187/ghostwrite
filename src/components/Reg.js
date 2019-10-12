@@ -1,27 +1,31 @@
 import React from 'react';
 
 const Reg = props => {
-  const regButton = props.regged !== true
-    ? <button onClick={props.register}><h2>get a number</h2></button>
-    : <h2>your user id is {props.uid}</h2>
-
-  const reset = () => {
+  const clear = () => {
     localStorage.clear();
     window.location.reload();
   }
 
-  const which = () => {
+  const reset = () => {
     return props.waiting
     ? props.nukeAll()
-    : reset()
+    : clear()
   }
+
+  const regLoader = !props.uid
+    ? <div className='loadscreen'>
+        <p className='loading-header'>Finding you a new number...</p>
+        <div className="lds-ripple"><div></div><div></div></div>
+      </div>
+    : <div className='user-number'>
+        <div className='dummy'></div>
+        <div className='id-wrapper'><h1>{props.uid}</h1></div>
+        <div className='button-wrapper'><i className="material-icons" onClick={reset}>block</i></div>
+      </div>
+
   return(
     <div className='reg'>
-      {regButton}
-      {/* <button onClick={reset}>reset</button>
-      <button onClick={props.nukeAll}>nuke</button> */}
-      <i className="material-icons" onClick={which}>block</i>
-
+      {regLoader}
     </div>
   )
 }

@@ -11,7 +11,7 @@ class ConnectSelect extends React.Component {
 
   formTyping = e => {
     e.preventDefault();
-    this.setState({[e.target.name]: e.target.value})
+    this.setState({[e.target.name]: e.target.value.replace(/\D/,'')})
   }
 
   // sendMsg = e => {
@@ -51,9 +51,15 @@ class ConnectSelect extends React.Component {
       ? Object.keys(this.props.wc).map(request => {
         return (
           <div className='request' key={request}>
-            <i className="material-icons approve" onClick={e => this.acceptReq(e, this.props.wc[request])}>check_circle_outline</i>
-            <h2>{request}</h2>
-            <i className="material-icons cancel" onClick={e => this.declineReq(e, this.props.wc[request])}>block</i>
+            <div className='id-wrapper'>
+              <h2>{request}</h2>
+            </div>
+            <div className='button-wrapper'>
+              <i className="material-icons approve" onClick={e => this.acceptReq(e, this.props.wc[request])}>check_circle_outline</i>
+            </div>
+            <div className='button-wrapper'>
+              <i className="material-icons cancel" onClick={e => this.declineReq(e, this.props.wc[request])}>block</i>
+            </div>
           </div>
         )
       })
@@ -63,15 +69,17 @@ class ConnectSelect extends React.Component {
       <>
         <div><h2>Who would you like to connect with?</h2></div>
         <form>
-          <textarea
+          <input
             onChange={this.formTyping}
             placeholder="Enter your partner's 10-digit ID"
             value={this.state.to}
             name='to'
             type='text'
-            rows='1'
-            pattern='.{10,10}'
-          ></textarea>
+            pattern='[0-9]{10}'
+            minLength='10'
+            maxLength='10'
+            required
+          />
           <button type='button' onClick={e => this.sendReq(e)}>send request</button>
         </form>
         <div><h2>Contact requests:</h2></div>

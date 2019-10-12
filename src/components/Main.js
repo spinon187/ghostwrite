@@ -8,7 +8,6 @@ import WaitList from './WaitList';
 import styled from 'styled-components';
 import ConnectSelect from './ConnectSelect';
 // import {encr, decr} from './Lockbox';
-import {testit} from './Lockbox';
 
 
 //palette: #D1D1D1 #DBDBDB #85C7F2 #636363 #4C4C4C
@@ -20,7 +19,6 @@ class Main extends Component {
     super(props);
     this.state = {
       uid: this.props.uid,
-      regged: this.props.regged,
       waiting: [],
       active: null,
       history: [],
@@ -32,12 +30,12 @@ class Main extends Component {
       this.setState({
         ...this.state,
         uid: this.props.uid,
-        regged: this.props.regged
       })
     }
 
-    if(this.state.regged !== true){
+    if(this.props.regged !== true){
       let id = Math.floor(Math.random() * 8999999999 + 1000000000).toString();
+      console.log(id);
       this.props.register({uid: id});
       setTimeout(() => delay(), 2400)
       setTimeout(() => this.register(), 2500)
@@ -100,7 +98,7 @@ class Main extends Component {
     window.location.reload();
   }
 
-  initBundle = (targ) => {
+  funcBundle = (targ) => {
     if(this.props.uid){
       this.getConnections();
       this.check();
@@ -112,7 +110,7 @@ class Main extends Component {
   }
 
   updateActive = (targ=null) => {
-    this.initBundle(targ)
+    this.funcBundle(targ)
     const delaySet = () => {
       // let temp = this.state.waiting.length > 0 ? this.state.waiting[x] : null;
       this.setState(() => {
@@ -126,12 +124,12 @@ class Main extends Component {
 
   targetNuke = target => {
     this.props.targetNuke(target, this.props.keyring[target][2], this.props.auth);
-    this.setState({active: null}, () => this.initBundle());
+    this.setState({active: null});
   }
 
   selfNuke = target => {
     this.props.selfNuke(target);
-    this.setState({active: null}, () => this.initBundle());
+    this.setState({active: null});
   }
 
   sendReq = to => {
@@ -140,19 +138,19 @@ class Main extends Component {
 
   acceptReq = contents => {
     this.props.sendConnection(contents, this.props.auth);
-    this.initBundle();
+    this.funcBundle();
   }
 
   declineReq = p => {
     this.props.declineConnection(p);
-    this.initBundle();
+    this.funcBundle();
   }
 
 
   componentDidMount(){
-    this.initBundle();
-    setInterval(() => this.initBundle(), this.state.active ? 2000 : 10000);
-    testit();
+    return !this.state.uid
+    ? this.register()
+    : setInterval(() => this.funcBundle(), this.state.active ? 2000 : 10000);
   }
 
   render(){
@@ -181,11 +179,12 @@ class Main extends Component {
 
     return (
       <MBox>
-        <header><h1>GHOSTWRITE</h1></header>
+        <header><h1>ghostwrite</h1></header>
         <div className='m-body'>
           <Reg 
-            uid={this.state.uid} 
-            regged={this.state.regged} 
+            uid={this.state.uid}
+            regging={this.props.regging}
+            regged={this.props.regged} 
             register={this.register}
             nukeAll={this.nukeAll}
           />
@@ -251,6 +250,55 @@ const MBox = styled.div`
     color: #DBDBDB;
     font-size: 1.2rem;
   }
+
+  .lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+  .lds-ripple div {
+    position: absolute;
+    border: 4px solid #fff;
+    opacity: 1;
+    border-radius: 50%;
+    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  }
+  .lds-ripple div:nth-child(2) {
+    animation-delay: -0.5s;
+  }
+  @keyframes lds-ripple {
+    0% {
+      top: 28px;
+      left: 28px;
+      width: 0;
+      height: 0;
+      opacity: 1;
+    }
+    100% {
+      top: -1px;
+      left: -1px;
+      width: 58px;
+      height: 58px;
+      opacity: 0;
+    }
+  }
+  
+  .loadscreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // justify-content: center;
+    height: 100vh;
+    width: 98vw;
+    z-index: 1;
+    background-color: #4C4C4C
+    .loading-header{
+      font-size: 1.6rem;
+      padding: 2rem;
+      padding-top: 40%;
+    }
+  }
   .m-body{
     min-height: 90vh;
     display: flex;
@@ -259,13 +307,30 @@ const MBox = styled.div`
     width: 100%;
     height: 100%;
     .reg {
-      h2: {
-        color: #D1D1D1
+      .user-number {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // text-align: center;
+      }
+      h1 {
+        color: #D1D1D1;
+        font-size: 1.6rem;
+        // padding-left: 25%;
       }
       display: flex;
       justify-content: center;
       padding: 1rem;
       // padding-left: 19%;
+    }
+    .dummy {
+      width: 20%;
+    }
+    .id-wrapper {
+      width: 60%;
+    }
+    .button-wrapper {
+      width: 20%;
     }
     .body-columns {
       display: flex;
@@ -278,11 +343,23 @@ const MBox = styled.div`
 
     .request {
       display: flex;
-      padding: 1rem;
-      justify-content: space-around;
+      padding-top: 1rem;
+      // justify-content: center;
+      align-items: center;
         .approve {
           color: lime;
         }
+      .button-wrapper, .id-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        // border: 1px solid red;
+        h2 {
+          padding-right: 1rem;
+          // border: 1px solid red;
+
+        }
+      }
     }
     .msg-column {
       width: 65%;
@@ -332,6 +409,9 @@ const MBox = styled.div`
       .active {
         background-color: #85C7F2;
         color: #DBDBDB;
+      }
+      .contact-bar {
+        justify-
       }
     }
     .msg-history{
