@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection} from '../actions/index';
+import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection, updateContact} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
-// import {Navbar} from 'react-materialize';
 import styled from 'styled-components';
 import ConnectSelect from './ConnectSelect';
-// import {encr, decr} from './Lockbox';
 
 
 //palette: #D1D1D1 #DBDBDB #85C7F2 #636363 #4C4C4C
@@ -22,6 +20,7 @@ class Main extends Component {
       waiting: [],
       active: null,
       history: [],
+      editingName: false
     }
   }
 
@@ -146,6 +145,14 @@ class Main extends Component {
     this.funcBundle();
   }
 
+  editFormToggle = e => {
+    e.preventDefault();
+    let toggle = !this.state.editingName
+    ? true : false
+    this.setState({editingName: toggle})
+    console.log(toggle)
+  }
+
 
   componentDidMount(){
     return !this.state.uid
@@ -175,6 +182,9 @@ class Main extends Component {
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}
         sk={this.props.keyring[this.state.active][0]}
+        update={this.props.updateContact}
+        editingName={this.state.editingName}
+        toggle={this.editFormToggle}
       />
 
     return (
@@ -234,10 +244,11 @@ const MBox = styled.div`
   .material-icons {
     color: red;
     padding-right: 1rem;
-    padding-left: 2rem;
+    // padding-left: 2rem;
     &:hover{
       cursor: pointer;
     }
+    align-self: center;
   }
   header {
     h1 {
@@ -249,6 +260,10 @@ const MBox = styled.div`
   p, h1, h2, h3, h4, ul {
     color: #DBDBDB;
     font-size: 1.2rem;
+  }
+
+  .hidden {
+    display: none
   }
 
   .lds-ripple {
@@ -301,6 +316,7 @@ const MBox = styled.div`
   }
   .m-body{
     min-height: 90vh;
+    max-width: 600px;
     display: flex;
     flex-direction: column;
     // border: 1px solid red;
@@ -309,9 +325,10 @@ const MBox = styled.div`
     .reg {
       .user-number {
         display: flex;
-        justify-content: center;
+        // justify-content: center;
         align-items: center;
         // text-align: center;
+        width: 100%;
       }
       h1 {
         color: #D1D1D1;
@@ -426,8 +443,12 @@ const MBox = styled.div`
       .msg-header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         // padding-left: 35%;
+        .msg-id {
+          display: flex;
+          justify-content: flex-start;
+        }
       }
       .msg-scroll{
         border-left: 2px solid #636363;
@@ -477,4 +498,4 @@ const MBox = styled.div`
   }
 `
 
-export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection})(Main);
+export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection, updateContact})(Main);

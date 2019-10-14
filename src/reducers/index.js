@@ -1,6 +1,6 @@
 import {
   REGGING,REGGED,REG_FAIL,SENDING,SENT,SEND_FAIL,RETRIEVING,RETRIEVED,RET_FAIL,CHECKING,
-CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL,CONNECTING,CONNECTED,CONNECT_FAIL,CONNECT_SENDING,CONNECT_SENT,CS_FAIL,DECLINE
+CHECKED,CHECK_FAIL,FULL_NUKED,FULL_NUKING,TAR_NUKING,TAR_NUKED,NUKE_FAIL,CLEAR,SELF_NUKE,KEYING,KEYED,KEY_FAIL,CONNECTING,CONNECTED,CONNECT_FAIL,CONNECT_SENDING,CONNECT_SENT,CS_FAIL,DECLINE,UPDATING_CONTACT
 } from '../actions/index';
 import {keyPair, secretize, decr, generateAliases} from '../components/Lockbox';
 
@@ -115,6 +115,12 @@ const clearWait = (state, partner) => {
   let temp = state.waiting;
   temp[partner] = 0;
   return temp;
+}
+
+const updateContact = (state, partner, displayName) => {
+  let temp = state.keyring;
+  temp[partner][1] = displayName;
+  return temp
 }
 
 
@@ -280,6 +286,11 @@ export const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         connections: clearConnect(state, action.payload)
+      }
+    case UPDATING_CONTACT:
+      return {
+        ...state,
+        keyring: updateContact(state, action.payload.partner, action.payload.displayName)
       }
     default:
       return state;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {encr, secretize, decr} from './Lockbox';
+import {encr} from './Lockbox';
 
 class ConnectSelect extends React.Component {
   constructor(props){
