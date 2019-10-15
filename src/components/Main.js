@@ -153,11 +153,15 @@ class Main extends Component {
     console.log(toggle)
   }
 
+  initHelper = () => {
+    this.funcBundle();
+    setInterval(() => this.funcBundle(), this.state.active ? 2000 : 10000);
+  }
 
   componentDidMount(){
     return !this.state.uid
     ? this.register()
-    : setInterval(() => this.funcBundle(), this.state.active ? 2000 : 10000);
+    : this.initHelper();
   }
 
   render(){
@@ -185,6 +189,7 @@ class Main extends Component {
         update={this.props.updateContact}
         editingName={this.state.editingName}
         toggle={this.editFormToggle}
+        bwl={this.buildWaitList}
       />
 
     return (

@@ -17,6 +17,7 @@ export default class EditDisplayName extends React.Component {
     e.preventDefault();
     this.props.update(this.props.partner, this.state.newName)
     this.props.toggle(e)
+    this.props.bwl()
   }
 
   render(){
