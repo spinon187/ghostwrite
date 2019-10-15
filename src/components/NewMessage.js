@@ -6,12 +6,13 @@ class NewMessage extends React.Component {
     super(props);
     this.state = {
       msg: '',
+      buttonFade: 'faded'
     }
   }
 
   formTyping = e => {
     e.preventDefault();
-    this.setState({[e.target.name]: e.target.value})
+    this.setState({[e.target.name]: e.target.value, buttonFade: ''})
   }
 
   // componentDidMount(){
@@ -40,8 +41,9 @@ class NewMessage extends React.Component {
             type='text'
             rows='4'
             autoComplete='off'
+            required
           ></textarea>
-          <button type='submit'>send message</button>
+          <button type='submit' className={this.state.buttonFade}>send message</button>
         </form>
       </>
     )
