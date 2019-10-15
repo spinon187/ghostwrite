@@ -60,6 +60,10 @@ class ConnectSelect extends React.Component {
       })
       : <div><h2>no connects</h2></div>
 
+    const textToggle = Object.keys(this.props.wc).length
+    ? <h2>Contact requests:</h2>
+    : <h2>No new contact requests</h2>
+
     return (
       <>
         <div><h2>Who would you like to connect with?</h2></div>
@@ -78,7 +82,7 @@ class ConnectSelect extends React.Component {
           />
           <button type='button' className={this.state.buttonFade} onClick={e => this.sendReq(e)}>send request</button>
         </form>
-        <div><h2>Contact requests:</h2></div>
+        <div>{textToggle}</div>
         {waitingConnections}
       </>
     )
