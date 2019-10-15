@@ -383,6 +383,10 @@ const MBox = styled.div`
 
     }
 
+    .contact-form {
+      padding: 1rem 0;
+    }
+
     .request {
       display: flex;
       padding-top: 1rem;

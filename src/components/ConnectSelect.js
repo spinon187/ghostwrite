@@ -65,7 +65,7 @@ class ConnectSelect extends React.Component {
     return (
       <>
         <div><h2>Who would you like to connect with?</h2></div>
-        <form>
+        <form className='contact-form'>
           <input
             onChange={this.formTyping}
             placeholder="Enter your partner's 10-digit ID"
