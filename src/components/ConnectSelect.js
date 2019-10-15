@@ -12,9 +12,7 @@ class ConnectSelect extends React.Component {
 
   formTyping = e => {
     e.preventDefault();
-    return !this.state.to.length
-      ? this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: 'faded'})
-      : this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: ''}) //fix this later  
+    this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: ''}) //fix this later  
   }
 
   acceptReq = (e, pO) => { //pO = partnerObject
