@@ -39,6 +39,9 @@ class Main extends Component {
       setTimeout(() => delay(), 2400)
       setTimeout(() => this.register(), 2500)
     }
+    else{
+      this.initHelper();
+    }
   }
 
   check = () => {
@@ -74,6 +77,7 @@ class Main extends Component {
   sendMsg = msg => {
     console.log(msg);
     this.props.sendMsg(msg, this.props.auth);
+    this.sortMsgs(this.state.active)
   }
 
   getMsg = () => {
@@ -97,12 +101,12 @@ class Main extends Component {
     window.location.reload();
   }
 
-  funcBundle = (targ) => {
+  funcBundle = () => {
     if(this.props.uid){
       this.getConnections();
       this.check();
       this.getMsg();
-      const delayBWL = () => this.buildWaitList(targ);
+      const delayBWL = () => this.buildWaitList(this.state.active);
       setTimeout(() => delayBWL(), 1500);
       this.sortMsgs(this.state.active);
     }
