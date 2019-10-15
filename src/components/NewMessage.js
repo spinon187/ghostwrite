@@ -22,7 +22,7 @@ class NewMessage extends React.Component {
   // }
   
   sendMsg = e => {
-    if(this.state.to.length){
+    if(this.state.msg.length){
       e.preventDefault()
       this.props.sendMsg({to: this.props.partner, from: this.props.encSelf, msg: encr(this.state.msg, this.props.sk), created: Date.now()});
       this.setState({msg: ''})

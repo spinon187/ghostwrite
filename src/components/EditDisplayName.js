@@ -37,6 +37,7 @@ export default class EditDisplayName extends React.Component {
             value={this.state.newName}
             name='newName'
             type='text'
+            required
           />
           <div className='edit-buttons'>
             <button type='submit' className={this.state.buttonFade}>accept</button>
