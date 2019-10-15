@@ -4,20 +4,27 @@ export default class EditDisplayName extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      newName: ''
+      newName: '',
+      buttonFade: 'faded'
     }
   }
 
   formTyping = e => {
     e.preventDefault();
-    this.setState({[e.target.name]: e.target.value})
+    this.setState({[e.target.name]: e.target.value, buttonFade: ''})
   }
 
   update = e => {
     e.preventDefault();
-    this.props.update(this.props.partner, this.state.newName)
-    this.props.toggle(e)
+    this.props.update(this.props.partner, this.state.newName);
+    this.props.toggle(e);
     this.props.bwl()
+  }
+
+  cancelUpdate = e => {
+    e.preventDefault();
+    this.setState({newName: ''});
+    this.props.toggle(e)
   }
 
   render(){
@@ -31,6 +38,10 @@ export default class EditDisplayName extends React.Component {
             name='newName'
             type='text'
           />
+          <div className='edit-buttons'>
+            <button type='submit' className={this.state.buttonFade}>accept</button>
+            <button onClick={e => this.cancelUpdate(e)}>cancel</button>
+          </div>
         </form>
       </>
     )

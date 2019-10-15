@@ -21,9 +21,11 @@ class NewMessage extends React.Component {
   // }
   
   sendMsg = e => {
-    e.preventDefault()
-    this.props.sendMsg({to: this.props.partner, from: this.props.encSelf, msg: encr(this.state.msg, this.props.sk), created: Date.now()});
-    this.setState({msg: ''})
+    if(this.state.to.length){
+      e.preventDefault()
+      this.props.sendMsg({to: this.props.partner, from: this.props.encSelf, msg: encr(this.state.msg, this.props.sk), created: Date.now()});
+      this.setState({msg: ''})
+    }
   }
 
   render(){
@@ -37,6 +39,7 @@ class NewMessage extends React.Component {
             name='msg'
             type='text'
             rows='4'
+            autoComplete='off'
           ></textarea>
           <button type='submit'>send message</button>
         </form>

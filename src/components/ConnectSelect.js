@@ -5,20 +5,17 @@ class ConnectSelect extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      to: ''
+      to: '',
+      buttonFade: 'faded'
     }
   }
 
   formTyping = e => {
     e.preventDefault();
-    this.setState({[e.target.name]: e.target.value.replace(/\D/,'')})
+    return !this.state.to.length
+      ? this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: 'faded'})
+      : this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: ''}) //fix this later  
   }
-
-  // sendMsg = e => {
-  //   e.preventDefault()
-  //   this.props.sendMsg({...this.state,from: this.props.uid, msg: this.props.pubKey, created: Date.now(), request: true});
-  //   this.setState({to: ''})
-  // }
 
   acceptReq = (e, pO) => { //pO = partnerObject
     e.preventDefault();
@@ -39,10 +36,10 @@ class ConnectSelect extends React.Component {
   sendReq = e => {
     e.preventDefault();
     let msg = {to: this.state.to, from: this.props.uid, request: true, key: this.props.pubKey}
-    console.log(msg)
-    this.props.sendReq(msg);
+    if(this.state.to.length) this.props.sendReq(msg);
     this.setState({to: ''})
   }
+
 
   render(){
 
@@ -78,9 +75,10 @@ class ConnectSelect extends React.Component {
             pattern='[0-9]{10}'
             minLength='10'
             maxLength='10'
+            autoComplete='off'
             required
           />
-          <button type='button' onClick={e => this.sendReq(e)}>send request</button>
+          <button type='button' className={this.state.buttonFade} onClick={e => this.sendReq(e)}>send request</button>
         </form>
         <div><h2>Contact requests:</h2></div>
         {waitingConnections}

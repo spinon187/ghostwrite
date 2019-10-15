@@ -25,10 +25,10 @@ const Messages = props => {
     <div className='msg-history'>
       <div className='msg-header'>
         <div className='id-wrapper msg-id'><h1>{props.dispID}</h1></div>
-        <div className='button-wrapper'><i className="material-icons" onClick={e => props.toggle(e)}>edit</i></div>
+        <div className='button-wrapper'><i className="material-icons edit-icon" onClick={e => props.toggle(e)}>edit</i></div>
         <div className='button-wrapper'><i className="material-icons" onClick={() => props.targetNuke(props.active)}>block</i></div>
       </div>
-      <div className={toggled}><EditDisplayName partner={props.partner} update={props.update} toggle={props.toggle} bwl={props.bwl}/></div>
+      <div className={toggled}><EditDisplayName partner={props.partner} update={props.update} toggle={props.toggle} bwl={props.bwl} dispID={props.dispID}/></div>
       <div className='msg-scroll'>{history}</div>
       <NewMessage encSelf={props.encSelf} partner={props.partner} sendMsg={props.sendMsg} sk={props.sk}/>
     </div>

@@ -255,6 +255,9 @@ const MBox = styled.div`
     }
     align-self: center;
   }
+  .edit-icon {
+    color: #85C7F2;
+  }
   header {
     h1 {
       color: #85C7F2;
@@ -267,8 +270,25 @@ const MBox = styled.div`
     font-size: 1.2rem;
   }
 
+  button {
+    background-color: #85C7F2;
+    border: none;
+    font-family: 'Righteous', cursive;
+    color: #636363;
+    font-size: 1rem;
+  }
+
+  .faded {
+    opacity: 0.6;
+  }
   .hidden {
     display: none
+  }
+
+  .edit-buttons {
+    button {
+      width: 50%;
+    }
   }
 
   .lds-ripple {
@@ -453,6 +473,7 @@ const MBox = styled.div`
         .msg-id {
           display: flex;
           justify-content: flex-start;
+          padding-left: 1rem;
         }
       }
       .msg-scroll{
