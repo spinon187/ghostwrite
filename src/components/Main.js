@@ -35,15 +35,6 @@ class Main extends Component {
     }
   }
 
-  buildWaitList = (targ=null) => {
-    let temp = this.props.waiting, list = [];
-    if(targ) this.props.clearWait(targ);
-    if(temp) Object.keys(temp).forEach(key => {
-        list.push([key, this.props.keyring[key][1], temp[key]])
-    })
-    this.setState(() => {return {waiting: list}})
-  }
-
   sortMsgs = (partner=null) => {
     if(partner && this.props.keyring[partner]){    
       let temp = this.props.msgs[partner], disp = [];
@@ -64,17 +55,11 @@ class Main extends Component {
   }
 
   getMsg = () => {
-    let arr = [], noMut = this.props.keyring;
-    if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][2]));
-    if(arr) arr.forEach(id => this.props.getMsg({to: id}, this.props.auth));
-  }
-
-  getConnections = () => {
-    this.props.getConnections({to: this.props.uid}, this.props.auth);
+    this.props.getMsg({to: this.props.myIds.keys()}, this.props.auth);
   }
 
   nukeAll = () => {
-    let targs = Object.keys(this.props.keyring), uid = this.props.uid;
+    let targs = Object.keys(this.props.keyring), uid = this.props.myIds.keys();
     this.props.nukeAll(uid, targs, this.props.auth);
     localStorage.clear();
     window.location.reload();
@@ -82,8 +67,6 @@ class Main extends Component {
 
   funcBundle = () => {
     if(this.props.uid){
-      this.getConnections();
-      this.check();
       this.getMsg();
       const delayBWL = () => this.buildWaitList(this.state.active);
       setTimeout(() => delayBWL(), 1500);
@@ -106,15 +89,6 @@ class Main extends Component {
   targetNuke = target => {
     this.props.targetNuke(target, this.props.keyring[target][2], this.props.auth);
     this.setState({active: null});
-  }
-
-  sendReq = to => {
-    this.props.sendConnection(to, this.props.auth);
-  }
-
-  acceptReq = contents => {
-    this.props.sendConnection(contents, this.props.auth);
-    this.funcBundle();
   }
 
   declineReq = p => {
@@ -147,26 +121,20 @@ class Main extends Component {
       ?<ConnectSelect
         uid={this.props.uid}
         pubKey={this.props.pubKey}
-        wc={this.props.connections}
-        acceptReq={this.acceptReq}
-        declineReq={this.declineReq}
-        sendReq={this.sendReq}
+        wc={this.props.conReqs}
+        send={this.sendMsg}
         privKey={this.props.privKey}
       />
       :<Messages
         uid={this.props.uid}
-        partner={this.state.active}
+        partner={this.props.keyring[this.state.active]}
         active={this.state.active}
-        dispID={this.props.keyring[this.state.active][1]}
-        encSelf={this.props.keyring[this.state.active][2]}
         history={this.state.history}
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}
-        sk={this.props.keyring[this.state.active][0]}
         update={this.props.updateContact}
         editingName={this.state.editingName}
         toggle={this.editFormToggle}
-        bwl={this.buildWaitList}
       />
 
     return (
@@ -182,10 +150,10 @@ class Main extends Component {
           />
           <div className='body-columns'>
             <WaitList 
-              waiting={this.state.waiting}
+              list={this.props.keyring}
               setActive={this.updateActive}
               active={this.state.active}
-              cscount={Object.keys(this.props.connections).length}
+              crCount={this.props.crCount}
             />
           <div className='msg-column'>
             {conditional}
@@ -208,7 +176,9 @@ const mapStateToProps = state => {
     pubKey: state.pubKey,
     privKey: state.privKey,
     auth: state.auth,
-    connections: state.connections,
+    conReqs: state.conReqs,
+    myIds: state.myIds,
+    crCount: state.crCount
   }
 }
 

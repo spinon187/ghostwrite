@@ -26,7 +26,9 @@ reqAccepted = (state, msg) => {
     dummyID: msg.from, //number used for initial connection request, purely cosmetic at this point
     me: me, 
     new: 0 //unread messages
-  }
+  };
+  state.myIds.add(me); //adds new ZK alias to set for DB queries
+  return state
 },
 
 reqReceived = (state, msg) => { //on receiving connection request, prepares data for use pending acceptance/rejection
@@ -34,6 +36,8 @@ reqReceived = (state, msg) => { //on receiving connection request, prepares data
   aliases = generateAliases(sk), //generates ZK alias pair
   you = aliases[1], me = aliases[0]; //stores pair as self and partner
   state.conReqs[msg.from] = {from: msg.from, sk: sk, me: me, you: you}
+  state.crCount++; //increments number of unresolved connection requests
+  return state
 },
 
 //next two helper functions handle message sending
@@ -53,7 +57,9 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
     me: data.me,
     new: 0
   };
+  state.myIds.add(data.me)
   delete state.conReqs[msg.to]; //clears request from waiting list
+  state.crCount--; //decrements the number of unresolved connection requests
   return state
 }
 
@@ -85,7 +91,8 @@ clearWait = (state, target) => { //sets unread messages for partner to zero
 
 clearConnect = (state, partner) => { //clears waiting data of rejected connection request
   let ns = {...state};
-  if(ns.conReqs[partner]) delete ns.conReqs[partner];
+  delete ns.conReqs[partner];
+  ns.crCount--;
   return ns
 },
 
@@ -97,6 +104,7 @@ updateContact = (state, target, newDummy) => { //renames 10-digit ID to user's p
 
 targetNuke = (state, target) => { //deletes partner data from store as part of your own nuke request
   let ns = {...state};
+  ns.myIds.delete(ns.keyring[target].me);
   delete ns.msgs[target];
   delete ns.keyring[target];
   return ns
