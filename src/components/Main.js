@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection, updateContact} from '../actions/index';
+import {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
@@ -25,18 +25,9 @@ class Main extends Component {
   }
 
   register = () => {
-    const delay = () => {
-      this.setState({
-        ...this.state,
-        uid: this.props.uid,
-      })
-    }
-
     if(this.props.regged !== true){
       let id = Math.floor(Math.random() * 8999999999 + 1000000000).toString();
-      console.log(id);
       this.props.register({uid: id});
-      setTimeout(() => delay(), 2400)
       setTimeout(() => this.register(), 2500)
     }
     else{
@@ -44,58 +35,29 @@ class Main extends Component {
     }
   }
 
-  check = () => {
-    let arr = [];
-    let noMut = this.props.keyring;
-    if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][2]));
-    if(arr)arr.forEach(id => this.props.check({to: id}, this.props.auth))
-  }
-
-  buildWaitList = (targ=null) => {
-    let temp = this.props.waiting, list = [];
-    if(targ) this.props.clearWait(targ);
-    if(temp) Object.keys(temp).forEach(key => {
-        list.push([key, this.props.keyring[key][1], temp[key]])
-    })
-    this.setState(() => {return {waiting: list}})
-  }
-
   sortMsgs = (partner=null) => {
-    if(partner && this.props.keyring[partner]){    
-      let temp = this.props.msgs[partner], disp = [];
-      if(temp){
-        let order = Object.keys(temp).sort((a, b) => a-b);
-        for(let i in order){
-          let date = temp[order[i]].me ? new Date(Number(order[i])) : new Date(order[i])
-          let dispDate = `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
-          disp.unshift({partner: this.props.keyring[partner][1], msg: temp[order[i]].msg, me: temp[order[i]].me, date: dispDate});
-        }
-        this.setState(() => {return {history: disp}})}
+    if(partner && partner === this.state.active){
+      let tempArr = {...this.props.msgs[partner]};
+      tempArr.sort((a, b) => b.created - a.created);
+      this.setState({history: tempArr});
+    }
+    else {
+      this.setState({history: []});
     }
   };
 
   sendMsg = msg => {
-    console.log(msg);
     this.props.sendMsg(msg, this.props.auth);
     this.sortMsgs(this.state.active)
   }
 
   getMsg = () => {
-    let arr = [], noMut = this.props.keyring;
-    if(noMut) Object.keys(noMut).forEach(id => arr.push(noMut[id][2]));
-    if(arr) arr.forEach(id => this.props.getMsg({to: id}, this.props.auth));
-  }
-
-  getConnections = () => {
-    this.props.getConnections({to: this.props.uid}, this.props.auth);
-    // if(this.props.toKey){
-    //   this.props.makeKey();
-    // }
+    this.props.getMsg({to: [...this.props.myIds]}, this.props.auth);
+    if(this.state.active && this.state.keyring[this.state.active].new) this.sortMsgs(this.state.active)
   }
 
   nukeAll = () => {
-    let targs = Object.keys(this.props.keyring), uid = this.props.uid;
-    // console.log(targs)
+    let targs = Object.keys(this.props.keyring), uid = [...this.props.myIds];
     this.props.nukeAll(uid, targs, this.props.auth);
     localStorage.clear();
     window.location.reload();
@@ -103,11 +65,7 @@ class Main extends Component {
 
   funcBundle = () => {
     if(this.props.uid){
-      this.getConnections();
-      this.check();
       this.getMsg();
-      const delayBWL = () => this.buildWaitList(this.state.active);
-      setTimeout(() => delayBWL(), 1500);
       this.sortMsgs(this.state.active);
     }
   }
@@ -115,7 +73,6 @@ class Main extends Component {
   updateActive = (targ=null) => {
     this.funcBundle(targ)
     const delaySet = () => {
-      // let temp = this.state.waiting.length > 0 ? this.state.waiting[x] : null;
       this.setState(() => {
         return {active: targ}
       })
@@ -128,20 +85,6 @@ class Main extends Component {
   targetNuke = target => {
     this.props.targetNuke(target, this.props.keyring[target][2], this.props.auth);
     this.setState({active: null});
-  }
-
-  selfNuke = target => {
-    this.props.selfNuke(target);
-    this.setState({active: null});
-  }
-
-  sendReq = to => {
-    this.props.sendConnection(to, this.props.auth);
-  }
-
-  acceptReq = contents => {
-    this.props.sendConnection(contents, this.props.auth);
-    this.funcBundle();
   }
 
   declineReq = p => {
@@ -163,7 +106,7 @@ class Main extends Component {
   }
 
   componentDidMount(){
-    return !this.state.uid
+    return !this.props.uid
     ? this.register()
     : this.initHelper();
   }
@@ -174,26 +117,20 @@ class Main extends Component {
       ?<ConnectSelect
         uid={this.props.uid}
         pubKey={this.props.pubKey}
-        wc={this.props.connections}
-        acceptReq={this.acceptReq}
-        declineReq={this.declineReq}
-        sendReq={this.sendReq}
+        wc={this.props.conReqs}
+        send={this.sendMsg}
         privKey={this.props.privKey}
       />
       :<Messages
         uid={this.props.uid}
-        partner={this.state.active}
+        partner={this.props.keyring[this.state.active]}
         active={this.state.active}
-        dispID={this.props.keyring[this.state.active][1]}
-        encSelf={this.props.keyring[this.state.active][2]}
         history={this.state.history}
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}
-        sk={this.props.keyring[this.state.active][0]}
         update={this.props.updateContact}
         editingName={this.state.editingName}
         toggle={this.editFormToggle}
-        bwl={this.buildWaitList}
       />
 
     return (
@@ -201,7 +138,7 @@ class Main extends Component {
         <header><h1>ghostwrite</h1></header>
         <div className='m-body'>
           <Reg 
-            uid={this.state.uid}
+            uid={this.props.uid}
             regging={this.props.regging}
             regged={this.props.regged} 
             register={this.register}
@@ -209,10 +146,10 @@ class Main extends Component {
           />
           <div className='body-columns'>
             <WaitList 
-              waiting={this.state.waiting}
+              list={this.props.keyring}
               setActive={this.updateActive}
               active={this.state.active}
-              cscount={Object.keys(this.props.connections).length}
+              crCount={this.props.crCount}
             />
           <div className='msg-column'>
             {conditional}
@@ -229,17 +166,15 @@ const mapStateToProps = state => {
     error: state.error,
     regging: state.regging,
     regged: state.regged,
-    sending: state.sending,
-    retrieving: state.retrieving,
     msgs: state.msgs,
     uid: state.uid,
-    waiting: state.waiting,
     keyring: state.keyring,
     pubKey: state.pubKey,
     privKey: state.privKey,
     auth: state.auth,
-    connections: state.connections,
-    toKey: state.toKey
+    conReqs: state.conReqs,
+    myIds: state.myIds,
+    crCount: state.crCount
   }
 }
 
@@ -532,4 +467,4 @@ const MBox = styled.div`
   }
 `
 
-export default connect(mapStateToProps, {register, check, sendMsg, getMsg, targetNuke, nukeAll, clearWait, selfNuke, makeKey, getConnections, sendConnection, declineConnection, updateContact})(Main);
+export default connect(mapStateToProps, {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact})(Main);

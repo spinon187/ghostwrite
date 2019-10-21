@@ -38,11 +38,10 @@ class ConnectSelect extends React.Component {
     this.setState({to: ''})
   }
 
-
   render(){
 
     const waitingConnections = 
-      Object.keys(this.props.wc)
+      this.props.wc
       ? Object.keys(this.props.wc).map(request => {
         return (
           <div className='request' key={request}>
@@ -60,7 +59,7 @@ class ConnectSelect extends React.Component {
       })
       : <div><h2>no connects</h2></div>
 
-    const textToggle = Object.keys(this.props.wc).length
+    const textToggle = this.props.wc && Object.keys(this.props.wc).length
     ? <h2>Contact requests:</h2>
     : <h2>No new contact requests</h2>
 

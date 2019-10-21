@@ -6,7 +6,7 @@ import {Provider} from 'react-redux';
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
 // import {createLogger} from 'redux-logger';
-// import logger from 'redux-logger';
+import logger from 'redux-logger';
 import rootReducer from './reducers/index';
 import {loadState, saveState} from './LocalStorage';
 require('dotenv').config();
@@ -22,7 +22,7 @@ const persistedStore = loadState();
 const store = createStore(
   rootReducer,
   persistedStore,
-  applyMiddleware(thunk)
+  applyMiddleware(thunk, logger),
 );
 
 store.subscribe(() => saveState(store.getState()));
