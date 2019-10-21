@@ -118,7 +118,7 @@ class Main extends Component {
         uid={this.props.uid}
         pubKey={this.props.pubKey}
         wc={this.props.conReqs}
-        send={this.sendMsg}
+        sendMsg={this.sendMsg}
         privKey={this.props.privKey}
       />
       :<Messages
