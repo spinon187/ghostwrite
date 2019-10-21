@@ -16,7 +16,7 @@ const initialState = {
   uid: null, //10 digit ID assigned upon registration for used in connection requests
   conReqs: {}, //connection requests from other users awaiting acceptance/rejection
   crCount: 0, //number of connection requests awaiting resolution
-  myIds: null //store for 10 digit connection ID plus all ZK aliases for server queries, will be initialized as a set upon regging
+  myIds: [] //store for 10 digit connection ID plus all ZK aliases for server queries
 };
 
 export const rootReducer = (state = initialState, action) => {
@@ -36,7 +36,7 @@ export const rootReducer = (state = initialState, action) => {
         auth: action.payload.serverToken,
         privKey: keys[0],
         pubKey: keys[1],
-        myIds: new Set([action.payload.uid])
+        myIds: [action.payload.uid]
       }
     case REG_FAIL:
       return {

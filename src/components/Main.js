@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, getConnections, sendConnection, declineConnection, updateContact} from '../actions/index';
+import {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
@@ -36,16 +36,13 @@ class Main extends Component {
   }
 
   sortMsgs = (partner=null) => {
-    if(partner && this.props.keyring[partner]){    
-      let temp = this.props.msgs[partner], disp = [];
-      if(temp){
-        let order = Object.keys(temp).sort((a, b) => a-b);
-        for(let i in order){
-          let date = temp[order[i]].me ? new Date(Number(order[i])) : new Date(order[i])
-          let dispDate = `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
-          disp.unshift({partner: this.props.keyring[partner][1], msg: temp[order[i]].msg, me: temp[order[i]].me, date: dispDate});
-        }
-        this.setState(() => {return {history: disp}})}
+    if(partner && partner === this.state.active){
+      let tempArr = {...this.props.msgs[partner]};
+      tempArr.sort((a, b) => b.created - a.created);
+      this.setState({history: tempArr});
+    }
+    else {
+      this.setState({history: []});
     }
   };
 
@@ -55,11 +52,12 @@ class Main extends Component {
   }
 
   getMsg = () => {
-    this.props.getMsg({to: this.props.myIds.keys()}, this.props.auth);
+    this.props.getMsg({to: [...this.props.myIds]}, this.props.auth);
+    if(this.state.active && this.state.keyring[this.state.active].new) this.sortMsgs(this.state.active)
   }
 
   nukeAll = () => {
-    let targs = Object.keys(this.props.keyring), uid = this.props.myIds.keys();
+    let targs = Object.keys(this.props.keyring), uid = [...this.props.myIds];
     this.props.nukeAll(uid, targs, this.props.auth);
     localStorage.clear();
     window.location.reload();
@@ -68,8 +66,6 @@ class Main extends Component {
   funcBundle = () => {
     if(this.props.uid){
       this.getMsg();
-      const delayBWL = () => this.buildWaitList(this.state.active);
-      setTimeout(() => delayBWL(), 1500);
       this.sortMsgs(this.state.active);
     }
   }
@@ -471,4 +467,4 @@ const MBox = styled.div`
   }
 `
 
-export default connect(mapStateToProps, {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, getConnections, sendConnection, declineConnection, updateContact})(Main);
+export default connect(mapStateToProps, {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact})(Main);

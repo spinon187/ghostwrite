@@ -2,18 +2,25 @@ import {decr, secretize, generateAliases} from '../components/Lockbox';
 
 //functions for the reducer to use
 
+//array deletion helper
+const del = (arr, targ) => {
+  const iOfTarg = arr.indexOf(targ);
+  arr.splice(iOfTarg, 1);
+},
+
 //following 3 functions used for message reception handling
-const msgReceived = (state, msg) => { //handles message reception
+msgReceived = (state, msg) => { //handles message reception
     const sk = state.keyring[msg.from].sk, decrypted = decr(msg.msg, sk);
-    if(msg.nuke){ //this flag is a signal from your partner device to delete them 
+    if(msg.nuke){ //this flag is a signal from your partner device to delete them
+      del(state.myIds, msg.to);
       delete state.msgs[msg.from];
       delete state.keyring[msg.from];
       return state
     }
     if(!state.msgs[msg.from]){
-      state.msgs[msg.from] = {};
+      state.msgs[msg.from] = [];
     }
-    state.msgs[msg.from][msg.created] = {msg: decrypted, me: false}; //messages filed first by partner and then by Date.now() value
+    state.msgs[msg.from].push({created: msg.created, msg: decrypted, me: false});
     state.keyring[msg.from].new++; //incrementing partner's unread message count
   return state
 },

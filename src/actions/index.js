@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'https://specback.herokuapp.com';
-// const baseURL = 'http://localhost:7777'
+// const baseURL = 'https://specback.herokuapp.com';
+const baseURL = 'http://localhost:7777'
 
 
 export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RECIEVED = 'RECIEVED', REC_FAIL = 'REC_FAIL', FULL_NUKED = 'FULL_NUKED', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', VIEW = 'VIEW', DECLINE = 'DECLINE', UPDATING_CONTACT = 'UPDATING_CONTACT';
@@ -29,6 +29,7 @@ export const
   },
 
   getMsg = (to, token) => dispatch => {
+    console.log(to)
     axios.post(`${baseURL}/api/msgs`, to, header(token))
       .then(res => dispatch({type: RECIEVED, payload: res.data}))
       .catch(err => dispatch({type: REC_FAIL, payload: err}))
