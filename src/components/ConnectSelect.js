@@ -17,9 +17,10 @@ class ConnectSelect extends React.Component {
 
   acceptReq = (e, pO) => { //pO = partnerObject
     e.preventDefault();
-    this.props.acceptReq({
+    this.props.sendMsg({
       to: pO.from,
       from: this.props.uid,
+      msg: 'connection accepted',
       key: this.props.pubKey,
       aliases: [encr(pO.aliases[0], pO.key), encr(pO.aliases[1], pO.key)],
       accept: true
@@ -33,8 +34,13 @@ class ConnectSelect extends React.Component {
 
   sendReq = e => {
     e.preventDefault();
-    let msg = {to: this.state.to, from: this.props.uid, request: true, key: this.props.pubKey}
-    if(this.state.to.length) this.props.sendReq(msg);
+    if(this.state.to.length) this.props.sendMsg({
+      to: this.state.to,
+      from: this.props.uid,
+      msg: 'requesting connection',
+      request: true,
+      key: this.props.pubKey}
+    );
     this.setState({to: ''})
   }
 
