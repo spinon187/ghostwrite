@@ -64,7 +64,7 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
     me: data.me,
     new: 0
   };
-  state.myIds.add(data.me)
+  state.myIds.push(data.me)
   delete state.conReqs[msg.to]; //clears request from waiting list
   state.crCount--; //decrements the number of unresolved connection requests
   return state
@@ -72,22 +72,25 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
 
 export const rcvHandler = (state, msgs) => {
   let ns = {...state};
-  msgs.forEach(msg => {
-    ns =
-      msg.accept
-        ? reqAccepted(ns, msg)
-      : msg.request
-        ? reqReceived(ns, msg)
-      : msgReceived(ns, msg)
+  msgs.forEach(msg => {ns =
+    msg.accept
+      ? reqAccepted(ns, msg)
+    : msg.request
+      ? reqReceived(ns, msg)
+    : msgReceived(ns, msg)
   });
   return ns
 },
 
 sendHandler = (state, msg) => {
   let ns = {...state};
-  return msg.accept
-    ? sendAccept(ns, msg)
-    : sendMsg(ns, msg)
+  return(
+    msg.accept
+      ? sendAccept(ns, msg)
+    : !msg.request
+      ? sendMsg(ns, msg)
+    : ns
+      )
 },
 
 clearWait = (state, target) => { //sets unread messages for partner to zero

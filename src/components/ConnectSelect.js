@@ -22,7 +22,8 @@ class ConnectSelect extends React.Component {
       from: this.props.uid,
       msg: 'connection accepted',
       key: this.props.pubKey,
-      aliases: [encr(pO.aliases[0], pO.key), encr(pO.aliases[1], pO.key)],
+      me: encr(pO.me, pO.key),
+      you: encr(pO.you, pO.key),
       accept: true
     })
   }

@@ -29,7 +29,6 @@ export const
   },
 
   getMsg = (to, token) => dispatch => {
-    console.log(to)
     axios.post(`${baseURL}/api/msgs`, to, header(token))
       .then(res => dispatch({type: RECIEVED, payload: res.data}))
       .catch(err => dispatch({type: REC_FAIL, payload: err}))
