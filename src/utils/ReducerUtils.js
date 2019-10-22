@@ -34,7 +34,7 @@ reqAccepted = (state, msg) => {
     me: me, 
     new: 0 //unread messages
   };
-  state.myIds.add(me); //adds new ZK alias to set for DB queries
+  state.myIds.push(me); //adds new ZK alias to set for DB queries
   return state
 },
 
