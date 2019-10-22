@@ -17,9 +17,6 @@ msgReceived = (state, msg) => { //handles message reception
       delete state.keyring[msg.from];
       return state
     }
-    if(!state.msgs[msg.from]){
-      state.msgs[msg.from] = [];
-    }
     state.msgs[msg.from].push({created: msg.created, msg: decrypted, me: false});
     state.keyring[msg.from].new++; //incrementing partner's unread message count
   return state
@@ -34,6 +31,7 @@ reqAccepted = (state, msg) => {
     me: me, 
     new: 0 //unread messages
   };
+  state.msgs[you] = []; //adds a message array for partner
   state.myIds.push(me); //adds new ZK alias to set for DB queries
   return state
 },
@@ -57,14 +55,15 @@ sendMsg = (state, msg) => { //adds own message to the parent partner object in t
 },
 
 sendAccept = (state, msg) => { //grabs prepared data after acceptance and inserts it into the key store
-  const data = state.conReqs[msg.to]
+  const data = state.conReqs[msg.to];
   state.keyring[data.you] = {
     sk: data.sk,
-    dummyID: data.dummyID,
+    dummyID: data.from,
     me: data.me,
     new: 0
   };
   state.myIds.push(data.me)
+  state.msgs[data.you] = []; 
   delete state.conReqs[msg.to]; //clears request from waiting list
   state.crCount--; //decrements the number of unresolved connection requests
   return state
@@ -72,7 +71,7 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
 
 export const rcvHandler = (state, msgs) => {
   let ns = {...state};
-  msgs.forEach(msg => {ns =
+  if(msgs !== []) msgs.forEach(msg => {ns = //prevents pointless store update on empty array from server
     msg.accept
       ? reqAccepted(ns, msg)
     : msg.request

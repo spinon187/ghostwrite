@@ -9,7 +9,7 @@ const initialState = {
   regging: false, //registration status
   regged: null, //^^^
   auth: null, //jwt received from server, used for connection request authentication specifically and other operations generally 
-  msgs: {}, //files messages by partner, partner objects file messages by Date.now() value
+  msgs: {}, //files messages by partner
   keyring: {}, //files partners by ZK alias, contains shared key, partner's cosmetic ID, own ZK alias, and unread message count
   pubKey: null, //user's public DH key
   privKey: null, //user's private DH key

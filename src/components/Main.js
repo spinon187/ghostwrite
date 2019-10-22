@@ -37,7 +37,7 @@ class Main extends Component {
 
   sortMsgs = (partner=null) => {
     if(partner && partner === this.state.active){
-      let tempArr = {...this.props.msgs[partner]};
+      let tempArr = [...this.props.msgs[partner]];
       tempArr.sort((a, b) => b.created - a.created);
       this.setState({history: tempArr});
     }
@@ -53,7 +53,7 @@ class Main extends Component {
 
   getMsg = () => {
     this.props.getMsg({to: [...this.props.myIds]}, this.props.auth);
-    if(this.state.active && this.state.keyring[this.state.active].new) this.sortMsgs(this.state.active)
+    if(this.state.active && this.props.keyring[this.state.active].new) this.sortMsgs(this.state.active)
   }
 
   nukeAll = () => {
