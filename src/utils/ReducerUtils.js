@@ -27,7 +27,7 @@ msgReceived = (state, msg) => { //handles message reception
 
 reqAccepted = (state, msg) => {
   //generates shared DH key and uses it to decrypt the ZK aliases
-  const sk = secretize(msg.key, state.privKey), you = decr(msg.aliases[0], sk), me = decr(msg.aliases[1], sk);
+  const sk = secretize(msg.key, state.privKey), you = decr(msg.me, sk), me = decr(msg.you, sk);
   state.keyring[you] = {
     sk: sk,
     dummyID: msg.from, //number used for initial connection request, purely cosmetic at this point
