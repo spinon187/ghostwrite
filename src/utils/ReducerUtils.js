@@ -47,10 +47,7 @@ reqReceived = (state, msg) => { //on receiving connection request, prepares data
 
 //next two helper functions handle message sending
 sendMsg = (state, msg) => { //adds own message to the parent partner object in the message store
-  if(!state.msgs[msg.to]){
-    state.msgs[msg.to] = {};
-  }
-  state.msgs[msg.to][msg.created] = {msg: msg.msg, me: true};
+  state.msgs[msg.to].push({created: msg.created, msg: msg.msg, me: true});
   return state
 },
 
@@ -71,12 +68,12 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
 
 export const rcvHandler = (state, msgs) => {
   let ns = {...state};
-  if(msgs !== []) msgs.forEach(msg => {ns = //prevents pointless store update on empty array from server
-    msg.accept
-      ? reqAccepted(ns, msg)
-    : msg.request
-      ? reqReceived(ns, msg)
-    : msgReceived(ns, msg)
+  if(msgs !== []) msgs.forEach(msg => {//prevents pointless store update on empty array from server
+    return msg.accept
+        ? reqAccepted(ns, msg)
+      : msg.request
+        ? reqReceived(ns, msg)
+      : msgReceived(ns, msg)
   });
   return ns
 },
@@ -89,7 +86,7 @@ sendHandler = (state, msg) => {
     : !msg.request
       ? sendMsg(ns, msg)
     : ns
-      )
+  )
 },
 
 clearWait = (state, target) => { //sets unread messages for partner to zero

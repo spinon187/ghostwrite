@@ -3,16 +3,21 @@ import NewMessage from './NewMessage';
 import EditDisplayName from './EditDisplayName';
 
 const Messages = props => {
-  const history = props.active 
+  const formatDate = date => {
+    date = new Date(Number(date));
+    return `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
+  },
+  
+  history = props.active 
     ? props.history.map((msg, index) =>{
       return (msg.me)
       ? <div className='msg sent' key={index}>
           <p>{msg.msg}</p>
-          <p className='send-date'>{msg.date}</p>
+          <p className='send-date'>{formatDate(msg.created)}</p>
         </div>
       : <div className='msg received' key={index}>
           <p>{msg.msg}</p>
-          <p className='send-date'>{msg.date}</p>
+          <p className='send-date'>{formatDate(msg.created)}</p>
         </div>
     })
     : null
@@ -24,13 +29,26 @@ const Messages = props => {
   return (
     <div className='msg-history'>
       <div className='msg-header'>
-        <div className='id-wrapper msg-id'><h1>{props.dispID}</h1></div>
+        <div className='id-wrapper msg-id'><h1>{props.partner.dummyID}</h1></div>
         <div className='button-wrapper'><i className="material-icons edit-icon" onClick={e => props.toggle(e)}>edit</i></div>
         <div className='button-wrapper'><i className="material-icons" onClick={() => props.targetNuke(props.active)}>block</i></div>
       </div>
-      <div className={toggled}><EditDisplayName partner={props.partner} update={props.update} toggle={props.toggle} bwl={props.bwl} dispID={props.dispID}/></div>
-      <div className='msg-scroll'>{history}</div>
-      <NewMessage encSelf={props.encSelf} partner={props.partner} sendMsg={props.sendMsg} sk={props.sk}/>
+      <div className={toggled}>
+        <EditDisplayName
+          target={props.active}
+          update={props.update}
+          toggle={props.toggle}
+          dummyID={props.partner.dummyID}
+        />
+      </div>
+      <div className='msg-scroll'>
+        {history}
+      </div>
+      <NewMessage
+        target={props.active}
+        me={props.partner.me}
+        sendMsg={props.sendMsg}
+      />
     </div>
   )
 }

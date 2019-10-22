@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {encr} from '../components/Lockbox';
 
 // const baseURL = 'https://specback.herokuapp.com';
 const baseURL = 'http://localhost:7777'
@@ -22,9 +23,11 @@ export const
     dispatch({type: DECLINE, payload: partner})
   },
 
-  sendMsg = (msg, token) => dispatch => {
+  sendMsg = (pl, token, sk=null) => dispatch => {
+    let msg = {...pl};
+    if(sk) msg.msg = encr(pl.msg, sk);
     axios.post(`${baseURL}/api/send`, msg, header(token))
-      .then(res => dispatch({type: SENT, payload: msg}))
+      .then(res => dispatch({type: SENT, payload: pl}))
       .catch(err => dispatch({type: SEND_FAIL, payload: err}))
   },
 

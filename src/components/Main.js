@@ -29,8 +29,7 @@ class Main extends Component {
       let id = Math.floor(Math.random() * 8999999999 + 1000000000).toString();
       this.props.register({uid: id});
       setTimeout(() => this.register(), 2500)
-    }
-    else{
+    } else{
       this.initHelper();
     }
   }
@@ -40,14 +39,18 @@ class Main extends Component {
       let tempArr = [...this.props.msgs[partner]];
       tempArr.sort((a, b) => b.created - a.created);
       this.setState({history: tempArr});
-    }
-    else {
+    } else {
       this.setState({history: []});
     }
   };
 
   sendMsg = msg => {
-    this.props.sendMsg(msg, this.props.auth);
+    if(msg.accept || msg.request){
+      this.props.sendMsg(msg, this.props.auth)
+    } else {
+      console.log(msg)
+      this.props.sendMsg(msg, this.props.auth, this.props.keyring[msg.to].sk)
+    };
     this.sortMsgs(this.state.active)
   }
 
@@ -150,6 +153,7 @@ class Main extends Component {
               setActive={this.updateActive}
               active={this.state.active}
               crCount={this.props.crCount}
+              clearWait={this.clearWait}
             />
           <div className='msg-column'>
             {conditional}
