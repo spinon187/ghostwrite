@@ -13,7 +13,7 @@ const WaitList = props => {
   },
 
   display = 
-    !props.list
+    !props.list || props.list === {}
     ? null
     : Object.keys(props.list).map((id, i) => {
     return <div className={highlight(id)} onClick={() => props.setActive(id)} key={i}><p>{props.list[id].dummyID}</p>{noZero(props.list[id].new)}</div>

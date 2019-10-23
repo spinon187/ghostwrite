@@ -6,10 +6,14 @@ const Reg = props => {
     window.location.reload();
   }
 
+  // const reset = () => {
+  //   return props.used
+  //   ? props.nukeAll()
+  //   : clear()
+  // }
+
   const reset = () => {
-    return props.waiting
-    ? props.nukeAll()
-    : clear()
+    props.nukeAll()
   }
 
   const regLoader = !props.uid

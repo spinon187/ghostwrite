@@ -1,11 +1,11 @@
 import axios from 'axios';
 import {encr} from '../components/Lockbox';
 
-const baseURL = 'https://specback.herokuapp.com';
-// const baseURL = 'http://localhost:7777'
+// const baseURL = 'https://specback.herokuapp.com';
+const baseURL = 'http://localhost:7777'
 
 
-export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RECIEVED = 'RECIEVED', REC_FAIL = 'REC_FAIL', FULL_NUKED = 'FULL_NUKED', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', VIEW = 'VIEW', DECLINE = 'DECLINE', UPDATING_CONTACT = 'UPDATING_CONTACT';
+export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RECEIVED = 'RECEIVED', REC_FAIL = 'REC_FAIL', FULL_NUKED = 'FULL_NUKED', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', VIEW = 'VIEW', DECLINE = 'DECLINE', UPDATING_CONTACT = 'UPDATING_CONTACT';
 
 const header = token => {
   return {headers: {Authorization: token}}
@@ -33,7 +33,7 @@ export const
 
   getMsg = (to, token) => dispatch => {
     axios.post(`${baseURL}/api/msgs`, to, header(token))
-      .then(res => dispatch({type: RECIEVED, payload: res.data}))
+      .then(res => dispatch({type: RECEIVED, payload: res.data}))
       .catch(err => dispatch({type: REC_FAIL, payload: err}))
   },
 
@@ -43,16 +43,16 @@ export const
       .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
   },
 
-  nukeAll = (uid, targs, token) => dispatch => {
-    axios.post(`${baseURL}/api/nuke`, {uid: uid, targs: targs}, header(token))
+  nukeAll = (targs, token) => dispatch => {
+    axios.post(`${baseURL}/api/nuke`, targs, header(token))
       .then(res => dispatch({type: FULL_NUKED, payload: res.data}))
       .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
   },
 
-  clearWait = partner => dispatch => {
-    dispatch({type: VIEW, payload: partner});
+  clearWait = target => dispatch => {
+    dispatch({type: VIEW, payload: target});
   },
 
-  updateContact = (partner, displayName) => dispatch => {
-    dispatch({type: UPDATING_CONTACT, payload: {partner: partner, displayName: displayName}})
+  updateContact = (target, dummyID) => dispatch => {
+    dispatch({type: UPDATING_CONTACT, payload: {target: target, dummyID: dummyID}})
   }

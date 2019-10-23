@@ -10,15 +10,15 @@ const del = (arr, targ) => {
 
 //following 3 functions used for message reception handling
 msgReceived = (state, msg) => { //handles message reception
-    const sk = state.keyring[msg.from].sk, decrypted = decr(msg.msg, sk);
-    if(msg.nuke){ //this flag is a signal from your partner device to delete them
-      del(state.myIds, msg.to);
-      delete state.msgs[msg.from];
-      delete state.keyring[msg.from];
-      return state
-    }
-    state.msgs[msg.from].push({created: msg.created, msg: decrypted, me: false});
-    state.keyring[msg.from].new++; //incrementing partner's unread message count
+  if(msg.nuke){ //this flag is a signal from your partner device to delete them
+    del(state.myIds, msg.to);
+    delete state.msgs[msg.from];
+    delete state.keyring[msg.from];
+    return state
+  }
+  const sk = state.keyring[msg.from].sk, decrypted = decr(msg.msg, sk);
+  state.msgs[msg.from].unshift({created: msg.created, msg: decrypted, me: false});
+  state.keyring[msg.from].new++; //incrementing partner's unread message count
   return state
 },
 
@@ -47,7 +47,7 @@ reqReceived = (state, msg) => { //on receiving connection request, prepares data
 
 //next two helper functions handle message sending
 sendMsg = (state, msg) => { //adds own message to the parent partner object in the message store
-  state.msgs[msg.to].push({created: msg.created, msg: msg.msg, me: true});
+  state.msgs[msg.to].unshift({created: msg.created, msg: msg.msg, me: true});
   return state
 },
 
@@ -91,7 +91,7 @@ sendHandler = (state, msg) => {
 
 clearWait = (state, target) => { //sets unread messages for partner to zero
   let ns = {...state}
-  ns[target].new = 0;
+  ns.keyring[target].new = 0;
   return ns;
 },
 
@@ -104,13 +104,13 @@ clearConnect = (state, partner) => { //clears waiting data of rejected connectio
 
 updateContact = (state, target, newDummy) => { //renames 10-digit ID to user's preferred input
   let ns = {...state};
-  ns[target].dummyID = newDummy;
+  ns.keyring[target].dummyID = newDummy;
   return ns
 },
 
 targetNuke = (state, target) => { //deletes partner data from store as part of your own nuke request
   let ns = {...state};
-  ns.myIds.delete(ns.keyring[target].me);
+  del(ns.myIds, ns.keyring[target].me);
   delete ns.msgs[target];
   delete ns.keyring[target];
   return ns

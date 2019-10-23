@@ -64,7 +64,7 @@ class ConnectSelect extends React.Component {
           </div>
         )
       })
-      : <div><h2>no connects</h2></div>
+      : null
 
     const textToggle = this.props.wc && Object.keys(this.props.wc).length
     ? <h2>Contact requests:</h2>

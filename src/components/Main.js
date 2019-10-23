@@ -29,8 +29,8 @@ class Main extends Component {
       let id = Math.floor(Math.random() * 8999999999 + 1000000000).toString();
       this.props.register({uid: id});
       setTimeout(() => this.register(), 2500)
-    } else{
-      this.initHelper();
+    } else {
+      this.checkPulse();
     }
   }
 
@@ -42,16 +42,15 @@ class Main extends Component {
     } else {
       this.setState({history: []});
     }
-  };
+  }
 
   sendMsg = msg => {
     if(msg.accept || msg.request){
       this.props.sendMsg(msg, this.props.auth)
     } else {
-      console.log(msg)
       this.props.sendMsg(msg, this.props.auth, this.props.keyring[msg.to].sk)
     };
-    this.sortMsgs(this.state.active)
+    setTimeout(() => {this.sortMsgs(this.state.active)}, 250);
   }
 
   getMsg = () => {
@@ -60,39 +59,48 @@ class Main extends Component {
   }
 
   nukeAll = () => {
-    let targs = Object.keys(this.props.keyring), uid = [...this.props.myIds];
-    this.props.nukeAll(uid, targs, this.props.auth);
-    localStorage.clear();
-    window.location.reload();
+    let targs = Object.entries({...this.props.keyring})
+      .map(to => ({to: to[0], from: to[1].me}))
+    targs.push({to: null, from: this.props.uid})
+    this.props.nukeAll(targs, this.props.auth);
+    setTimeout(() => localStorage.clear(), 2000);
+    setTimeout(() => {this.register()}, 2100);
   }
 
-  funcBundle = () => {
-    if(this.props.uid){
-      this.getMsg();
-      this.sortMsgs(this.state.active);
-    }
+  check = () => {
+    if(this.props.uid) this.getMsg();
+  }
+
+  checkPulse = () => {
+    this.check();
+    setTimeout(() => {
+      this.checkPulse()
+    }, this.state.active ? 1000 : 5000)
+  }
+
+  clearWait = () => {
+    if(this.state.active) this.props.clearWait(this.state.active)
   }
 
   updateActive = (targ=null) => {
-    this.funcBundle(targ)
-    const delaySet = () => {
+    this.check();
+    setTimeout(() => {
       this.setState(() => {
         return {active: targ}
-      })
-    }
-    const delaySort = () => this.sortMsgs(this.state.active);
-    setTimeout(() => delaySet(), 200);
-    setTimeout(() => delaySort(), 1100);
+      }, () => this.clearWait())
+    }, 200);
+    setTimeout(() => {
+      this.sortMsgs(this.state.active)
+    }, 210);
   }
 
   targetNuke = target => {
-    this.props.targetNuke(target, this.props.keyring[target][2], this.props.auth);
-    this.setState({active: null});
+    this.props.targetNuke(target, this.props.keyring[target].me, this.props.auth);
+    setTimeout(() => {this.setState({active: null})}, 200);
   }
 
   declineReq = p => {
     this.props.declineConnection(p);
-    this.funcBundle();
   }
 
   editFormToggle = e => {
@@ -103,15 +111,10 @@ class Main extends Component {
     console.log(toggle)
   }
 
-  initHelper = () => {
-    this.funcBundle();
-    setInterval(() => this.funcBundle(), this.state.active ? 2000 : 10000);
-  }
-
   componentDidMount(){
     return !this.props.uid
     ? this.register()
-    : this.initHelper();
+    : this.checkPulse();
   }
 
   render(){
@@ -123,6 +126,7 @@ class Main extends Component {
         wc={this.props.conReqs}
         sendMsg={this.sendMsg}
         privKey={this.props.privKey}
+        declineReq={this.declineReq}
       />
       :<Messages
         uid={this.props.uid}
@@ -146,6 +150,7 @@ class Main extends Component {
             regged={this.props.regged} 
             register={this.register}
             nukeAll={this.nukeAll}
+            used={this.props.keyring ? true : false}
           />
           <div className='body-columns'>
             <WaitList 
@@ -431,8 +436,9 @@ const MBox = styled.div`
         overflow-y: scroll;
         height: 80%;
         .msg {
-          display: flex;
-          flex-direction: column;
+          // display: flex;
+          // flex-direction: column;
+          text-align: left;
           width: 80%;
           border: 1px solid #4C4C4C;
           background-color: #85C7F2;
@@ -440,7 +446,8 @@ const MBox = styled.div`
           border-radius: 5px;
           margin: .2rem 0;
           text-overflow: ellipsis;
-          align-items: flex-start;
+          // align-items: flex-start;
+          // justify-content: flex-start;
           // white-space: nowrap;
           // overflow-x: hidden;
           .send-date {

@@ -4,7 +4,7 @@ import EditDisplayName from './EditDisplayName';
 
 const Messages = props => {
   const formatDate = date => {
-    date = new Date(Number(date));
+    date = new Date(date);
     return `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
   },
   

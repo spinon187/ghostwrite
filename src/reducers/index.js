@@ -1,5 +1,5 @@
 import {
-  REGGING,REGGED,REG_FAIL,SENT,SEND_FAIL,RECIEVED,REC_FAIL,FULL_NUKED,TAR_NUKED,NUKE_FAIL,VIEW,DECLINE,UPDATING_CONTACT
+  REGGING,REGGED,REG_FAIL,SENT,SEND_FAIL,RECEIVED,REC_FAIL,FULL_NUKED,TAR_NUKED,NUKE_FAIL,VIEW,DECLINE,UPDATING_CONTACT
 } from '../actions/index';
 import {keyPair} from '../components/Lockbox';
 import * as utils from '../utils/ReducerUtils';
@@ -52,7 +52,7 @@ export const rootReducer = (state = initialState, action) => {
         ...state,
         error: action.payload
       }
-    case RECIEVED:
+    case RECEIVED:
       return utils.rcvHandler(state, action.payload)
     case REC_FAIL:
       return {
@@ -61,9 +61,7 @@ export const rootReducer = (state = initialState, action) => {
         error: action.payload
       }
     case FULL_NUKED:
-      return {
-        initialState
-      }
+      return initialState
     case TAR_NUKED:
       return utils.targetNuke(state, action.payload)
     case NUKE_FAIL:
@@ -76,7 +74,7 @@ export const rootReducer = (state = initialState, action) => {
     case DECLINE:
       return utils.clearConnect(state, action.payload)
     case UPDATING_CONTACT:
-      return utils.updateContact(state, action.payload)
+      return utils.updateContact(state, action.payload.target, action.payload.dummyID)
     default:
       return state;
   }
