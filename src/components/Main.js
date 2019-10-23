@@ -70,6 +70,9 @@ class Main extends Component {
 
   check = () => {
     if(this.props.uid) this.getMsg();
+    if(!this.props.keyring[this.state.active]){
+      this.setState({active: null});
+    }
   }
 
   checkPulse = () => {

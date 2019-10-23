@@ -15,11 +15,12 @@ msgReceived = (state, msg) => { //handles message reception
     delete state.msgs[msg.from];
     delete state.keyring[msg.from];
     return state
+  } else {
+    const sk = state.keyring[msg.from].sk, decrypted = decr(msg.msg, sk);
+    state.msgs[msg.from].unshift({created: msg.created, msg: decrypted, me: false});
+    state.keyring[msg.from].new++; //incrementing partner's unread message count
+    return state
   }
-  const sk = state.keyring[msg.from].sk, decrypted = decr(msg.msg, sk);
-  state.msgs[msg.from].unshift({created: msg.created, msg: decrypted, me: false});
-  state.keyring[msg.from].new++; //incrementing partner's unread message count
-  return state
 },
 
 reqAccepted = (state, msg) => {
