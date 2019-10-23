@@ -35,7 +35,7 @@ class Main extends Component {
   }
 
   sortMsgs = (partner=null) => {
-    if(partner && partner === this.state.active){
+    if(partner && partner === this.state.active && this.props.msgs[partner]){
       let tempArr = [...this.props.msgs[partner]];
       tempArr.sort((a, b) => b.created - a.created);
       this.setState({history: tempArr});
