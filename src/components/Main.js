@@ -45,6 +45,7 @@ class Main extends Component {
   }
 
   sendMsg = msg => {
+    this.clearWait();
     if(msg.accept || msg.request){
       this.props.sendMsg(msg, this.props.auth)
     } else {
