@@ -81,7 +81,7 @@ class Main extends Component {
     this.check();
     setTimeout(() => {
       this.checkPulse()
-    }, this.state.active ? 1000 : 5000)
+    }, this.state.active ? 1000 : 1500)
   }
 
   clearWait = () => {
