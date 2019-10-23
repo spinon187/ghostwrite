@@ -1,10 +1,10 @@
 import React from 'react';
 
 const Reg = props => {
-  const clear = () => {
-    localStorage.clear();
-    window.location.reload();
-  }
+  // const clear = () => {
+  //   localStorage.clear();
+  //   window.location.reload();
+  // }
 
   // const reset = () => {
   //   return props.used

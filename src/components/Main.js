@@ -64,8 +64,10 @@ class Main extends Component {
       .map(to => ({to: to[0], from: to[1].me}))
     targs.push({to: null, from: this.props.uid})
     this.props.nukeAll(targs, this.props.auth);
-    setTimeout(() => localStorage.clear(), 2000);
-    setTimeout(() => {this.register()}, 2100);
+    // setTimeout(() => localStorage.clear(), 100);
+    // setTimeout(() => window.location.reload(true), 2100);
+    localStorage.clear();
+    window.location.reload(true)
   }
 
   check = () => {
