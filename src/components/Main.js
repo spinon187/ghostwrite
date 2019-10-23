@@ -56,7 +56,7 @@ class Main extends Component {
 
   getMsg = () => {
     this.props.getMsg({to: [...this.props.myIds]}, this.props.auth);
-    if(this.state.active && this.props.keyring[this.state.active].new) this.sortMsgs(this.state.active)
+    if(this.state.active) this.sortMsgs(this.state.active)
   }
 
   nukeAll = () => {
