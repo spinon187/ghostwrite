@@ -15,15 +15,15 @@ class ConnectSelect extends React.Component {
     this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: ''}) //fix this later  
   }
 
-  acceptReq = (e, pO) => { //pO = partnerObject
+  acceptReq = (e, partner) => {
     e.preventDefault();
     this.props.sendMsg({
-      to: pO.from,
+      to: partner.from,
       from: this.props.uid,
       msg: 'connection accepted',
       key: this.props.pubKey,
-      me: encr(pO.me, pO.sk),
-      you: encr(pO.you, pO.sk),
+      me: encr(partner.me, partner.sk),
+      you: encr(partner.you, partner.sk),
       accept: true
     })
   }
@@ -35,7 +35,10 @@ class ConnectSelect extends React.Component {
 
   sendReq = e => {
     e.preventDefault();
-    if(this.state.to.length) this.props.sendMsg({
+    if(this.props.prohib[this.state.to]){
+      //custom error popup
+    }
+    else if(this.state.to.length === 10) this.props.sendMsg({
       to: this.state.to,
       from: this.props.uid,
       msg: 'requesting connection',

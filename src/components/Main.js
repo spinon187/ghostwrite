@@ -114,7 +114,6 @@ class Main extends Component {
     let toggle = !this.state.editingName
     ? true : false
     this.setState({editingName: toggle})
-    console.log(toggle)
   }
 
   componentDidMount(){
@@ -133,6 +132,7 @@ class Main extends Component {
         sendMsg={this.sendMsg}
         privKey={this.props.privKey}
         declineReq={this.declineReq}
+        prohib={this.props.prohib}
       />
       :<Messages
         uid={this.props.uid}
@@ -189,7 +189,8 @@ const mapStateToProps = state => {
     auth: state.auth,
     conReqs: state.conReqs,
     myIds: state.myIds,
-    crCount: state.crCount
+    crCount: state.crCount,
+    prohib: state.prohib
   }
 }
 

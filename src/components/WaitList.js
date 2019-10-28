@@ -21,7 +21,7 @@ const WaitList = props => {
 
   return (
     <div className='waitlist'>
-      <div className='waitlist-item contact-bar' onClick={() => props.setActive(null)}><p>New Contacts</p>{noZero(props.crCount)}</div>
+      <div className={`waitlist-item contact-bar ${highlight(null)}`} onClick={() => props.setActive(null)}><p>New Contacts</p>{noZero(props.crCount)}</div>
       <h2>Messages</h2>
       {display}
     </div>

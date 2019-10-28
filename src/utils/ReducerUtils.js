@@ -34,6 +34,7 @@ reqAccepted = (state, msg) => {
   };
   state.msgs[you] = []; //adds a message array for partner
   state.myIds.push(me); //adds new ZK alias to set for DB queries
+  state.prohib[msg.from] = true; //adds connection ID to prevent dupes
   return state
 },
 
@@ -61,7 +62,8 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
     new: 0
   };
   state.myIds.push(data.me)
-  state.msgs[data.you] = []; 
+  state.msgs[data.you] = [];
+  state.prohib[msg.to] = true; 
   delete state.conReqs[msg.to]; //clears request from waiting list
   state.crCount--; //decrements the number of unresolved connection requests
   return state

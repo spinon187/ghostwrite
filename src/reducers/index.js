@@ -16,7 +16,8 @@ const initialState = {
   uid: null, //10 digit ID assigned upon registration for used in connection requests
   conReqs: {}, //connection requests from other users awaiting acceptance/rejection
   crCount: 0, //number of connection requests awaiting resolution
-  myIds: [] //store for 10 digit connection ID plus all ZK aliases for server queries
+  myIds: [], //store for 10 digit connection ID plus all ZK aliases for server queries,
+  prohib: {} //store for connection IDs to prevent duplicates
 };
 
 export const rootReducer = (state = initialState, action) => {
@@ -36,7 +37,8 @@ export const rootReducer = (state = initialState, action) => {
         auth: action.payload.serverToken,
         privKey: keys[0],
         pubKey: keys[1],
-        myIds: [action.payload.uid]
+        myIds: [action.payload.uid],
+        prohib: {[action.payload]: true}
       }
     case REG_FAIL:
       return {

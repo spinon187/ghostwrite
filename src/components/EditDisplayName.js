@@ -18,11 +18,12 @@ export default class EditDisplayName extends React.Component {
     e.preventDefault();
     this.props.update(this.props.target, this.state.newName);
     this.props.toggle(e);
+    this.setState({newName: '', buttonFade: 'faded'})
   }
 
   cancelUpdate = e => {
     e.preventDefault();
-    this.setState({newName: this.props.dummyID});
+    this.setState({newName: '', buttonFade: 'faded'});
     this.props.toggle(e);
     // this.props.check();
   }
