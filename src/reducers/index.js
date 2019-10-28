@@ -38,7 +38,7 @@ export const rootReducer = (state = initialState, action) => {
         privKey: keys[0],
         pubKey: keys[1],
         myIds: [action.payload.uid],
-        prohib: {[action.payload]: true}
+        prohib: {[action.payload.uid]: true}
       }
     case REG_FAIL:
       return {
