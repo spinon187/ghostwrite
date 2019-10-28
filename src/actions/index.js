@@ -13,8 +13,9 @@ const header = token => {
 
 export const 
   register = uid => dispatch => {
+    let buster = Math.random()*10000000;
     dispatch({type: REGGING});
-    axios.post(`${baseURL}/api/uid`, uid)
+    axios.post(`${baseURL}/api/uid/${buster}`, uid)
       .then(res => dispatch({type: REGGED, payload: res.data}))
       .catch(err => dispatch({type: REG_FAIL, payload: err}))
   },
@@ -39,13 +40,15 @@ export const
   },
 
   targetNuke = (to, from, token) => dispatch => {
-    axios.post(`${baseURL}/api/delete`, {to: to, from: from}, header(token))
+    let buster = Math.random()*10000000;
+    axios.post(`${baseURL}/api/delete/${buster}`, {to: to, from: from}, header(token))
       .then(res => dispatch({type: TAR_NUKED, payload: res.data.targeted}))
       .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
   },
 
   nukeAll = (targs, token) => dispatch => {
-    axios.post(`${baseURL}/api/nuke`, targs, header(token))
+    let buster = Math.random()*10000000;
+    axios.post(`${baseURL}/api/nuke/${buster}`, targs, header(token))
       .then(res => dispatch({type: FULL_NUKED, payload: res.data}))
       .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
   },
