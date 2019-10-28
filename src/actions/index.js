@@ -24,15 +24,16 @@ export const
   },
 
   sendMsg = (pl, token, sk=null) => dispatch => {
-    let msg = {...pl};
+    let msg = {...pl}, buster = Math.random()*10000000;
     if(sk) msg.msg = encr(pl.msg, sk);
-    axios.post(`${baseURL}/api/send`, msg, header(token))
+    axios.post(`${baseURL}/api/send/${buster}`, msg, header(token))
       .then(res => dispatch({type: SENT, payload: pl}))
       .catch(err => dispatch({type: SEND_FAIL, payload: err}))
   },
 
   getMsg = (to, token) => dispatch => {
-    axios.post(`${baseURL}/api/msgs`, to, header(token))
+    let buster = Math.random()*10000000;
+    axios.post(`${baseURL}/api/msgs/${buster}`, to, header(token))
       .then(res => dispatch({type: RECEIVED, payload: res.data}))
       .catch(err => dispatch({type: REC_FAIL, payload: err}))
   },
