@@ -114,6 +114,7 @@ updateContact = (state, target, newDummy) => { //renames 10-digit ID to user's p
 targetNuke = (state, target) => { //deletes partner data from store as part of your own nuke request
   let ns = {...state};
   del(ns.myIds, ns.keyring[target].me);
+  delete ns.prohib[target];
   delete ns.msgs[target];
   delete ns.keyring[target];
   return ns
