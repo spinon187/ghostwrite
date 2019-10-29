@@ -6,6 +6,7 @@ import Messages from './Messages';
 import WaitList from './WaitList';
 import styled from 'styled-components';
 import ConnectSelect from './ConnectSelect';
+import Overlay from './Overlay';
 
 
 //palette: #D1D1D1 #DBDBDB #85C7F2 #636363 #4C4C4C
@@ -20,7 +21,8 @@ class Main extends Component {
       waiting: [],
       active: null,
       history: [],
-      editingName: false
+      editingName: false,
+      overlayText: null
     }
   }
 
@@ -116,6 +118,10 @@ class Main extends Component {
     this.setState({editingName: toggle})
   }
 
+  openOverlay = type => {
+    this.setState({overlayText: type})
+  }
+
   componentDidMount(){
     return !this.props.uid
     ? this.register()
@@ -133,6 +139,7 @@ class Main extends Component {
         privKey={this.props.privKey}
         declineReq={this.declineReq}
         prohib={this.props.prohib}
+        openOverlay={this.openOverlay}
       />
       :<Messages
         uid={this.props.uid}
@@ -144,12 +151,18 @@ class Main extends Component {
         update={this.props.updateContact}
         editingName={this.state.editingName}
         toggle={this.editFormToggle}
+        openOverlay={this.openOverlay}
       />
 
     return (
       <MBox>
         <header><h1>ghostwrite</h1></header>
+        <Overlay 
+          switchTextType={this.state.overlayText}
+          openOverlay={this.openOverlay}
+        />
         <div className='m-body'>
+
           <Reg 
             uid={this.props.uid}
             regging={this.props.regging}
@@ -329,6 +342,20 @@ const MBox = styled.div`
     .button-wrapper {
       width: 20%;
     }
+    .ellipsis-wrapper {
+      // display: block;
+      white-space: nowrap;
+      min-width: 0;
+      // max-width: 100px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      // background-color: red;
+      h1 {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
     .body-columns {
       display: flex;
       height: 90%;
@@ -391,10 +418,20 @@ const MBox = styled.div`
         align-items: center;
         // width: 100%;
         // border: 1px solid red;
+        // max-width: 210px;
         padding: .2rem .4rem;
         border-bottom: 2px solid #636363;
-        
-        p {color: #4C4C4C; font-size: 1rem;}
+
+
+        p {
+          color: #4C4C4C;
+          font-size: 1rem;
+          white-space: nowrap;
+          min-width: 0;
+          // max-width: 100px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
         &:hover{
           cursor: pointer;
         }
@@ -410,9 +447,6 @@ const MBox = styled.div`
       .active {
         background-color: #85C7F2;
         color: #DBDBDB;
-      }
-      .contact-bar {
-        justify-
       }
     }
     .msg-history{

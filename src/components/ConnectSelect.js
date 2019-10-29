@@ -37,6 +37,7 @@ class ConnectSelect extends React.Component {
     e.preventDefault();
     if(this.props.prohib[this.state.to]){
       //custom error popup
+      this.props.openOverlay('dupe number')
     }
     else if(this.state.to.length === 10) this.props.sendMsg({
       to: this.state.to,

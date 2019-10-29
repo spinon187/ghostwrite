@@ -32,7 +32,7 @@ const Messages = props => {
   body = props.partner
     ? <div className='msg-history'>
         <div className='msg-header'>
-          <div className='id-wrapper msg-id'><h1>{props.partner.dummyID}</h1></div>
+          <div className='id-wrapper msg-id'><div className='ellipsis-wrapper'><h1>{props.partner.dummyID}</h1></div></div>
           <div className='button-wrapper'><i className="material-icons edit-icon" onClick={e => props.toggle(e)}>edit</i></div>
           <div className='button-wrapper'><i className="material-icons" onClick={() => props.targetNuke(props.active)}>block</i></div>
         </div>
