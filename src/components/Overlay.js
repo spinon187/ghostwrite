@@ -37,10 +37,10 @@ const Overlay = props => {
     <OLBox>
       <div className='transparency'></div>
       <div className='ol-text'>
-        {overlaySwitch(props.switchTextType)}
-        <div className='button-wrapper'>
+        {overlaySwitch(props.switchTextType, props.close, props.func)}
+        {/* <div className='button-wrapper'>
             <i className="material-icons approve" onClick={() => props.openOverlay(null)}>check_circle_outline</i>
-        </div>
+        </div> */}
       </div>
     </OLBox>
   )

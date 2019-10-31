@@ -12,7 +12,6 @@ import Overlay from './Overlay';
 //palette: #D1D1D1 #DBDBDB #85C7F2 #636363 #4C4C4C
 
 
-
 class Main extends Component {
   constructor(props){
     super(props);
@@ -80,10 +79,10 @@ class Main extends Component {
   }
 
   checkPulse = () => {
-    this.check();
+    if(!document.hidden) this.check();
     setTimeout(() => {
       this.checkPulse()
-    }, this.state.active ? 1000 : 1500)
+    }, 1000);
   }
 
   clearWait = () => {
@@ -118,7 +117,9 @@ class Main extends Component {
     this.setState({editingName: toggle})
   }
 
-  openOverlay = type => {
+  olFunc = func => func;
+
+  openOverlay = (type) => {
     this.setState({overlayText: type})
   }
 
@@ -152,6 +153,7 @@ class Main extends Component {
         editingName={this.state.editingName}
         toggle={this.editFormToggle}
         openOverlay={this.openOverlay}
+        close={() => this.openOverlay(null)}
       />
 
     return (
@@ -160,6 +162,7 @@ class Main extends Component {
         <Overlay 
           switchTextType={this.state.overlayText}
           openOverlay={this.openOverlay}
+          close={() => this.openOverlay(null)}
         />
         <div className='m-body'>
 
