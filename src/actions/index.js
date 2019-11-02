@@ -10,7 +10,7 @@ export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT
 const buster = () => Math.floor(Math.random()*10000000);
 
 const header = token => {
-  return {headers: {Authorization: token}}
+  return {headers: {token: token}}
 }
 
 export const 
