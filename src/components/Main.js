@@ -21,7 +21,8 @@ class Main extends Component {
       active: null,
       history: [],
       editingName: false,
-      overlayText: null
+      overlayText: null,
+      helpMode: false
     }
   }
 
@@ -67,6 +68,7 @@ class Main extends Component {
     this.props.nukeAll(targs, this.props.auth);
     // setTimeout(() => localStorage.clear(), 100);
     // setTimeout(() => window.location.reload(true), 2100);
+    this.openOverlay(null);
     localStorage.clear();
     window.location.reload(true)
   }
@@ -101,8 +103,8 @@ class Main extends Component {
     }, 210);
   }
 
-  targetNuke = target => {
-    this.props.targetNuke(target, this.props.keyring[target].me, this.props.auth);
+  targetNuke = () => {
+    this.props.targetNuke(this.state.active, this.props.keyring[this.state.active].me, this.props.auth);
     setTimeout(() => {this.setState({active: null})}, 200);
   }
 
@@ -112,12 +114,12 @@ class Main extends Component {
 
   editFormToggle = e => {
     e.preventDefault();
-    let toggle = !this.state.editingName
-    ? true : false
-    this.setState({editingName: toggle})
+    this.setState({editingName: !this.state.editingName})
   }
 
-  olFunc = func => func;
+  toggleHelp = () => {
+    this.setState({helpMode: !this.state.helpMode})
+  }
 
   openOverlay = (type) => {
     this.setState({overlayText: type})
@@ -141,6 +143,7 @@ class Main extends Component {
         declineReq={this.declineReq}
         prohib={this.props.prohib}
         openOverlay={this.openOverlay}
+        helpMode={this.state.helpMode}
       />
       :<Messages
         uid={this.props.uid}
@@ -153,7 +156,7 @@ class Main extends Component {
         editingName={this.state.editingName}
         toggle={this.editFormToggle}
         openOverlay={this.openOverlay}
-        close={() => this.openOverlay(null)}
+        helpMode={this.state.helpMode}
       />
 
     return (
@@ -162,17 +165,19 @@ class Main extends Component {
         <Overlay 
           switchTextType={this.state.overlayText}
           openOverlay={this.openOverlay}
-          close={() => this.openOverlay(null)}
+          nukeAll={this.nukeAll}
+          targetNuke={this.targetNuke}
         />
         <div className='m-body'>
-
           <Reg 
             uid={this.props.uid}
             regging={this.props.regging}
             regged={this.props.regged} 
             register={this.register}
             nukeAll={this.nukeAll}
+            openOverlay={this.openOverlay}
             used={this.props.keyring ? true : false}
+            helpMode={this.state.helpMode}
           />
           <div className='body-columns'>
             <WaitList 
@@ -181,6 +186,7 @@ class Main extends Component {
               active={this.state.active}
               crCount={this.props.crCount}
               clearWait={this.clearWait}
+              helpMode={this.state.helpMode}
             />
           <div className='msg-column'>
             {conditional}

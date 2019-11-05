@@ -12,9 +12,9 @@ const Reg = props => {
   //   : clear()
   // }
 
-  const reset = () => {
-    props.nukeAll()
-  }
+  // const reset = () => {
+  //   props.nukeAll()
+  // }
 
   const regLoader = !props.uid
     ? <div className='loadscreen'>
@@ -24,7 +24,7 @@ const Reg = props => {
     : <div className='user-number'>
         <div className='dummy'></div>
         <div className='id-wrapper'><h1>{props.uid}</h1></div>
-        <div className='button-wrapper'><i className="material-icons" onClick={reset}>block</i></div>
+        <div className='button-wrapper'><i className="material-icons" onClick={() => props.openOverlay('full nuke')}>block</i></div>
       </div>
 
   return(
