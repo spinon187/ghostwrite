@@ -178,6 +178,7 @@ class Main extends Component {
             openOverlay={this.openOverlay}
             used={this.props.keyring ? true : false}
             helpMode={this.state.helpMode}
+            toggleHelp={this.toggleHelp}
           />
           <div className='body-columns'>
             <WaitList 
@@ -231,6 +232,9 @@ const MBox = styled.div`
       cursor: pointer;
     }
     align-self: center;
+  }
+  .approve {
+    color: #00ff04;
   }
   .edit-icon {
     color: #85C7F2;
@@ -343,10 +347,10 @@ const MBox = styled.div`
       // padding-left: 19%;
     }
     .dummy {
-      width: 20%;
+      width: 40%;
     }
     .id-wrapper {
-      width: 60%;
+      width: 40%;
     }
     .button-wrapper {
       width: 20%;

@@ -42,7 +42,36 @@ export const overlaySwitch = input => {
           <p>WARNING: Cannot be undone!</p>
         </>
       )
-    
+    case 'id help':
+      return (
+        <>
+          <p>This is your current Ghostwrite ID number.</p>
+          <br /><br />
+          <p>Share it with other people so they can connect with you!</p>
+        </>
+      )
+    case 'contact help':
+      return (
+        <>
+          <p>This is a request from someone who wants to connect with you.</p>
+          <br /><br />
+          <p>Make sure you know who they are before accepting!</p>
+        </>
+      )
+    case 'accept contact help':
+      return (
+        <>
+          <p>This button will add the user to your contact list.</p>
+        </>
+      )
+    case 'reject contact help':
+      return (
+        <>
+          <p>This button will decline the offer to connect.</p>
+          <br /><br />
+          <p>The sender won't be notified that you've done this.</p>
+        </>
+      )
     
     default:
       return null
