@@ -35,6 +35,7 @@ reqAccepted = (state, msg) => {
   state.msgs[you] = []; //adds a message array for partner
   state.myIds.push(me); //adds new ZK alias to set for DB queries
   state.prohib[msg.from] = true; //adds connection ID to prevent dupes
+  del(state.pending, msg.from)
   return state
 },
 
@@ -47,7 +48,7 @@ reqReceived = (state, msg) => { //on receiving connection request, prepares data
   return state
 },
 
-//next two helper functions handle message sending
+//next three helper functions handle message sending
 sendMsg = (state, msg) => { //adds own message to the parent partner object in the message store
   state.msgs[msg.to].unshift({created: msg.created, msg: msg.msg, me: true});
   return state
@@ -67,6 +68,11 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
   delete state.conReqs[msg.to]; //clears request from waiting list
   state.crCount--; //decrements the number of unresolved connection requests
   return state
+},
+
+sendReq = (state, msg) => {
+  state.pending.push(msg.to);
+  return state;
 }
 
 export const rcvHandler = (state, msgs) => {
@@ -86,9 +92,9 @@ sendHandler = (state, msg) => {
   return(
     msg.accept
       ? sendAccept(ns, msg)
-    : !msg.request
-      ? sendMsg(ns, msg)
-    : ns
+    : msg.request
+      ? sendReq(ns, msg)
+    : sendMsg(ns, msg)
   )
 },
 
@@ -118,4 +124,10 @@ targetNuke = (state, target) => { //deletes partner data from store as part of y
   delete ns.msgs[target];
   delete ns.keyring[target];
   return ns
+},
+
+clearPending = (state, target) => {
+  let ns = {...state};
+  del(ns.pending, target);
+  return ns;
 }

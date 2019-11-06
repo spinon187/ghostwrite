@@ -1,5 +1,5 @@
 import {
-  REGGING,REGGED,REG_FAIL,SENT,SEND_FAIL,RECEIVED,REC_FAIL,FULL_NUKED,TAR_NUKED,NUKE_FAIL,VIEW,DECLINE,UPDATING_CONTACT
+  REGGING,REGGED,REG_FAIL,SENT,SEND_FAIL,RECEIVED,REC_FAIL,FULL_NUKED,TAR_NUKED,NUKE_FAIL,VIEW,DECLINE,UPDATING_CONTACT,CLEAR_PENDING
 } from '../actions/index';
 import {keyPair} from '../components/Lockbox';
 import * as utils from '../utils/ReducerUtils';
@@ -17,7 +17,8 @@ const initialState = {
   conReqs: {}, //connection requests from other users awaiting acceptance/rejection
   crCount: 0, //number of connection requests awaiting resolution
   myIds: [], //store for 10 digit connection ID plus all ZK aliases for server queries,
-  prohib: {} //store for connection IDs to prevent duplicates
+  prohib: {}, //store for connection IDs to prevent duplicates,
+  pending: [] //pending contact requests
 };
 
 export const rootReducer = (state = initialState, action) => {
@@ -77,6 +78,8 @@ export const rootReducer = (state = initialState, action) => {
       return utils.clearConnect(state, action.payload)
     case UPDATING_CONTACT:
       return utils.updateContact(state, action.payload.target, action.payload.dummyID)
+    case CLEAR_PENDING:
+      return utils.clearPending(state, action.payload)
     default:
       return state;
   }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact} from '../actions/index';
+import {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact, clearPendingEntry} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
@@ -144,6 +144,8 @@ class Main extends Component {
         prohib={this.props.prohib}
         openOverlay={this.openOverlay}
         helpMode={this.state.helpMode}
+        clearPendingEntry={this.props.clearPendingEntry}
+        pending={this.props.pending}
       />
       :<Messages
         uid={this.props.uid}
@@ -218,7 +220,8 @@ const mapStateToProps = state => {
     conReqs: state.conReqs,
     myIds: state.myIds,
     crCount: state.crCount,
-    prohib: state.prohib
+    prohib: state.prohib,
+    pending: state.pending
   }
 }
 
@@ -546,4 +549,4 @@ const MBox = styled.div`
   }
 `
 
-export default connect(mapStateToProps, {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact})(Main);
+export default connect(mapStateToProps, {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact, clearPendingEntry})(Main);

@@ -68,10 +68,21 @@ class ConnectSelect extends React.Component {
       : this.declineReq(e, targ)
   }
 
+  pendingFunc = () => {
+    return this.props.helpMode
+      ? this.props.openOverlay('pending help')
+      : null
+  }
+
+  clearFunc = targ => {
+    return this.props.helpMode
+      ? this.props.openOverlay('pending clear help')
+      : this.props.clearPendingEntry(targ)
+  }
+
   render(){
 
-    const waitingConnections = 
-      this.props.wc
+    const waitingConnections = this.props.wc
       ? Object.keys(this.props.wc).map(request => {
         return (
           <div className='request' key={request}>
@@ -87,11 +98,30 @@ class ConnectSelect extends React.Component {
           </div>
         )
       })
-      : null
+      : null,
+      
+    pendingConnections = this.props.pending
+      ? this.props.pending.map(request => {
+        return (
+          <div className='request' key={request}>
+            <div className='id-wrapper'>
+              <h2 onClick={this.pendingFunc}>{request}</h2>
+            </div>
+            <div className='button-wrapper'>
+              <i className="material-icons cancel" onClick={() => this.clearFunc(request)}>block</i>
+            </div>
+          </div>
+        )
+      })
+    : null,
 
-    const textToggle = this.props.wc && Object.keys(this.props.wc).length
+    textToggle = this.props.wc && Object.keys(this.props.wc).length
     ? <h2>Contact requests:</h2>
-    : <h2>No new contact requests</h2>
+    : <h2>No new contact requests</h2>,
+
+    pendingToggle = this.props.pending.length
+      ? <h2>Outgoing contact requests:</h2>
+      : <h2>No outgoing requests</h2>
 
     return (
       <>
@@ -113,6 +143,8 @@ class ConnectSelect extends React.Component {
         </form>
         <div>{textToggle}</div>
         {waitingConnections}
+        <div>{pendingToggle}</div>
+        {pendingConnections}
       </>
     )
   }

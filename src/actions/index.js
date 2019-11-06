@@ -5,7 +5,7 @@ const baseURL = 'https://specback.herokuapp.com';
 // const baseURL = 'http://localhost:7777'
 
 
-export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RECEIVED = 'RECEIVED', REC_FAIL = 'REC_FAIL', FULL_NUKED = 'FULL_NUKED', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', VIEW = 'VIEW', DECLINE = 'DECLINE', UPDATING_CONTACT = 'UPDATING_CONTACT';
+export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RECEIVED = 'RECEIVED', REC_FAIL = 'REC_FAIL', FULL_NUKED = 'FULL_NUKED', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', VIEW = 'VIEW', DECLINE = 'DECLINE', UPDATING_CONTACT = 'UPDATING_CONTACT', CLEAR_PENDING = 'CLEAR_PENDING';
 
 const buster = () => Math.floor(Math.random()*10000000);
 
@@ -57,4 +57,8 @@ export const
 
   updateContact = (target, dummyID) => dispatch => {
     dispatch({type: UPDATING_CONTACT, payload: {target: target, dummyID: dummyID}})
+  },
+
+  clearPendingEntry = target => dispatch => {
+    dispatch({type: CLEAR_PENDING, payload: target});
   }
