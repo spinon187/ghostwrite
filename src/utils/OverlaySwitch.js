@@ -95,11 +95,25 @@ export const overlaySwitch = input => {
         </>
       )
     case 'wl new help':
-        return (
-          <>
-            <p>This will return you to the contact management screen.</p>
-          </>
-        )
+      return (
+        <>
+          <p>This will return you to the contact management screen.</p>
+        </>
+      )
+    case 'pending help':
+      return (
+        <>
+          <p>This is a list of the numbers you've sent requests to.</p>
+        </>
+      )
+    case 'pending clear help':
+      return (
+        <>
+          <p>This button clears this number from your pending contact request list.</p>
+          <br /><br />
+          <p>NOTE: This does not withdraw the request! Invitations you've sent can still be accepted.</p>
+        </>
+      )
     default:
       return null
   }
