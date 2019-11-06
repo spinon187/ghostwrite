@@ -49,6 +49,25 @@ class ConnectSelect extends React.Component {
     this.setState({to: ''})
   }
 
+  //pulls up informational overaly if help mode is active, runs functions if not
+  reqFunc = () => {
+    return this.props.helpMode
+      ? this.props.openOverlay('contact help')
+      : null
+  }
+
+  acceptFunc = (e, targ) => {
+    return this.props.helpMode
+      ? this.props.openOverlay('accept contact help')
+      : this.acceptReq(e, targ)
+  }
+
+  declineFunc = (e, targ) => {
+    return this.props.helpMode
+      ? this.props.openOverlay('reject contact help')
+      : this.declineReq(e, targ)
+  }
+
   render(){
 
     const waitingConnections = 
@@ -57,13 +76,13 @@ class ConnectSelect extends React.Component {
         return (
           <div className='request' key={request}>
             <div className='id-wrapper'>
-              <h2>{request}</h2>
+              <h2 onClick={this.reqFunc}>{request}</h2>
             </div>
             <div className='button-wrapper'>
-              <i className="material-icons approve" onClick={e => this.acceptReq(e, this.props.wc[request])}>check_circle_outline</i>
+              <i className="material-icons approve" onClick={e => this.acceptFunc(e, this.props.wc[request])}>check_circle_outline</i>
             </div>
             <div className='button-wrapper'>
-              <i className="material-icons cancel" onClick={e => this.declineReq(e, this.props.wc[request])}>block</i>
+              <i className="material-icons cancel" onClick={e => this.declineFunc(e, this.props.wc[request])}>block</i>
             </div>
           </div>
         )

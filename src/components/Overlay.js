@@ -68,6 +68,7 @@ const OLBox = styled.div`
     flex-direction: column;
     align-items: center;
     .ol-text {
+      max-width: 400px;
       text-align: left;
       p {
         color: #636363;

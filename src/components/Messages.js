@@ -27,14 +27,31 @@ const Messages = props => {
     })
     : null,
 
+  //help mode conditional functions
+  toggleFunc = e => {
+    return props.helpMode
+      ? props.openOverlay('edit display name help')
+      : props.toggle(e)
+  },
 
+  partnerFunc = () => {
+    return props.helpMode
+      ? props.openOverlay('partner id help')
+      : null
+  },
+
+  nukeFunc = () => {
+    return props.helpMode
+      ? props.openOverlay('target nuke help')
+      : props.openOverlay('nuke target')
+  },
 
   body = props.partner
     ? <div className='msg-history'>
         <div className='msg-header'>
-          <div className='id-wrapper msg-id'><div className='ellipsis-wrapper'><h1>{props.partner.dummyID}</h1></div></div>
-          <div className='button-wrapper'><i className="material-icons edit-icon" onClick={e => props.toggle(e)}>edit</i></div>
-          <div className='button-wrapper'><i className="material-icons" onClick={() => props.openOverlay('nuke target')}>block</i></div>
+          <div className='id-wrapper msg-id'><div className='ellipsis-wrapper'><h1 onClick={partnerFunc}>{props.partner.dummyID}</h1></div></div>
+          <div className='button-wrapper'><i className="material-icons edit-icon" onClick={e => toggleFunc(e)}>edit</i></div>
+          <div className='button-wrapper'><i className="material-icons" onClick={nukeFunc}>block</i></div>
         </div>
         <div className={toggled}>
           <EditDisplayName

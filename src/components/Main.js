@@ -157,11 +157,15 @@ class Main extends Component {
         toggle={this.editFormToggle}
         openOverlay={this.openOverlay}
         helpMode={this.state.helpMode}
-      />
+      />,
+    
+    headerSwap = this.state.helpMode
+      ? <div className='help-mode-engaged'><p>You've activated Help Mode! Click anything for an explanation of what it does.</p></div>
+      : <h1>ghostwrite</h1>
 
     return (
       <MBox>
-        <header><h1>ghostwrite</h1></header>
+        <header>{headerSwap}</header>
         <Overlay 
           switchTextType={this.state.overlayText}
           openOverlay={this.openOverlay}
@@ -188,6 +192,7 @@ class Main extends Component {
               crCount={this.props.crCount}
               clearWait={this.clearWait}
               helpMode={this.state.helpMode}
+              openOverlay={this.openOverlay}
             />
           <div className='msg-column'>
             {conditional}
@@ -236,7 +241,10 @@ const MBox = styled.div`
   .approve {
     color: #00ff04;
   }
-  .edit-icon {
+  .active-help {
+    color: yellow;
+  }
+  .edit-icon, .inactive-help {
     color: #85C7F2;
   }
   header {
@@ -244,6 +252,12 @@ const MBox = styled.div`
       color: #85C7F2;
       font-size: 3.5rem;
       font-family: 'Righteous', cursive;
+    }
+    .help-mode-engaged {
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
   p, h1, h2, h3, h4, ul {
@@ -350,7 +364,7 @@ const MBox = styled.div`
       width: 40%;
     }
     .id-wrapper {
-      width: 40%;
+      width: 60%;
     }
     .button-wrapper {
       width: 20%;

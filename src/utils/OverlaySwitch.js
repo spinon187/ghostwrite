@@ -29,7 +29,7 @@ export const overlaySwitch = input => {
     case 'full nuke help':
       return (
         <>
-          <p>Assigns you a new number and deletes your conversations from your previous contacts' devices.</p>
+          <p>This Assigns you a new number and deletes your conversations from your previous contacts' devices.</p>
           <br /><br />
           <p>WARNING: Cannot be undone! If you want to continue a conversation with someone, make sure you've got their number recorded somewhere outside of Ghostwrite!</p>
         </>
@@ -37,7 +37,7 @@ export const overlaySwitch = input => {
     case 'target nuke help':
       return (
         <>
-          <p>Deletes this contact from your device and deletes you from their device.</p>
+          <p>This deletes this contact from your device and deletes you from their device.</p>
           <br /><br />
           <p>WARNING: Cannot be undone!</p>
         </>
@@ -72,7 +72,34 @@ export const overlaySwitch = input => {
           <p>The sender won't be notified that you've done this.</p>
         </>
       )
-    
+    case 'edit display name help':
+      return (
+        <>
+          <p>This allows you to update the name for this contact so you don't have to remember who's who based on numbers alone.</p>
+          <br /><br />
+          <p>Your contacts won't be able to see this.</p>
+        </>
+      )
+    case 'partner id help':
+      return (
+        <>
+          <p>This is who you're talking to right now!</p>
+          <br /><br />
+          <p>You can edit their name with the button to the right.</p>
+        </>
+      )
+    case 'wl contact help':
+      return (
+        <>
+          <p>This is a list of your contacts!</p>
+        </>
+      )
+    case 'wl new help':
+        return (
+          <>
+            <p>This will return you to the contact management screen.</p>
+          </>
+        )
     default:
       return null
   }

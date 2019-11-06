@@ -12,6 +12,19 @@ const WaitList = props => {
     return x === props.active ? 'waitlist-item active' : 'waitlist-item'
   },
 
+  //help mode conditional functions
+  contactFunc = () => {
+    return props.helpMode
+      ? props.openOverlay('wl contact help')
+      : null
+  },
+
+  newContactFunc = () => {
+    return props.helpMode
+      ? props.openOverlay('wl new help')
+      : props.setActive(null)
+  },
+
   display = 
     !props.list || props.list === {}
     ? null
@@ -24,8 +37,8 @@ const WaitList = props => {
 
   return (
     <div className='waitlist'>
-      <div className={`waitlist-item contact-bar ${highlight(null)}`} onClick={() => props.setActive(null)}><p>New Contacts</p>{noZero(props.crCount)}</div>
-      <h2>Messages</h2>
+      <div className={`waitlist-item contact-bar ${highlight(null)}`} onClick={newContactFunc}><p>New Contacts</p>{noZero(props.crCount)}</div>
+      <h2 onClick={contactFunc}>Messages</h2>
       {display}
     </div>
   )
