@@ -27,15 +27,17 @@ class Main extends Component {
   }
 
   register = () => {
-    if(this.props.regged !== true){
-      let id = Math.floor(Math.random() * 8999999999 + 1000000000).toString();
+    if(!this.props.regged){ //auto registration function
+      let id = Math.floor(Math.random() * 8999999999 + 1000000000).toString(); //random 10 digit id
       this.props.register({uid: id});
-      setTimeout(() => this.register(), 2500)
+      //if server doesn't okay it because it happened to supply an already registered ID or some other reason, it will try to register again after a few seconds. Otherwise it starts the server check loop
+      setTimeout(() => this.register(), 2500) 
     } else {
       this.checkPulse();
     }
   }
 
+  //messages are added to their respective storage arrays in an only semi-sorted order, and it's possible for message ordering to get mixed up in the event of highly active conversation or internet problems. On-demand sort function irons this behavior out
   sortMsgs = (partner=null) => {
     if(partner && partner === this.state.active && this.props.msgs[partner]){
       let tempArr = [...this.props.msgs[partner]];
@@ -47,52 +49,57 @@ class Main extends Component {
   }
 
   sendMsg = msg => {
+    //resets unread messages for the active partner to zero, since it can be assumed if you're sending a message, you've seen any new ones
     this.clearWait();
-    if(msg.accept || msg.request){
-      this.props.sendMsg(msg, this.props.auth)
-    } else {
-      this.props.sendMsg(msg, this.props.auth, this.props.keyring[msg.to].sk)
-    };
+    //contact requests and acceptances don't require a shared secret key as a parameter, only the server authentication token, but normal messages need both
+    (msg.accept || msg.request)
+      ? this.props.sendMsg(msg, this.props.auth)
+      : this.props.sendMsg(msg, this.props.auth, this.props.keyring[msg.to].sk)
     setTimeout(() => {this.sortMsgs(this.state.active)}, 250);
   }
 
   getMsg = () => {
+    //server is expecting an array of IDs to check for so this function needs the 10 digit plus any aliases the user's established with successful contacts
+    //these IDs are also contained in the store's keyring objects but it's easier for this function to track them separately
     this.props.getMsg({to: [...this.props.myIds]}, this.props.auth);
     if(this.state.active) this.sortMsgs(this.state.active)
   }
 
   nukeAll = () => {
+    //adds all partner aliases and own aliases to array in order to clear any outstanding ones remaining on the server at the time of user deletion
     let targs = Object.entries({...this.props.keyring})
       .map(to => ({to: to[0], from: to[1].me}))
+    //also adds the 10 digit ID to clear any connection requests for or by the user
     targs.push({to: null, from: this.props.uid})
     this.props.nukeAll(targs, this.props.auth);
-    // setTimeout(() => localStorage.clear(), 100);
-    // setTimeout(() => window.location.reload(true), 2100);
-    this.openOverlay(null);
+    this.openOverlay(null); //closes confirmation box
     localStorage.clear();
     window.location.reload(true)
   }
 
   check = () => {
+     //checks the server for incoming messages
     if(this.props.uid) this.getMsg();
+    //if partner is removed either by incoming or outgoing nuke request, resets the active partner to null and returns user to the contacts manager screen
     if(!this.props.keyring[this.state.active]){
       this.setState({active: null});
     }
   }
 
   checkPulse = () => {
-    if(!document.hidden) this.check();
+    if(!document.hidden) this.check(); //only checks server if app is active tab
     setTimeout(() => {
       this.checkPulse()
-    }, 1000);
+    }, 1000); //recurs every second unless the above condition is false
   }
 
-  clearWait = () => {
+  clearWait = () => { //sets unread messages for active partner to zero
     if(this.state.active) this.props.clearWait(this.state.active)
   }
 
   updateActive = (targ=null) => {
     this.check();
+    //uses small setTimeouts to prevent behavior in which the state updates were lagging behind the message sorting, leading to mismatched message histories
     setTimeout(() => {
       this.setState(() => {
         return {active: targ}
@@ -103,21 +110,24 @@ class Main extends Component {
     }, 210);
   }
 
-  targetNuke = () => {
+  targetNuke = () => { //deletes contact and sends message to contact with nuke=true
     this.props.targetNuke(this.state.active, this.props.keyring[this.state.active].me, this.props.auth);
+    this.openOverlay(null); //closes confirmation box
     setTimeout(() => {this.setState({active: null})}, 200);
   }
 
-  editFormToggle = e => {
+  editFormToggle = e => { //toggles edit contact name form on messaging screen
     e.preventDefault();
     this.setState({editingName: !this.state.editingName})
   }
 
-  toggleHelp = () => {
+  toggleHelp = () => { //activates help mode, see OverlaySwitch.js util
     this.setState({helpMode: !this.state.helpMode})
   }
 
-  openOverlay = (type) => {
+  openOverlay = type => {
+    //sets key in state equal to one of the strings in the OverlaySwitch.js switch
+    //opens overlay with any value, null closes it
     this.setState({overlayText: type})
   }
 
@@ -129,7 +139,8 @@ class Main extends Component {
 
   render(){
 
-    let conditional = this.state.active === null
+    let conditional = !this.state.active
+      //fills in contacts manager or messaging screen depending on active partner
       ?<ContactsManager
         uid={this.props.uid}
         pubKey={this.props.pubKey}
@@ -158,6 +169,7 @@ class Main extends Component {
       />,
     
     headerSwap = this.state.helpMode
+      //logo if help mode off, help mode help if help mode on
       ? <div className='help-mode-engaged'><p>You've activated Help Mode! Click anything for an explanation of what it does.</p></div>
       : <h1>ghostwrite</h1>
 

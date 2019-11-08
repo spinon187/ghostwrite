@@ -5,18 +5,18 @@ import styled from 'styled-components';
 
 const Messages = props => {
 
-  let toggled = props.editingName
+  let toggled = props.editingName //toggles name editing field
   ? 'edit-name'
   : 'edit-name hidden'
 
-  const formatDate = date => {
+  const formatDate = date => { //renders the date readable
     date = new Date(date);
     return `${date.getMonth() + 1}-${date.getDate()} ${('0'+date.getHours()).slice(-2)}:${('0'+date.getMinutes()).slice(-2)}`
   },
   
-  history = props.partner 
+  history = props.partner //maps message text array into JSX
     ? props.history.map((msg, index) =>{
-      return (msg.me)
+      return (msg.me) //if message has 'me' bool true, message anchors on right, else message anchors on left
       ? <div className='msg sent' key={index}>
           <p>{msg.msg}</p>
           <p className='send-date'>{formatDate(msg.created)}</p>

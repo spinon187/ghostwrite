@@ -21,9 +21,10 @@ const Reg = props => {
     : 'inactive-help'
 
   const regLoader = !props.uid
+    //shows loading screen if registration function is running, user header if not
     ? <div className='loadscreen'>
         <p className='loading-header'>Finding you a new number...</p>
-        <div className="lds-ripple"><div></div><div></div></div>
+        <div className="lds-ripple"><div></div><div></div></div> {/* css ripple animation */}
       </div>
     : <div className='user-number'>
         <div className='dummy'></div>

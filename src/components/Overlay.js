@@ -4,14 +4,14 @@ import {overlaySwitch} from '../utils/OverlaySwitch';
 
 const Overlay = props => {
 
-  const func = 
+  const func = //calls the corresponding deletion function upon confirmation
     props.switchTextType === 'nuke target'
       ? props.targetNuke
     : props.switchTextType === 'full nuke'
       ? props.nukeAll
     : null
 
-  const buttons = f =>
+  const buttons = f => //function rendering single button on informational popups, and accept/decline buttons on confirmation popups
     f
       ? (
         <>

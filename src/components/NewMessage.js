@@ -5,7 +5,7 @@ class NewMessage extends React.Component {
     super(props);
     this.state = {
       msg: '',
-      buttonFade: 'faded'
+      buttonFade: 'faded' //send button only lights up when you've typed something
     }
   }
 
@@ -17,6 +17,7 @@ class NewMessage extends React.Component {
   sendMsg = e => {
     if(this.state.msg.length){
       e.preventDefault()
+      //to and from should both be ZK aliases, not 10 digit IDs
       this.props.sendMsg({to: this.props.target, from: this.props.me, msg: this.state.msg, created: Date.now()});
       this.setState({msg: ''})
     }

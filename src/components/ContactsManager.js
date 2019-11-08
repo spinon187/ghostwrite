@@ -13,7 +13,7 @@ class ContactsManager extends React.Component {
 
   formTyping = e => {
     e.preventDefault();
-    this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: ''}) //fix this later  
+    this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: ''})
   }
 
   acceptReq = (e, partner) => {
@@ -21,9 +21,11 @@ class ContactsManager extends React.Component {
     this.props.sendMsg({
       to: partner.from,
       from: this.props.uid,
-      msg: 'connection accepted',
+      msg: 'connection accepted', //this isn't necessary, it just looks nice
       key: this.props.pubKey,
-      me: encr(partner.me, partner.sk),
+      //sends two encrypted aliases to partner on acceptance that the server never decodes
+      //any actual text messages will use these aliases for addressing
+      me: encr(partner.me, partner.sk), 
       you: encr(partner.you, partner.sk),
       accept: true
     })
@@ -37,16 +39,16 @@ class ContactsManager extends React.Component {
   sendReq = e => {
     e.preventDefault();
     if(this.props.prohib[this.state.to]){
-      //custom error popup
+      //overlay popup preventing duplicate requests
       this.props.openOverlay('dupe number')
     }
     else if(this.state.to.length === 10) this.props.sendMsg({
       to: this.state.to,
       from: this.props.uid,
-      msg: 'requesting connection',
+      msg: 'requesting connection', //again, not necessary, but looks nice
       request: true,
-      key: this.props.pubKey}
-    );
+      key: this.props.pubKey //public key sent so recipient can generate a shared key right away
+    });
     this.setState({to: ''})
   }
 
@@ -118,6 +120,7 @@ class ContactsManager extends React.Component {
       ? this.props.pending.map(request => {
         return (
           <div className='request' key={request}>
+            <div className='dummy'></div>
             <div className='id-wrapper'>
               <h2 onClick={this.pendingFunc}>{request}</h2>
             </div>
@@ -133,7 +136,7 @@ class ContactsManager extends React.Component {
     ? <h2>Contact requests:</h2>
     : <h2 onClick={this.emptyListFunc}>No new contact requests</h2>,
 
-    pendingToggle = this.props.pending.length
+    pendingToggle = this.props.pending && this.props.pending.length
       ? <h2>Outgoing contact requests:</h2>
       : null
 
@@ -176,6 +179,7 @@ const CMBox = styled.div`
   }
   .request {
     display: flex;
+    width: 100%;
     padding-top: 1rem;
     align-items: center;
     .button-wrapper {

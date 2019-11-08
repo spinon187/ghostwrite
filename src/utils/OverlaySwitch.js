@@ -4,7 +4,7 @@ export const overlaySwitch = input => {
   switch(input){
     case 'test':
       return <p>this is a test</p>
-    case 'dupe number':
+    case 'dupe number': //prevents user from entering their own number or a number they already connected to
       return (
         <>
           <p>You've already entered that number.</p>
@@ -12,13 +12,13 @@ export const overlaySwitch = input => {
           <p>Please select a new one.</p>
         </>
       )
-    case 'nuke target':
+    case 'nuke target': //confirmation for deleting a conversation with a partner
       return (
         <>
           <p>Are you sure you want to delete this contact?</p>
         </>
       )
-    case 'full nuke':
+    case 'full nuke': //confirmation for deleting current user and refreshing
       return (
         <>
           <p>Are you sure you want to reset Ghostwrite?</p>

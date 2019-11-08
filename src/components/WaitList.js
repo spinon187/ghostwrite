@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 const WaitList = props => {
 
-  const noZero = count => {
+  const noZero = count => { //prevents a case of zero unread messages from returning a big red zero
     return count > 0 ? <div className='new-count'>{count}</div> : <div></div>
   },
 
-  highlight = x => {
+  highlight = x => { //highlights active number, null will highlight 'New Contacts'
     return x === props.active ? 'waitlist-item active' : 'waitlist-item'
   },
 
@@ -24,7 +24,7 @@ const WaitList = props => {
       : props.setActive(null)
   },
 
-  display = 
+  display = //only attempts to render list if list is populated
     !props.list || props.list === {}
     ? null
     : Object.keys(props.list).map((id, i) => {
