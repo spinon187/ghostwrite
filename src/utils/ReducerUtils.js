@@ -35,7 +35,7 @@ reqAccepted = (state, msg) => {
   state.msgs[you] = []; //adds a message array for partner
   state.myIds.push(me); //adds new ZK alias to set for DB queries
   state.prohib[msg.from] = true; //adds connection ID to prevent dupes
-  del(state.pending, msg.from)
+  del(state.pending, msg.from) //removes
   return state
 },
 
@@ -71,7 +71,7 @@ sendAccept = (state, msg) => { //grabs prepared data after acceptance and insert
 },
 
 sendReq = (state, msg) => {
-  state.pending.push(msg.to);
+  state.pending.push(msg.to); //adds number to the pending display
   return state;
 }
 
