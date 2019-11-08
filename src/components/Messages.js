@@ -1,6 +1,7 @@
 import React from 'react';
 import NewMessage from './NewMessage';
 import EditDisplayName from './EditDisplayName';
+import styled from 'styled-components';
 
 const Messages = props => {
 
@@ -74,8 +75,91 @@ const Messages = props => {
 
 
   return (
-    <>{body}</>
+    <MsgBox>
+      {body}
+    </MsgBox>
   )
 }
+
+const MsgBox = styled.div`
+  height: 100%;
+  .msg-history{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #636363;
+    .msg-header {
+      width:100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: .4rem 0;
+      .id-wrapper {
+        display: flex;
+        width: 70%;
+        justify-content: flex-start;
+        padding-left: .5rem;
+        margin: 0;
+        .ellipsis-wrapper {
+          white-space: nowrap;
+          min-width: 0;
+          text-overflow: ellipsis;
+          overflow: hidden;
+
+          h1 {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            min-width: 0;
+            color: #DBDBDB;
+            padding-left: .5rem;
+          }
+        }
+      }
+    }
+    .msg-scroll{
+      border-left: 2px solid #636363;
+      display: flex;
+      flex-direction: column-reverse;
+      overflow-y: scroll;
+      height: 80%;
+      .msg {
+        text-align: left;
+        width: 90%;
+        border: 1px solid #4C4C4C;
+        background-color: #85C7F2;
+        padding: .1rem .3rem;
+        border-radius: 5px;
+        margin-bottom: .2rem 0;
+        text-overflow: ellipsis;
+        .send-date {
+          font-size: .8rem;
+        }
+        h3, p {
+          padding-top: .5rem;
+        }
+        h3 {
+          color: #4C4C4C;
+          font-weight: bold;
+        }
+        p {
+          color: #636363;
+          font-size: 1.1rem;
+        }
+      }
+      .sent{
+        align-items: flex-end;
+        align-self: flex-end;
+        p {
+          align-self: flex-start
+        }
+      }
+      .received{
+        align-items: flex-start;
+        align-self: flex-start;
+      }
+    }
+  }
+`
 
 export default Messages;

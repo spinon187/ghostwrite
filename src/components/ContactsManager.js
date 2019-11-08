@@ -1,7 +1,8 @@
 import React from 'react';
-import {encr} from './Lockbox';
+import {encr} from '../utils/Lockbox';
+import styled from 'styled-components';
 
-class ConnectSelect extends React.Component {
+class ContactsManager extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -80,12 +81,25 @@ class ConnectSelect extends React.Component {
       : this.props.clearPendingEntry(targ)
   }
 
+  emptyListFunc = () => {
+    return this.props.helpMode
+      ? this.props.openOverlay('no reqs help')
+      : null
+  }
+
+  headerFunc = () => {
+    return this.props.helpMode
+      ? this.props.openOverlay('cm header help')
+      : null
+  }
+
   render(){
 
     const waitingConnections = this.props.wc
       ? Object.keys(this.props.wc).map(request => {
         return (
           <div className='request' key={request}>
+            <div className='dummy'></div>
             <div className='id-wrapper'>
               <h2 onClick={this.reqFunc}>{request}</h2>
             </div>
@@ -117,15 +131,15 @@ class ConnectSelect extends React.Component {
 
     textToggle = this.props.wc && Object.keys(this.props.wc).length
     ? <h2>Contact requests:</h2>
-    : <h2>No new contact requests</h2>,
+    : <h2 onClick={this.emptyListFunc}>No new contact requests</h2>,
 
     pendingToggle = this.props.pending.length
       ? <h2>Outgoing contact requests:</h2>
-      : <h2>No outgoing requests</h2>
+      : null
 
     return (
-      <>
-        <div><h2>Who would you like to connect with?</h2></div>
+      <CMBox>
+        <div><h2 onClick={this.headerFunc}>Who would you like to connect with?</h2></div>
         <form className='contact-form'>
           <input
             onChange={this.formTyping}
@@ -145,9 +159,40 @@ class ConnectSelect extends React.Component {
         {waitingConnections}
         <div>{pendingToggle}</div>
         {pendingConnections}
-      </>
+      </CMBox>
     )
   }
 }
 
-export default ConnectSelect;
+const CMBox = styled.div`
+  .contact-form {
+    padding: 1rem 0;
+    input {
+      padding-left: .2rem;
+    }
+  }
+  h2 {
+    margin-top: 1rem;
+  }
+  .request {
+    display: flex;
+    padding-top: 1rem;
+    align-items: center;
+    .button-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 1.4rem;
+    }
+    .id-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      h2 {
+        margin-top: 0;
+        margin-right: 2rem;
+      }
+    }
+  }
+`
+
+export default ContactsManager;

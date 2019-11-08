@@ -13,12 +13,6 @@ class NewMessage extends React.Component {
     e.preventDefault();
     this.setState({[e.target.name]: e.target.value, buttonFade: ''})
   }
-
-  // componentDidMount(){
-  //   this.setState({
-  //     to: this.props.active
-  //   })
-  // }
   
   sendMsg = e => {
     if(this.state.msg.length){
@@ -34,7 +28,7 @@ class NewMessage extends React.Component {
         <form onSubmit={e => this.sendMsg(e)}>
           <textarea
             onChange={this.formTyping}
-            placeholder='enter new message'
+            placeholder='Enter new message'
             value={this.state.msg}
             name='msg'
             type='text'

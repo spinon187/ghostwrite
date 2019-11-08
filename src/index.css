@@ -53,5 +53,6 @@ table {
 
 body {
   background-color: #4C4C4C;
-  font-family: 'Dosis', sans-serif;
+	font-family: 'Dosis', sans-serif;
+	height: 100vh;
 }

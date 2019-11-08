@@ -5,7 +5,7 @@ import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
 import styled from 'styled-components';
-import ConnectSelect from './ConnectSelect';
+import ContactsManager from './ContactsManager';
 import Overlay from './Overlay';
 
 
@@ -108,10 +108,6 @@ class Main extends Component {
     setTimeout(() => {this.setState({active: null})}, 200);
   }
 
-  declineReq = p => {
-    this.props.declineConnection(p);
-  }
-
   editFormToggle = e => {
     e.preventDefault();
     this.setState({editingName: !this.state.editingName})
@@ -134,13 +130,13 @@ class Main extends Component {
   render(){
 
     let conditional = this.state.active === null
-      ?<ConnectSelect
+      ?<ContactsManager
         uid={this.props.uid}
         pubKey={this.props.pubKey}
         wc={this.props.conReqs}
         sendMsg={this.sendMsg}
         privKey={this.props.privKey}
-        declineReq={this.declineReq}
+        declineReq={this.props.declineConnection}
         prohib={this.props.prohib}
         openOverlay={this.openOverlay}
         helpMode={this.state.helpMode}
@@ -234,8 +230,6 @@ const MBox = styled.div`
   align-items: center;
   .material-icons {
     color: red;
-    padding-right: 1rem;
-    // padding-left: 2rem;
     &:hover{
       cursor: pointer;
     }
@@ -267,7 +261,6 @@ const MBox = styled.div`
     color: #DBDBDB;
     font-size: 1.2rem;
   }
-
   button {
     background-color: #85C7F2;
     border: none;
@@ -275,66 +268,15 @@ const MBox = styled.div`
     color: #636363;
     font-size: 1rem;
   }
-
   .faded {
     opacity: 0.6;
   }
   .hidden {
     display: none
   }
-
   .edit-buttons {
     button {
       width: 50%;
-    }
-  }
-
-  .lds-ripple {
-    display: inline-block;
-    position: relative;
-    width: 64px;
-    height: 64px;
-  }
-  .lds-ripple div {
-    position: absolute;
-    border: 4px solid #fff;
-    opacity: 1;
-    border-radius: 50%;
-    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-  }
-  .lds-ripple div:nth-child(2) {
-    animation-delay: -0.5s;
-  }
-  @keyframes lds-ripple {
-    0% {
-      top: 28px;
-      left: 28px;
-      width: 0;
-      height: 0;
-      opacity: 1;
-    }
-    100% {
-      top: -1px;
-      left: -1px;
-      width: 58px;
-      height: 58px;
-      opacity: 0;
-    }
-  }
-  
-  .loadscreen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    // justify-content: center;
-    height: 100vh;
-    width: 98vw;
-    z-index: 1;
-    background-color: #4C4C4C
-    .loading-header{
-      font-size: 1.6rem;
-      padding: 2rem;
-      padding-top: 40%;
     }
   }
   .m-body{
@@ -342,210 +284,51 @@ const MBox = styled.div`
     max-width: 600px;
     display: flex;
     flex-direction: column;
-    // border: 1px solid red;
     width: 100%;
     height: 100%;
-    .reg {
-      .user-number {
-        display: flex;
-        // justify-content: center;
-        align-items: center;
-        // text-align: center;
-        width: 100%;
-      }
-      h1 {
-        color: #D1D1D1;
-        font-size: 1.6rem;
-        // padding-left: 25%;
-      }
-      display: flex;
-      justify-content: center;
-      padding: 1rem;
-      // padding-left: 19%;
-    }
     .dummy {
-      width: 40%;
+      width: 30%;
     }
     .id-wrapper {
-      width: 60%;
+      width: 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1.5rem;
     }
     .button-wrapper {
-      width: 20%;
+      width: 15%;
+      display: flex;
+      justify-content: center;
     }
     .ellipsis-wrapper {
-      // display: block;
       white-space: nowrap;
       min-width: 0;
-      // max-width: 100px;
       text-overflow: ellipsis;
       overflow: hidden;
-      // background-color: red;
       h1 {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        min-width: 0;
       }
     }
     .body-columns {
       display: flex;
-      height: 90%;
+      height: 100%;
       width: 100%;
-      // border: 1px solid red;
-      justify-content: space-between;
-
-    }
-
-    .contact-form {
-      padding: 1rem 0;
-    }
-
-    .request {
-      display: flex;
-      padding-top: 1rem;
-      // justify-content: center;
-      align-items: center;
-        .approve {
-          color: lime;
-        }
-      .button-wrapper, .id-wrapper {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        // border: 1px solid red;
-        h2 {
-          padding-right: 1rem;
-          // border: 1px solid red;
-
-        }
-      }
     }
     .msg-column {
       width: 65%;
       display: flex;
+      height: 100%;
       flex-direction: column;
       form {
         display: flex;
         flex-direction: column;
         width: 100%;
       }
-    }
-
-    .waitlist{
-      display: flex;
-      flex-direction: column;
-      width: 35%;
-      height: 100%;
-      overflow-y: hidden;
-      background-color: #636363;
-      h2 {
-        color: #DBDBDB;
-        padding: .5rem;
-      }
-      .waitlist-item {
-        background-color: #D1D1D1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        // width: 100%;
-        // border: 1px solid red;
-        // max-width: 210px;
-        padding: .2rem .4rem;
-        border-bottom: 2px solid #636363;
-
-
-        p {
-          color: #4C4C4C;
-          font-size: 1rem;
-          white-space: nowrap;
-          min-width: 0;
-          // max-width: 100px;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-        &:hover{
-          cursor: pointer;
-        }
-        .new-count{
-          background-color: red;
-          color: white;
-          // height: 1rem;
-          width: 1rem;
-          border-radius: 5px;
-          font-size: .8rem;
-        }
-      }
-      .active {
-        background-color: #85C7F2;
-        color: #DBDBDB;
-      }
-    }
-    .msg-history{
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      background-color: #636363;
-      h1 {
-        color: #DBDBDB;
-        padding: .5rem;
-      }
-      .msg-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        // padding-left: 35%;
-        .msg-id {
-          display: flex;
-          justify-content: flex-start;
-          padding-left: 1rem;
-        }
-      }
-      .msg-scroll{
-        border-left: 2px solid #636363;
-        display: flex;
-        flex-direction: column-reverse;
-        // align-items: center;
-        overflow-y: scroll;
-        height: 80%;
-        .msg {
-          // display: flex;
-          // flex-direction: column;
-          text-align: left;
-          width: 80%;
-          border: 1px solid #4C4C4C;
-          background-color: #85C7F2;
-          padding: .1rem .3rem;
-          border-radius: 5px;
-          margin: .2rem 0;
-          text-overflow: ellipsis;
-          // align-items: flex-start;
-          // justify-content: flex-start;
-          // white-space: nowrap;
-          // overflow-x: hidden;
-          .send-date {
-            font-size: .8rem;
-          }
-          h3, p {
-            padding-top: .5rem;
-          }
-          h3 {
-            color: #4C4C4C;
-            font-weight: bold;
-          }
-          p {
-            color: #636363;
-          }
-        }
-        .sent{
-          align-items: flex-end;
-          align-self: flex-end;
-          p {align-self: flex-start}
-        }
-        .received{
-          align-items: flex-start;
-          align-self: flex-start;
-        }
-      }
-    }
+    }   
   }
 `
 

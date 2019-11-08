@@ -72,6 +72,7 @@ const OLBox = styled.div`
       text-align: left;
       p {
         color: #636363;
+        line-height: 1.5rem;
       }
     }
     .ol-button-bank {

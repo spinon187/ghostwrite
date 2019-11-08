@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {encr} from '../components/Lockbox';
+import {encr} from '../utils/Lockbox';
 
 const baseURL = 'https://specback.herokuapp.com';
 // const baseURL = 'http://localhost:7777'

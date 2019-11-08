@@ -1,7 +1,7 @@
 import {
   REGGING,REGGED,REG_FAIL,SENT,SEND_FAIL,RECEIVED,REC_FAIL,FULL_NUKED,TAR_NUKED,NUKE_FAIL,VIEW,DECLINE,UPDATING_CONTACT,CLEAR_PENDING
 } from '../actions/index';
-import {keyPair} from '../components/Lockbox';
+import {keyPair} from '../utils/Lockbox';
 import * as utils from '../utils/ReducerUtils';
 
 const initialState = {

@@ -29,7 +29,7 @@ export const overlaySwitch = input => {
     case 'full nuke help':
       return (
         <>
-          <p>This Assigns you a new number and deletes your conversations from your previous contacts' devices.</p>
+          <p>This assigns you a new number and deletes your conversations from your previous contacts' devices.</p>
           <br /><br />
           <p>WARNING: Cannot be undone! If you want to continue a conversation with someone, make sure you've got their number recorded somewhere outside of Ghostwrite!</p>
         </>
@@ -113,6 +113,14 @@ export const overlaySwitch = input => {
           <br /><br />
           <p>NOTE: This does not withdraw the request! Invitations you've sent can still be accepted.</p>
         </>
+      )
+    case 'cm header help':
+      return (
+        <p>To connect with another user, ask them for their Ghostwrite ID and enter it in the field below to send them a contact request!</p>
+      )
+    case 'no reqs help':
+      return (
+        <p>When other users send you contact requests, their numbers will appear here for you to accept or decline.</p>
       )
     default:
       return null

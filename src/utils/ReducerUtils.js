@@ -1,4 +1,4 @@
-import {decr, secretize, generateAliases} from '../components/Lockbox';
+import {decr, secretize, generateAliases} from './Lockbox'
 
 //functions for the reducer to use
 
