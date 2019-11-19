@@ -116,9 +116,10 @@ class Main extends Component {
     setTimeout(() => {this.setState({active: null})}, 200);
   }
 
-  partialNuke = () => {
+  clearConvo = () => {
     this.props.clearConvo(this.state.active, this.props.keyring[this.state.active].me, this.props.auth);
     this.openOverlay(null);
+    this.clearWait();
   }
 
   editFormToggle = e => { //toggles edit contact name form on messaging screen
@@ -187,6 +188,7 @@ class Main extends Component {
           openOverlay={this.openOverlay}
           nukeAll={this.nukeAll}
           targetNuke={this.targetNuke}
+          clearConvo={this.clearConvo}
         />
         <div className='m-body'>
           <Reg 

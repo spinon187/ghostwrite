@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const overlaySwitch = (input, extraButton=null) => {
+export const overlaySwitch = (input, extraButton) => {
   switch(input){
     case 'test':
       return <p>this is a test</p>

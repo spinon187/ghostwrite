@@ -19,14 +19,14 @@ const Overlay = props => {
   extraButton = f2 =>
     f2
       ? (
-        <>
+        <div className='ol-button-bank'>
           <div className='button-wrapper'>
             <i className="material-icons approve" onClick={f2}>check_circle_outline</i>
           </div>
           <div className='button-wrapper'>
             <i className="material-icons cancel" onClick={() => props.openOverlay(null)}>block</i>
           </div>
-        </>
+        </div>
       )
       : null,
 
@@ -52,7 +52,6 @@ const Overlay = props => {
       <div className='transparency'></div>
       <div className='ol-box'>
         <div className='ol-text'>{overlaySwitch(props.switchTextType, extraButton(func2))}</div>
-        <br /><br />
         <div className='ol-button-bank'>
           {buttons(func)}
         </div>
@@ -86,6 +85,7 @@ const OLBox = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     .ol-text {
       max-width: 400px;
       text-align: left;
@@ -96,9 +96,10 @@ const OLBox = styled.div`
     }
     .ol-button-bank {
       display: flex;
-      // width: 100%;
+      width: 100%;
       justify-content: space-around;
-      width: 80%;
+      margin: 1rem 0;
+      // width: 80%;
     }
   }
 
