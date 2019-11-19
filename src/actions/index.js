@@ -5,12 +5,12 @@ const baseURL = 'https://specback.herokuapp.com';
 // const baseURL = 'http://localhost:7777'
 
 
-export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RECEIVED = 'RECEIVED', REC_FAIL = 'REC_FAIL', FULL_NUKED = 'FULL_NUKED', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', VIEW = 'VIEW', DECLINE = 'DECLINE', UPDATING_CONTACT = 'UPDATING_CONTACT', CLEAR_PENDING = 'CLEAR_PENDING';
+export const REGGING = 'REGGING', REGGED = 'REGGED', REG_FAIL = 'REG_FAIL', SENT = 'SENT', SEND_FAIL = 'SEND_FAIL', RECEIVED = 'RECEIVED', REC_FAIL = 'REC_FAIL', FULL_NUKED = 'FULL_NUKED', TAR_NUKED = 'TAR_NUKED', NUKE_FAIL = 'NUKE_FAIL', VIEW = 'VIEW', DECLINE = 'DECLINE', UPDATING_CONTACT = 'UPDATING_CONTACT', CLEAR_PENDING = 'CLEAR_PENDING', CLEAR_CONVO = 'CLEAR_CONVO';
 
 const buster = () => Math.floor(Math.random()*10000000);
 
 const header = token => {
-  return {headers: {token: token}}
+  return {headers: {authorization: token}}
 }
 
 export const 
@@ -53,6 +53,12 @@ export const
 
   clearWait = target => dispatch => {
     dispatch({type: VIEW, payload: target});
+  },
+
+  clearConvo = (to, from, token) => dispatch => {
+    axios.post(`${baseURL}/api/send/${buster()}/`, {to: to, from: from, msg: 'delete', partial: true}, header(token))
+      .then(res => dispatch({type: CLEAR_CONVO, payload: to}))
+      .catch(err => dispatch({type: NUKE_FAIL, payload: err}))
   },
 
   updateContact = (target, dummyID) => dispatch => {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact, clearPendingEntry} from '../actions/index';
+import {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact, clearPendingEntry, clearConvo} from '../actions/index';
 import Reg from './Reg';
 import Messages from './Messages';
 import WaitList from './WaitList';
@@ -116,6 +116,11 @@ class Main extends Component {
     setTimeout(() => {this.setState({active: null})}, 200);
   }
 
+  partialNuke = () => {
+    this.props.clearConvo(this.state.active, this.props.keyring[this.state.active].me, this.props.auth);
+    this.openOverlay(null);
+  }
+
   editFormToggle = e => { //toggles edit contact name form on messaging screen
     e.preventDefault();
     this.setState({editingName: !this.state.editingName})
@@ -161,6 +166,7 @@ class Main extends Component {
         history={this.state.history}
         sendMsg={this.sendMsg}
         targetNuke={this.targetNuke}
+        clearConvo={this.clearConvo}
         update={this.props.updateContact}
         editingName={this.state.editingName}
         toggle={this.editFormToggle}
@@ -344,4 +350,4 @@ const MBox = styled.div`
   }
 `
 
-export default connect(mapStateToProps, {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact, clearPendingEntry})(Main);
+export default connect(mapStateToProps, {register, sendMsg, getMsg, targetNuke, nukeAll, clearWait, declineConnection, updateContact, clearPendingEntry, clearConvo})(Main);

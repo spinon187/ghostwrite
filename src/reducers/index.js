@@ -1,5 +1,5 @@
 import {
-  REGGING,REGGED,REG_FAIL,SENT,SEND_FAIL,RECEIVED,REC_FAIL,FULL_NUKED,TAR_NUKED,NUKE_FAIL,VIEW,DECLINE,UPDATING_CONTACT,CLEAR_PENDING
+  REGGING,REGGED,REG_FAIL,SENT,SEND_FAIL,RECEIVED,REC_FAIL,FULL_NUKED,TAR_NUKED,NUKE_FAIL,VIEW,DECLINE,UPDATING_CONTACT,CLEAR_PENDING,CLEAR_CONVO
 } from '../actions/index';
 import {keyPair} from '../utils/Lockbox';
 import * as utils from '../utils/ReducerUtils';
@@ -80,6 +80,8 @@ export const rootReducer = (state = initialState, action) => {
       return utils.updateContact(state, action.payload.target, action.payload.dummyID)
     case CLEAR_PENDING:
       return utils.clearPending(state, action.payload)
+    case CLEAR_CONVO:
+      return utils.clearConvo(state, action.payload)
     default:
       return state;
   }

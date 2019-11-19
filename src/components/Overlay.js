@@ -9,9 +9,28 @@ const Overlay = props => {
       ? props.targetNuke
     : props.switchTextType === 'full nuke'
       ? props.nukeAll
-    : null
+    : null,
+  
+  func2 =
+    props.switchTextType === 'nuke target'
+      ? props.clearConvo
+      : null,
+  
+  extraButton = f2 =>
+    f2
+      ? (
+        <>
+          <div className='button-wrapper'>
+            <i className="material-icons approve" onClick={f2}>check_circle_outline</i>
+          </div>
+          <div className='button-wrapper'>
+            <i className="material-icons cancel" onClick={() => props.openOverlay(null)}>block</i>
+          </div>
+        </>
+      )
+      : null,
 
-  const buttons = f => //function rendering single button on informational popups, and accept/decline buttons on confirmation popups
+  buttons = f => //function rendering single button on informational popups, and accept/decline buttons on confirmation popups
     f
       ? (
         <>
@@ -32,7 +51,7 @@ const Overlay = props => {
     <OLBox>
       <div className='transparency'></div>
       <div className='ol-box'>
-        <div className='ol-text'>{overlaySwitch(props.switchTextType)}</div>
+        <div className='ol-text'>{overlaySwitch(props.switchTextType, extraButton(func2))}</div>
         <br /><br />
         <div className='ol-button-bank'>
           {buttons(func)}

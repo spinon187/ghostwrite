@@ -15,6 +15,9 @@ msgReceived = (state, msg) => { //handles message reception
     delete state.msgs[msg.from];
     delete state.keyring[msg.from];
     return state
+  } else if(msg.partial) {
+    state.msgs[msg.from] = [];
+    return state;
   } else {
     const sk = state.keyring[msg.from].sk, decrypted = decr(msg.msg, sk);
     state.msgs[msg.from].unshift({created: msg.created, msg: decrypted, me: false});
@@ -129,5 +132,11 @@ targetNuke = (state, target) => { //deletes partner data from store as part of y
 clearPending = (state, target) => {
   let ns = {...state};
   del(ns.pending, target);
+  return ns;
+},
+
+clearConvo = (state, target) => {
+  let ns = {...state};
+  ns.msgs[target] = [];
   return ns;
 }

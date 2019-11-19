@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const overlaySwitch = input => {
+export const overlaySwitch = (input, extraButton=null) => {
   switch(input){
     case 'test':
       return <p>this is a test</p>
@@ -15,7 +15,9 @@ export const overlaySwitch = input => {
     case 'nuke target': //confirmation for deleting a conversation with a partner
       return (
         <>
-          <p>Are you sure you want to delete this contact?</p>
+          <p>Do you want to clear the conversation?</p>
+          {extraButton}
+          <p>Or do you want to delete this contact?</p>
         </>
       )
     case 'full nuke': //confirmation for deleting current user and refreshing
