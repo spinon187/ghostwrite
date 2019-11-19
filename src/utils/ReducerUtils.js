@@ -17,6 +17,7 @@ msgReceived = (state, msg) => { //handles message reception
     return state
   } else if(msg.partial) {
     state.msgs[msg.from] = [];
+    state.keyring[msg.from].new = 0
     return state;
   } else {
     const sk = state.keyring[msg.from].sk, decrypted = decr(msg.msg, sk);
