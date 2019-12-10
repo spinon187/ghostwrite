@@ -1,68 +1,40 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Ghostwrite Readme
 
-## Available Scripts
+Live deployment can be found [here](https://ghostwrite.xyz)
 
-In the project directory, you can run:
+### General Outline
 
-### `npm start`
+The aim of Ghostwrite is to provide a platform for anonymous, secure two-way messaging that can be discarded at any time and makes it as difficult as possible for any hypothetical party who could compromise the database to extract anything of value. Ghostwrite attempts this from several angles:
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**`No Username or Password`**
+If users aren't required to log in, they can't have their login credentials stolen. Instead, the app assigns the user a random 10-digit ID number which can be cleared and reset at any time, deleting all activity of the previous ID from other users' devices.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+**`Deletion-on-Retrieval`**
+Sent messages are only stored on the server for as long as it takes to access them. Post requests to the messages endpoint trigger deletion of the associated messages from the database as part of the sending function. Messages themselves are kept in the serialized Redux store on the front-end for the remainder of their existence.
 
-### `npm test`
+**`Zero-Knowledge Server`**
+Ghostwrite uses a second layer of anonymity as an additional protection. When a connection between two users is approved, they exchange encrypted 256-bit aliases to use for actual message exchange. If the database content were to be compromised, it would not even be clear who the senders and recipients of individual messages were, as these aliases have nothing connecting them to the original account ID and are individualized for every user pair.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Specific Flow
 
-### `npm run build`
+**`1. ID assignment`**
+On page load, the client checks the serialized Redux store for a registered 10-digit ID. If not found, it generates one at random and posts to the server to see if the ID is in use. If not, the backend registers it and passes back a server authentication token. Otherwise, the app picks a new number and tries again until it is successful. Once that happens, the client will generate a DH key pair for encryption purposes.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**`2. User connection`**
+To connect to someone else, a user just needs to enter their desired partner's ID and submit it. This posts a message to the server with the 'request' flag set to true and includes the requesting user's public DH key.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+The partner will then have the option of accepting or denying the request. When the request comes in, the partner client will calculate the shared key regardless of acceptance/denial while it waits and simply purges it from the store upon denial. If accepted, the partner client will generate a pair of 256-bit aliases to use for further communication. It then uses the shared key to encrypt them, and sends a message back to the original requesting client containing these encrypted aliases as well as a true 'accept' flag and its own public DH key.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+From this stage onward, the 10-digit IDs no longer serve a purpose for paired users and are maintained strictly for cosmetic purposes.
 
-### `npm run eject`
+**`Sending messages`**
+Encryption is end-to-end, performed by the clients. An individual client retrieves messages by posting an array to the server consisting of its connection ID and all its aliases(which ought to result in a length of N+1 where N is the number of other clients it's currently paired with). As part of the retrieval process, the server endpoint being hit here will store the messages it finds in a JSON object and then delete them in the database before sending the response back to the client. No other conversation records are kept on the server. If two users are actively using the app, this results in storage durations of ~1 second at the maximum.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**`Deletion functions`**
+Ghostwrite offers several deletion functions, hereafter referred to as 'full,' 'targeted,' and 'partial.' These can be invoked unilaterally at any time and rely on flags similar to the request and acceptance flags used in connection establishment.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+FULL: Full deletion is invoked via complete account reset. It resets the local Redux store, clears the 10-digit connection ID from the server's user ID table, purges any incoming or outgoing messages still remaining on the message server associated with the user's previous ID or aliases, and then dispatches dummy messages to any/all partnered devices with the 'nuke' flag set to true. When a partnered device receives a nuke-flagged message, it automatically purges all data associated with the deleted user from its own store.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+TARGETED: Same core operations as the full deletion, but terminates the connection with only a single partner while leaving the remainder of the user's stored data intact.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+PARTIAL: Does NOT sever communications between the user and the targeted partner, but simply erases their shared chat history via a dummy message with the 'partial' flag set to true. Any further messages behave as normal.
