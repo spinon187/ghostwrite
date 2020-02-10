@@ -42,6 +42,6 @@ Ghostwrite offers several deletion functions, hereafter referred to as 'full,' '
 
 FULL: Full deletion is invoked via complete account reset. It resets the local Redux store, clears the 10-digit connection ID from the server's user ID table, purges any incoming or outgoing messages still remaining on the message server associated with the user's previous ID or aliases, and then dispatches dummy messages to any/all partnered devices with the 'nuke' flag set to true. When a partnered device receives a nuke-flagged message, it automatically purges all data associated with the deleted user from its own store.
 
-TARGETED: Same core operations as the full deletion, but terminates the connection with only a single partner while leaving the remainder of the user's stored data intact.
+TARGETED: Same core operations as the full deletion, but terminates the connection with only a single partner while leaving the remainder of the deleting user's stored data intact. Essentially like "unfriending" in a social network context.
 
 PARTIAL: Does NOT sever communications between the user and the targeted partner, but simply erases their shared chat history via a dummy message with the 'partial' flag set to true. Any further messages behave as normal.
