@@ -1,4 +1,5 @@
 import React from 'react';
+import ImageUploader from './ImageUploader';
 
 class NewMessage extends React.Component {
   constructor(props){
@@ -38,6 +39,7 @@ class NewMessage extends React.Component {
             required
           ></textarea>
           <button type='submit' className={this.state.buttonFade}>send message</button>
+          <ImageUploader />
         </form>
       </>
     )
