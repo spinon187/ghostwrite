@@ -16,15 +16,17 @@ const Messages = props => {
   
   history = props.partner //maps message text array into JSX
     ? props.history.map((msg, index) =>{
-      return (msg.me) //if message has 'me' bool true, message anchors on right, else message anchors on left
-      ? <div className='msg sent' key={index}>
-          <p>{msg.msg}</p>
-          <p className='send-date'>{formatDate(msg.created)}</p>
-        </div>
-      : <div className='msg received' key={index}>
-          <p>{msg.msg}</p>
-          <p className='send-date'>{formatDate(msg.created)}</p>
-        </div>
+      return msg.msg.slice(0,5) === 'data:'
+      ? <img key={index} alt={'img'} src={msg.msg} width='100%'/>
+        : (msg.me) //if message has 'me' bool true, message anchors on right, else message anchors on left
+        ? <div className='msg sent' key={index}>
+            <p>{msg.msg}</p>
+            <p className='send-date'>{formatDate(msg.created)}</p>
+          </div>
+        : <div className='msg received' key={index}>
+            <p>{msg.msg}</p>
+            <p className='send-date'>{formatDate(msg.created)}</p>
+          </div>
     })
     : null,
 
@@ -69,6 +71,8 @@ const Messages = props => {
           target={props.active}
           me={props.partner.me}
           sendMsg={props.sendMsg}
+          loadImgPreview={props.loadImgPreview}
+          imgToSend={props.imgToSend}
         />
       </div>
     : null
