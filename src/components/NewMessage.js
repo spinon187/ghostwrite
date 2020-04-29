@@ -1,5 +1,6 @@
 import React from 'react';
 import ImageUploader from './ImageUploader';
+import {resizeImg} from '../utils/ImageHandlers';
 
 class NewMessage extends React.Component {
   constructor(props){
@@ -27,7 +28,7 @@ class NewMessage extends React.Component {
   sendMsg = e => {
     if(this.state.msg.length || this.state.imgToSend){
       e.preventDefault()
-      let content = this.state.imgToSend || this.state.msg;
+      let content = resizeImg(this.state.imgToSend) || this.state.msg;
       //to and from should both be ZK aliases, not 10 digit IDs
       this.props.sendMsg({to: this.props.target, from: this.props.me, msg: content, created: Date.now()});
       this.setState({msg: '', imgToSend: null})
