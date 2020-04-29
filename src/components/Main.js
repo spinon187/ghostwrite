@@ -90,6 +90,8 @@ class Main extends Component {
 
   checkPulse = () => {
     if(!document.hidden) this.check(); //only checks server if app is active tab
+    // console.log(new Blob(Object.values(localStorage)).size)
+    // console.log(navigator.storage.estimate())
     setTimeout(() => {
       this.checkPulse()
     }, 1000); //recurs every second unless the above condition is false
