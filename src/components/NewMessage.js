@@ -8,7 +8,7 @@ class NewMessage extends React.Component {
     this.state = {
       msg: '',
       buttonFade: 'faded', //send button only lights up when you've typed something
-      imgToSend: this.props.imgToSend
+      imgToSend: null
     }
   }
 
@@ -20,7 +20,6 @@ class NewMessage extends React.Component {
   loadImgPreview = async img => {
   await resizeImg(img).then(
     resized => {
-      this.props.loadImgPreview(resized)
       this.setState({
         buttonFade: '',
         imgToSend: resized
@@ -60,10 +59,12 @@ class NewMessage extends React.Component {
       <>
         <form onSubmit={e => this.sendMsg(e)}>
           {boxswap}
-          <button type='submit' className={this.state.buttonFade}>send message</button>
-          <ImageUploader 
-            loadImgPreview={this.loadImgPreview}
-          />
+          <div className='button-bar'>
+            <button type='submit' className={this.state.buttonFade}>send message</button>
+            <ImageUploader 
+              loadImgPreview={this.loadImgPreview}
+            />
+          </div>
         </form>
       </>
     )

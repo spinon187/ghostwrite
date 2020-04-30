@@ -71,8 +71,6 @@ const Messages = props => {
           target={props.active}
           me={props.partner.me}
           sendMsg={props.sendMsg}
-          loadImgPreview={props.loadImgPreview}
-          imgToSend={props.imgToSend}
         />
       </div>
     : null
@@ -87,6 +85,9 @@ const Messages = props => {
 
 const MsgBox = styled.div`
   height: 100%;
+  #img-upload{
+    display: none
+  }
   .msg-history{
     display: flex;
     flex-direction: column;
@@ -162,6 +163,20 @@ const MsgBox = styled.div`
         align-items: flex-start;
         align-self: flex-start;
       }
+    }
+  }
+  .button-bar {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    button {
+      width: 90%
+    }
+    .material-icons {
+      width: 10%;
+      color: #85C7F2;
+      align-self: center;
     }
   }
 `

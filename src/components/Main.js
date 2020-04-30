@@ -22,9 +22,7 @@ class Main extends Component {
       history: [],
       editingName: false,
       overlayText: null,
-      helpMode: false,
-      activeImg: null,
-      imgToSend: null
+      helpMode: false
     }
   }
 
@@ -147,10 +145,6 @@ class Main extends Component {
     : this.checkPulse();
   }
 
-  loadImgPreview = img => {
-    this.setState({imgToSend: img})
-  }
-
   render(){
 
     let conditional = !this.state.active
@@ -181,9 +175,6 @@ class Main extends Component {
         toggle={this.editFormToggle}
         openOverlay={this.openOverlay}
         helpMode={this.state.helpMode}
-        activeImg={this.state.activeImg}
-        imgToSend={this.state.imgToSend}
-        loadImgPreview={this.loadImgPreview}
       />,
     
     headerSwap = this.state.helpMode

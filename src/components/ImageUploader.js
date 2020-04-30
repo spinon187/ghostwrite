@@ -14,9 +14,12 @@ const ImageUploader = props => {
 
   return (
     <>
+      <label for='img-upload'>
+        <span className="material-icons">add_photo_alternate</span>
+      </label>
       <input 
         type='file' 
-        className='img-upload'
+        id='img-upload'
         name='file'
         accept='image/*'
         onChange={e => handleChange(e)}
