@@ -1,13 +1,17 @@
-export const resizeImg = (img) => { //needs original image in base64+width+height
-  const cvs = document.createElement('canvas'), //creating canvas to redraw image smaller
-  scaleFactor = 275/img.width, //max-width of new image divided by width
-  newH = img.height*scaleFactor,
-  imgElem = new Image();
-  // imgElem.onload = () => {
-    imgElem.src = img; //new height
-    cvs.width = 275;
-    cvs.height = newH;
-    cvs.getContext('2d').drawImage(imgElem, 0, 0, cvs.width, cvs.height);
-    return cvs.toDataURL();
-  // }
+export const resizeImg = (base64) => { //needs original image in base64+width+height
+  return new Promise((resolve) => {
+    const cvs = document.createElement('canvas'); //creating canvas to redraw image smaller
+    let img = new Image();
+    img.src = base64;
+    img.onload = () => {
+      let scaleFactor = 400/img.width, //max-width of new image divided by width
+      newH = img.height*scaleFactor;
+      console.log(img.height, img.width, scaleFactor, newH);
+      cvs.height = newH;
+      cvs.width = 400;
+      cvs.getContext('2d').drawImage(img, 0, 0, 400, newH);
+      console.log(cvs.height, cvs.width)
+      resolve(cvs.toDataURL('image/jpeg'));
+    }
+  })
 }

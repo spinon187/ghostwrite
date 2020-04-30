@@ -17,18 +17,22 @@ class NewMessage extends React.Component {
     if(!this.state.img) this.setState({[e.target.name]: e.target.value, buttonFade: ''})
   }
 
-  loadImgPreview = img => {
-    this.props.loadImgPreview(img)
-    this.setState({
-      buttonFade: '',
-      imgToSend: img
-    })
+  loadImgPreview = async img => {
+  await resizeImg(img).then(
+    resized => {
+      this.props.loadImgPreview(resized)
+      this.setState({
+        buttonFade: '',
+        imgToSend: resized
+      })
+    }
+  )
   }
   
   sendMsg = e => {
     if(this.state.msg.length || this.state.imgToSend){
       e.preventDefault()
-      let content = resizeImg(this.state.imgToSend) || this.state.msg;
+      let content = this.state.imgToSend || this.state.msg;
       //to and from should both be ZK aliases, not 10 digit IDs
       this.props.sendMsg({to: this.props.target, from: this.props.me, msg: content, created: Date.now()});
       this.setState({msg: '', imgToSend: null})
@@ -50,7 +54,7 @@ class NewMessage extends React.Component {
         autoComplete='off'
         // required
       ></textarea>
-    : <img alt='preview' src={this.state.imgToSend} height='48px'/>
+    : <img alt='preview' src={this.state.imgToSend}/>
 
     return(
       <>
