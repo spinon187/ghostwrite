@@ -246,8 +246,11 @@ const mapStateToProps = state => {
 const MBox = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  overflow: hidden;
+  // justify-content: space-between;
   height: 100vh;
+  max-height: 100vh;
+  margin: 0;
   width: 100%;
   align-items: center;
   .material-icons {
@@ -302,12 +305,15 @@ const MBox = styled.div`
     }
   }
   .m-body{
-    min-height: 90vh;
+    // height: 100vh;
+    // max-height: 100vh;
     max-width: 600px;
     display: flex;
+    flex: 1;
     flex-direction: column;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     .dummy {
       width: 30%;
     }
@@ -337,13 +343,17 @@ const MBox = styled.div`
     }
     .body-columns {
       display: flex;
+      flex: 1;
       height: 100%;
+      overflow: hidden;
       width: 100%;
     }
     .msg-column {
       width: 65%;
       display: flex;
       height: 100%;
+      overflow: hidden;
+      flex: 1;
       flex-direction: column;
       form {
         display: flex;

@@ -14,7 +14,7 @@ const ImageUploader = props => {
 
   return (
     <>
-      <label for='img-upload'>
+      <label htmlFor='img-upload'>
         <span className="material-icons">add_photo_alternate</span>
       </label>
       <input 

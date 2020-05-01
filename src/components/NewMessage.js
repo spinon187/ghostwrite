@@ -56,7 +56,7 @@ class NewMessage extends React.Component {
     : <img alt='preview' src={this.state.imgToSend}/>
 
     return(
-      <>
+      <div className='new-msg'>
         <form onSubmit={e => this.sendMsg(e)}>
           {boxswap}
           <div className='button-bar'>
@@ -66,7 +66,7 @@ class NewMessage extends React.Component {
             />
           </div>
         </form>
-      </>
+      </div>
     )
   }
 
