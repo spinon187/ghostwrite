@@ -16,15 +16,19 @@ const Messages = props => {
   
   history = props.partner //maps message text array into JSX
     ? props.history.map((msg, index) =>{
+      let content = msg.msg.slice(0,5) === 'data:'
+        ? <img key={index} alt={'img'} src={msg.msg} />
+        : <p>{msg.msg}</p>
+
       return (msg.me) //if message has 'me' bool true, message anchors on right, else message anchors on left
-      ? <div className='msg sent' key={index}>
-          <p>{msg.msg}</p>
-          <p className='send-date'>{formatDate(msg.created)}</p>
-        </div>
-      : <div className='msg received' key={index}>
-          <p>{msg.msg}</p>
-          <p className='send-date'>{formatDate(msg.created)}</p>
-        </div>
+        ? <div className='msg sent' key={index}>
+            {content}
+            <p className='send-date'>{formatDate(msg.created)}</p>
+          </div>
+        : <div className='msg received' key={index}>
+            {content}
+            <p className='send-date'>{formatDate(msg.created)}</p>
+          </div>
     })
     : null,
 
@@ -83,10 +87,20 @@ const Messages = props => {
 
 const MsgBox = styled.div`
   height: 100%;
+  // max-height: 100%;
+  flex: 1;
+  overflow: hidden;
+  #img-upload{
+    display: none
+  }
   .msg-history{
     display: flex;
     flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    overflow: hidden;
     height: 100%;
+    // max-height: 88vh;
     background-color: #636363;
     .msg-header {
       width:100%;
@@ -119,10 +133,14 @@ const MsgBox = styled.div`
     }
     .msg-scroll{
       border-left: 2px solid #636363;
+      flex: 1;
       display: flex;
       flex-direction: column-reverse;
       overflow-y: scroll;
-      height: 80%;
+      flex-grow: 4;
+      // height: 100%;
+      max-height: 89vh;
+      // max-height: 80%;
       .msg {
         text-align: left;
         width: 90%;
@@ -159,6 +177,26 @@ const MsgBox = styled.div`
         align-self: flex-start;
       }
     }
+  }
+  .new-msg {
+    // position: absolute;
+  }
+  .button-bar {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    button {
+      width: 90%
+    }
+    .material-icons {
+      width: 10%;
+      color: #85C7F2;
+      align-self: center;
+    }
+  }
+  img{
+    width: 100%;
   }
 `
 
