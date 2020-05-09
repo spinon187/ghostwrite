@@ -194,6 +194,9 @@ const MsgBox = styled.div`
       color: #85C7F2;
       align-self: center;
     }
+    .cancel {
+      color: red
+    }
   }
   img{
     width: 100%;

@@ -6,11 +6,9 @@ export const resizeImg = (base64) => { //needs original image in base64+width+he
     img.onload = () => {
       let scaleFactor = 400/img.width, //max-width of new image divided by width
       newH = img.height*scaleFactor;
-      console.log(img.height, img.width, scaleFactor, newH);
       cvs.height = newH;
       cvs.width = 400;
       cvs.getContext('2d').drawImage(img, 0, 0, 400, newH);
-      console.log(cvs.height, cvs.width)
       resolve(cvs.toDataURL('image/jpeg'));
     }
   })

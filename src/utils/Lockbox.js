@@ -20,7 +20,7 @@ const random256 = () => { //generates a random 256-bit integer for the private k
   }
 
 export const keyPair = () => { //generates public/private key pair
-  let privKey = new BigNumber('0x' + random256());  
+  let privKey = new BigNumber('0x' + random256());
   let pubKey = new BigNumber('2').pow(privKey.toString(), [lan]);
   return [privKey.toString(16), pubKey.toString(16)];
 }

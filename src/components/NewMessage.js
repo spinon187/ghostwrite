@@ -18,14 +18,22 @@ class NewMessage extends React.Component {
   }
 
   loadImgPreview = async img => {
-  await resizeImg(img).then(
-    resized => {
+    if(img){
+      await resizeImg(img).then(
+        resized => {
+          this.setState({
+            buttonFade: '',
+            imgToSend: resized
+          })
+        }
+      )
+    } else {
       this.setState({
-        buttonFade: '',
-        imgToSend: resized
+        buttonFade: this.state.msg ? '' : 'faded',
+        imgToSend: null
       })
     }
-  )
+
   }
   
   sendMsg = e => {
@@ -37,7 +45,6 @@ class NewMessage extends React.Component {
       this.setState({msg: '', imgToSend: null})
     }
   }
-
 
 
   render(){
@@ -63,6 +70,7 @@ class NewMessage extends React.Component {
             <button type='submit' className={this.state.buttonFade}>send message</button>
             <ImageUploader 
               loadImgPreview={this.loadImgPreview}
+              isImgLoaded={this.state.imgToSend ? true : false}
             />
           </div>
         </form>
