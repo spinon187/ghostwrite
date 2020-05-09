@@ -7,14 +7,13 @@ class NewMessage extends React.Component {
     super(props);
     this.state = {
       msg: '',
-      buttonFade: 'faded', //send button only lights up when you've typed something
       imgToSend: null
     }
   }
 
   formTyping = e => {
     e.preventDefault();
-    if(!this.state.img) this.setState({[e.target.name]: e.target.value, buttonFade: ''})
+    if(!this.state.img) this.setState({[e.target.name]: e.target.value})
   }
 
   loadImgPreview = async img => {
@@ -22,14 +21,12 @@ class NewMessage extends React.Component {
       await resizeImg(img).then(
         resized => {
           this.setState({
-            buttonFade: '',
             imgToSend: resized
           })
         }
       )
     } else {
       this.setState({
-        buttonFade: this.state.msg ? '' : 'faded',
         imgToSend: null
       })
     }
@@ -60,14 +57,18 @@ class NewMessage extends React.Component {
         autoComplete='off'
         // required
       ></textarea>
-    : <img alt='preview' src={this.state.imgToSend}/>
+    : <img alt='preview' src={this.state.imgToSend}/>,
+
+    buttonClass = this.state.msg || this.state.imgToSend
+    ? ''
+    : 'faded'
 
     return(
       <div className='new-msg'>
-        <form onSubmit={e => this.sendMsg(e)}>
+        <form>
           {boxswap}
           <div className='button-bar'>
-            <button type='submit' className={this.state.buttonFade}>send message</button>
+            <button className={buttonClass} onClick={e => this.sendMsg(e)}>send message</button>
             <ImageUploader 
               loadImgPreview={this.loadImgPreview}
               isImgLoaded={this.state.imgToSend ? true : false}

@@ -6,7 +6,7 @@ const ImageUploader = props => {
     e.preventDefault();
     let img = e.target.files[0],
     reader = new FileReader();
-    if(img){
+    if(img){ //need to make sure there's an image to be file-read or it crashes the whole page lol
       reader.readAsDataURL(img);
       reader.onload = () => {
         props.loadImgPreview(reader.result)
@@ -14,7 +14,7 @@ const ImageUploader = props => {
     }
   }
 
-  const buttonSwap = props.isImgLoaded
+  const buttonSwap = props.isImgLoaded //renders cancel button if image is loaded, upload button if one is not
     ? <>
         <span className="material-icons cancel" onClick={() => props.loadImgPreview(null)}>block</span>
       </>
@@ -35,7 +35,6 @@ const ImageUploader = props => {
     <>
       {buttonSwap}
     </>
-    
   )
 }
 
