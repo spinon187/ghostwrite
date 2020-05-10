@@ -180,6 +180,9 @@ const MsgBox = styled.div`
   }
   .new-msg {
     // position: absolute;
+    textarea {
+      width: 100%;
+    }
   }
   .button-bar {
     width: 100%;
