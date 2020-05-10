@@ -7,13 +7,12 @@ class ContactsManager extends React.Component {
     super(props);
     this.state = {
       to: '',
-      buttonFade: 'faded'
     }
   }
 
   formTyping = e => {
     e.preventDefault();
-    this.setState({[e.target.name]: e.target.value.replace(/\D/,''), buttonFade: ''})
+    this.setState({[e.target.name]: e.target.value.replace(/\D/,'')})
   }
 
   acceptReq = (e, partner) => {
@@ -95,6 +94,7 @@ class ContactsManager extends React.Component {
       : null
   }
 
+
   render(){
 
     const waitingConnections = this.props.wc
@@ -138,7 +138,11 @@ class ContactsManager extends React.Component {
 
     pendingToggle = this.props.pending && this.props.pending.length
       ? <h2>Outgoing contact requests:</h2>
-      : null
+      : null,
+
+    buttonClass = this.state.to.length && (this.state.to.length === 10)
+      ? ''
+      : 'faded'
 
     return (
       <CMBox>
@@ -156,7 +160,7 @@ class ContactsManager extends React.Component {
             autoComplete='off'
             required
           />
-          <button type='button' className={this.state.buttonFade} onClick={e => this.sendReq(e)}>send request</button>
+          <button type='button' className={buttonClass} onClick={e => this.sendReq(e)}>send request</button>
         </form>
         <div>{textToggle}</div>
         {waitingConnections}
