@@ -39,7 +39,7 @@ export const overlaySwitch = (input, extraButton) => {
     case 'target nuke help':
       return (
         <>
-          <p>This deletes this contact from your device and deletes you from their device.</p>
+          <p>This can be use to reset your conversation, or if you wish, delete this contact from your device and delete you from their device.</p>
           <br /><br />
           <p>WARNING: Cannot be undone!</p>
         </>

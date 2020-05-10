@@ -43,6 +43,11 @@ class NewMessage extends React.Component {
     }
   }
 
+  componentWillReceiveProps(next){
+    if(next.target !== this.props.target){
+      this.setState({msg: '', imgToSend: null})
+    }
+  }
 
   render(){
 

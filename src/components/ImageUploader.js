@@ -9,7 +9,7 @@ const ImageUploader = props => {
     if(img){ //need to make sure there's an image to be file-read or it crashes the whole page lol
       reader.readAsDataURL(img);
       reader.onload = () => {
-        props.loadImgPreview(reader.result)
+        props.loadImgPreview(reader.result) //converts to base64 string
       }
     }
   }
