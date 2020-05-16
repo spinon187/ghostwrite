@@ -6,7 +6,7 @@ class NewMessage extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      msg: null,
+      msg: '',
       imgToSend: null
     }
   }
@@ -39,13 +39,13 @@ class NewMessage extends React.Component {
       let content = this.state.imgToSend || this.state.msg;
       //to and from should both be ZK aliases, not 10 digit IDs
       this.props.sendMsg({to: this.props.target, from: this.props.me, msg: content, created: Date.now()});
-      this.setState({msg: null, imgToSend: null})
+      this.setState({msg: '', imgToSend: null})
     }
   }
 
   componentWillReceiveProps(next){
     if(next.target !== this.props.target){
-      this.setState({msg: null, imgToSend: null})
+      this.setState({msg: '', imgToSend: null})
     }
   }
 
